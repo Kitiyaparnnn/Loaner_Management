@@ -6,8 +6,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loaner/src/models/login/LoginModel.dart';
-import 'package:loaner/src/pages/home/cssd_home_page.dart';
-import 'package:loaner/src/pages/home/supplier_home_page.dart';
+import 'package:loaner/src/pages/home/home_page.dart';
 import 'package:loaner/src/services/SharedPreferencesService.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
@@ -85,7 +84,7 @@ class _LoginPageState extends State<LoginPage>
                       const SizedBox(height: 30),
                       _buildForm(context),
                       const SizedBox(height: 50),
-                      _loading()
+                      // _loading()
                     ],
                   ),
                 ),
@@ -282,18 +281,15 @@ class _LoginPageState extends State<LoginPage>
                 loginData.isRemember = isRemember;
                 // BlocProvider.of<LoginBloc>(context)
                 //     .add(LoginEventOnPress(loginData: loginData));
-                loading = !loading;
-                setState(() {});
-                await Future.delayed(Duration(seconds: 5));
-                isSupplier
-                    ? Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SupplierHomePage()))
-                    : Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CssdHomePage()));
+                // loading = !loading;
+                // setState(() {});
+                // await Future.delayed(Duration(seconds: 5));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HomePage(
+                              isSupplier: isSupplier,
+                            )));
               }
             : null,
         child: Container(

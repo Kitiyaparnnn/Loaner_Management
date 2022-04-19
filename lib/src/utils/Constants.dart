@@ -8,13 +8,11 @@ class Constants {
   static const String LOADING_TEXT = "waiting...";
 
   //title
-  static const String HOME_TITLE = "หน้าหลัก";
-  static const String TEMPERATURE_TITLE = "อุณหภูมิ & ความชื้น";
-  static const String TEMPERATURE_MACHINE_TITLE = "เครื่อง";
-  static const String TEMPERATURE_CHART_TITLE = "Chart";
-  static const String EVENT_TITLE = "อีเว้นท์";
-  static const String WATER_TITLE = "ผลทดสอบค่าน้ำ";
-  static const String SETTING_TITLE = "ตั้งค่า";
+  static const String FILL_APPOINT_TITLE = "กรอกนัดหมาย";
+  static const String CONFIRM_APPOINT_TITLE = "ยืนยันนัดหมาย";
+  static const String APPOINTMENT_TITLE = "นัดหมาย";
+  static const String LOANER_TITLE = "Loaner";
+  static const String EMPLOYEE_TITLE = "เจ้าหน้าที่";
 
   //app font
   static const String APP_FONT = "sans_thai";
