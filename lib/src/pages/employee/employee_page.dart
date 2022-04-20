@@ -53,6 +53,7 @@ class _EmployeePageState extends State<EmployeePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
+      backgroundColor: AppColors.COLOR_GREY,
       body: Container(
         height: MediaQuery.of(context).size.height,
         child: GestureDetector(

@@ -70,7 +70,6 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
                       alignment: Alignment.bottomCenter,
                       child: ElevatedButton(
                           onPressed: () {
-                            _formKey.currentState!.save();
                             widget.loaner.no = no;
                             logger.d(widget.loaner.toJson());
                             Navigator.pop(context);
@@ -134,9 +133,11 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
         TextFormField(
           style: const TextStyle(color: AppColors.COLOR_DARK),
           controller: _controllerdetail,
-          decoration: inputDecoration(hintText: "", contextBloc: context),
-          onSaved: (value) {
+          decoration:
+              inputDecoration(hintText: "หมายเหตุ...", contextBloc: context),
+          onChanged: (value) {
             widget.loaner.note = value;
+            setState(() {});
           },
         )
       ],

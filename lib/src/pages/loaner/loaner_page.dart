@@ -56,25 +56,21 @@ class _LoanerPageState extends State<LoanerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      backgroundColor: AppColors.COLOR_GREY,
-      body: SafeArea(
-          child: Container(
-        height: MediaQuery.of(context).size.height,
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
-          child: SingleChildScrollView(
-              child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              height: MediaQuery.of(context).size.height,
+        appBar: AppBar(),
+        backgroundColor: AppColors.COLOR_GREY,
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Center(
                   child: Column(
                 children: [
                   _searchBar(),
                   _loanerList(),
                   Align(
-                    alignment: Alignment.bottomRight,
+                    alignment: Alignment.bottomLeft,
                     child: ElevatedButton(
                         onPressed: () => Navigator.push(
                             context,
@@ -85,10 +81,8 @@ class _LoanerPageState extends State<LoanerPage> {
                 ],
               )),
             ),
-          )),
-        ),
-      )),
-    );
+          ),
+        ));
   }
 
   _searchBar() {

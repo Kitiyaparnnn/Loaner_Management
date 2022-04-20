@@ -64,4 +64,6 @@ class Constants {
   static const String TEXT_SAVE = "บันทึก";
   static const String TEXT_SOME_THING_WRONG =
       "มีบางอย่างผิดพลาด กรุณาลองใหม่อีกครั้ง";
+  static const String TEXT_FORM_FIELD =
+      "กรุณาตรวจกรอกข้อมูลให้ครบ";
 }

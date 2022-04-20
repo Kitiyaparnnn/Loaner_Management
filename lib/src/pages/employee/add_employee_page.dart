@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loaner/src/models/employee/EmployeeDataModel.dart';
@@ -17,7 +18,7 @@ class AddEmployeePage extends StatefulWidget {
 }
 
 class _AddEmployeePageState extends State<AddEmployeePage> {
-  final employeeData = EmployeeDataModel(isTrained: false);
+  final employeeData = EmployeeDataModel(isTrained: false, image: "");
   var _formKey = GlobalKey<FormState>();
   bool isEnabledButtonSave = true;
 
@@ -203,10 +204,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       onSaved: (value) {
         employeeData.detail = value;
       },
-      onFieldSubmitted: (String value) {
-        FocusScope.of(context).requestFocus(firstNameFocusNode);
-        FocusScope.of(context).requestFocus(lastNameFocusNode);
-      },
     );
   }
 
@@ -304,11 +301,16 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
         alignment: Alignment.bottomRight,
         child: ElevatedButton(
             onPressed: () {
-              _formKey.currentState!.save();
-              _convertBase64();
-              logger.d(employeeData.toJson());
-              Navigator.pop(context,
-                  MaterialPageRoute(builder: (context) => EmployeePage()));
+              try {
+                _formKey.currentState!.save();
+                imageFile != null ? _convertBase64() : null;
+                logger.d(employeeData.toJson());
+                Navigator.pop(context,
+                    MaterialPageRoute(builder: (context) => EmployeePage()));
+              } catch (e) {
+                BotToast.showSimpleNotification(
+                    title: Constants.TEXT_FORM_FIELD);
+              }
             },
             child: Text("บันทึก")),
       );
