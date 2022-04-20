@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:loaner/src/models/MenuChoice.dart';
 import 'package:loaner/src/models/MenuModel.dart';
 import 'package:loaner/src/pages/employee/employee_page.dart';
+import 'package:loaner/src/pages/loaner/loaner_page.dart';
 import 'package:loaner/src/services/SharedPreferencesService.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/AskForConfirmToLogout.dart';
@@ -88,7 +89,7 @@ class _HomePageState extends State<HomePage> {
             ),
             MenuModel(
               name: "${Constants.LOANER_TITLE}",
-              route: EmployeePage(),
+              route: LoanerPage(),
               color: AppColors.COLOR_PRIMARY,
               // imgName: "menu_setting.png",
               isShow: true,

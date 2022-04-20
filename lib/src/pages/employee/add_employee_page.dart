@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:loaner/src/models/employee/EmployeeDataModel.dart';
+import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/employee/employee_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
@@ -12,7 +17,7 @@ class AddEmployeePage extends StatefulWidget {
 }
 
 class _AddEmployeePageState extends State<AddEmployeePage> {
-  final employeeData = EmployeeDataModel();
+  final employeeData = EmployeeDataModel(isTrained: false);
   var _formKey = GlobalKey<FormState>();
   bool isEnabledButtonSave = true;
 
@@ -22,9 +27,9 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   TextEditingController _controllerlastName =
       new TextEditingController(text: "");
   TextEditingController _controllerdetail = new TextEditingController(text: "");
-  String headName = '';
-  bool isTrained = false;
-  String image = '';
+  String headName = "คำนำหน้า";
+
+  File? imageFile;
 
   FocusNode firstNameFocusNode = FocusNode();
   FocusNode lastNameFocusNode = FocusNode();
@@ -33,6 +38,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(centerTitle: true, title: Text(Constants.EMPLOYEE_TITLE)),
+      backgroundColor: AppColors.COLOR_GREY,
       body: SafeArea(
           child: Container(
         height: MediaQuery.of(context).size.height,
@@ -56,8 +62,10 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       child: Column(
         children: [
           _buildInput(),
+          const SizedBox(height: 25),
+          _buildImportImage(),
           const SizedBox(height: 30),
-          _buildButtonLogin(context),
+          _buildButtonSave(context),
         ],
       ),
     );
@@ -85,6 +93,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                 _buildDropdown(),
               ],
             ),
+            const SizedBox(height: 25),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -133,14 +142,15 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
         ),
       );
 
-  TextFormField _buildTextFormField() {
-    return TextFormField(
-      style: const TextStyle(color: AppColors.COLOR_DARK),
-      decoration:
-          _inputDecoration(hintText: "บริษัท โพส จำกัด", contextBloc: context),
-      onSaved: (value) {
-        employeeData.companyName = companyName;
-      },
+  Container _buildTextFormField() {
+    employeeData.companyName = companyName;
+    return Container(
+      child: Text(companyName, style: TextStyle(color: AppColors.COLOR_DARK)),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(
+          const Radius.circular(10.0),
+        ),
+      ),
     );
   }
 
@@ -148,6 +158,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     return DropdownButtonFormField(
       value: headName,
       items: [
+        DropdownMenuItem(child: Text("คำนำหน้า"), value: "คำนำหน้า"),
         DropdownMenuItem(child: Text("นางสาว"), value: "นางสาว"),
         DropdownMenuItem(child: Text("นาง"), value: "นาง"),
         DropdownMenuItem(child: Text("นาย"), value: "นาย"),
@@ -168,10 +179,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       onSaved: (value) {
         employeeData.firstName = value;
       },
-      onFieldSubmitted: (String value) {
-        _formKey.currentState!.save();
-        // BlocProvider.of<LoginBloc>(context).add(LoginEventOnPress(loginData: loginData));
-      },
     );
   }
 
@@ -180,13 +187,9 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       controller: _controllerlastName,
       style: TextStyle(color: AppColors.COLOR_DARK),
       decoration: _inputDecoration(hintText: "จริงจริง", contextBloc: context),
-      focusNode: firstNameFocusNode,
+      focusNode: lastNameFocusNode,
       onSaved: (value) {
         employeeData.lastName = value;
-      },
-      onFieldSubmitted: (String value) {
-        _formKey.currentState!.save();
-        // BlocProvider.of<LoginBloc>(context).add(LoginEventOnPress(loginData: loginData));
       },
     );
   }
@@ -210,18 +213,27 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   Row _buildCheckBox() {
     return Row(
       children: [
-        Container(
-          child: Row(children: [
-            Checkbox(value: true, onChanged: (value) => employeeData.isTrained = value),
-            Text("เคย")
-          ],),
+        IconButton(
+            onPressed: () {
+              employeeData.isTrained = true;
+              setState(() {});
+            },
+            icon: Icon(employeeData.isTrained!
+                ? Icons.radio_button_checked_outlined
+                : Icons.radio_button_unchecked_outlined)),
+        Text("เคย"),
+        SizedBox(
+          width: 20,
         ),
-        Container(
-          child: Row(children: [
-            Checkbox(value: false, onChanged: (value) => employeeData.isTrained = value),
-            Text("ไม่เคย")
-          ],),
-        )
+        IconButton(
+            onPressed: () {
+              employeeData.isTrained = false;
+              setState(() {});
+            },
+            icon: Icon(employeeData.isTrained!
+                ? Icons.radio_button_unchecked_outlined
+                : Icons.radio_button_checked_outlined)),
+        Text("ไม่เคย"),
       ],
     );
   }
@@ -262,28 +274,122 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     );
   }
 
-  Widget _buildButtonLogin(BuildContext context) => RaisedButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        padding: EdgeInsets.all(0.0),
-        color: Colors.transparent,
-        onPressed: isEnabledButtonSave
-            ? () async {
-                _formKey.currentState!.save();
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => EmployeePage()));
-              }
-            : null,
-        child: Container(
+  Widget _buildImportImage() {
+    return Row(
+      children: [
+        Container(
           decoration: BoxDecoration(
-              color: AppColors.COLOR_PRIMARY,
-              borderRadius: BorderRadius.all(Radius.circular(12))),
-          constraints: BoxConstraints(minHeight: 50.0),
-          alignment: Alignment.center,
-          child: Text(
-            "บันทึก",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white),
+            border: Border.all(color: AppColors.COLOR_DARK),
           ),
+          child: imageFile != null
+              ? Image.file(
+                  imageFile!,
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.cover,
+                )
+              : SizedBox(
+                  width: 200,
+                  height: 200,
+                ),
         ),
+        Spacer(),
+        ElevatedButton(
+            child: Text("เพิ่มรูปภาพ"), onPressed: () => _showImageDialog())
+      ],
+    );
+  }
+
+  Widget _buildButtonSave(BuildContext context) => Align(
+        alignment: Alignment.bottomRight,
+        child: ElevatedButton(
+            onPressed: () {
+              _formKey.currentState!.save();
+              _convertBase64();
+              logger.d(employeeData.toJson());
+              Navigator.pop(context,
+                  MaterialPageRoute(builder: (context) => EmployeePage()));
+            },
+            child: Text("บันทึก")),
       );
+
+  void _showImageDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "Please choose an option",
+              style: TextStyle(color: AppColors.COLOR_DARK),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InkWell(
+                  onTap: () {
+                    _getFromCamera();
+                  },
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Text(
+                        "Camera",
+                        style: TextStyle(color: Colors.grey),
+                      )
+                    ],
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    _getFromGallery();
+                  },
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Icon(
+                          Icons.image,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Text(
+                        "Gallery",
+                        style: TextStyle(color: Colors.grey),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        });
+  }
+
+  void _getFromGallery() async {
+    XFile? pickedFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery, maxHeight: 1080, maxWidth: 1080);
+    imageFile = File(pickedFile!.path);
+    setState(() {});
+    Navigator.pop(context);
+  }
+
+  void _getFromCamera() async {
+    XFile? pickedFile = await ImagePicker()
+        .pickImage(source: ImageSource.camera, maxHeight: 1080, maxWidth: 1080);
+    imageFile = File(pickedFile!.path);
+    setState(() {});
+    Navigator.pop(context);
+  }
+
+  void _convertBase64() {
+    final bytes = imageFile!.readAsBytesSync();
+    String img64 = base64Encode(bytes);
+    employeeData.image = img64;
+  }
 }

@@ -284,6 +284,11 @@ class _LoginPageState extends State<LoginPage>
                 // loading = !loading;
                 // setState(() {});
                 // await Future.delayed(Duration(seconds: 5));
+                if (loginData.username == 'supplier') {
+                  isSupplier = true;
+                } else {
+                  isSupplier = false;
+                }
                 Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -29,7 +29,6 @@ class _EmployeePageState extends State<EmployeePage> {
   }
 
   void filterSearchResults(String query) {
-    // print(query);
     List<EmployeeModel> dummyListData = [];
     if (query.isNotEmpty) {
       employees.forEach((item) {
@@ -38,13 +37,13 @@ class _EmployeePageState extends State<EmployeePage> {
         }
       });
       setState(() {
-        // items.clear();
+        items.clear();
         items.addAll(dummyListData);
       });
       return;
     } else {
       setState(() {
-        //   items.clear();
+        items.clear();
         items.addAll(employees);
       });
     }
@@ -56,22 +55,25 @@ class _EmployeePageState extends State<EmployeePage> {
       appBar: AppBar(),
       body: Container(
         height: MediaQuery.of(context).size.height,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              _searchBar(),
-              _employeeList(),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: ElevatedButton(
-                    onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddEmployeePage())),
-                    child: Text('เพิ่ม')),
-              )
-            ],
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                _searchBar(),
+                _employeeList(),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: ElevatedButton(
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddEmployeePage())),
+                      child: Text('เพิ่ม')),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -99,34 +101,63 @@ class _EmployeePageState extends State<EmployeePage> {
       child: ListView(
         children: ListTile.divideTiles(
           color: Colors.blue,
-          tiles: items.map(
-            (employee) => ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Colors.blue,
-                child: Text(employee.username!,
-                    style:
-                        TextStyle(fontSize: 10, color: AppColors.COLOR_WHITE)),
-              ),
-              title: Text(employee.username!),
-              subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Detail: ${employee.detail}',
-                      style: TextStyle(fontSize: 12),
+          tiles: items.length != 0
+              ? items.map(
+                  (employee) => ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.blue,
+                      child: Text(employee.username!,
+                          style: TextStyle(
+                              fontSize: 10, color: AppColors.COLOR_WHITE)),
                     ),
-                    Text(
-                        employee.isTrained!
-                            ? 'Trained: เคย'
-                            : 'Trained: ไม่เคย',
-                        style: TextStyle(fontSize: 12))
-                  ]),
-              trailing: IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () {},
-              ),
-            ),
-          ),
+                    title: Text(employee.username!),
+                    subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Detail: ${employee.detail}',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          Text(
+                              employee.isTrained!
+                                  ? 'Trained: เคย'
+                                  : 'Trained: ไม่เคย',
+                              style: TextStyle(fontSize: 12))
+                        ]),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {},
+                    ),
+                  ),
+                )
+              : employees.map(
+                  (employee) => ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.blue,
+                      child: Text(employee.username!,
+                          style: TextStyle(
+                              fontSize: 10, color: AppColors.COLOR_WHITE)),
+                    ),
+                    title: Text(employee.username!),
+                    subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Detail: ${employee.detail}',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          Text(
+                              employee.isTrained!
+                                  ? 'Trained: เคย'
+                                  : 'Trained: ไม่เคย',
+                              style: TextStyle(fontSize: 12))
+                        ]),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
         ).toList(),
       ),
     );
