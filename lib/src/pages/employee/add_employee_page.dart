@@ -9,6 +9,7 @@ import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/employee/employee_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
+import 'package:loaner/src/utils/LabelFormat.dart';
 
 class AddEmployeePage extends StatefulWidget {
   AddEmployeePage({Key? key}) : super(key: key);
@@ -82,7 +83,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _label("บริษัท"),
+                label("บริษัท"),
                 _buildTextFormField(),
               ],
             ),
@@ -90,7 +91,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _label("คำนำหน้า"),
+                label("คำนำหน้า"),
                 _buildDropdown(),
               ],
             ),
@@ -98,7 +99,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _label("ชื่อ"),
+                label("ชื่อ"),
                 _buildTextFormFieldFirstName(context),
               ],
             ),
@@ -106,7 +107,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _label("นามสกุล"),
+                label("นามสกุล"),
                 _buildTextFormFieldLastName(context),
               ],
             ),
@@ -114,7 +115,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _label("รายละเอียด"),
+                label("รายละเอียด"),
                 _buildTextFormFieldDetail(),
               ],
             ),
@@ -122,7 +123,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _label("ผ่านการ Trained"),
+                label("ผ่านการ Trained"),
                 _buildCheckBox(),
               ],
             )
@@ -131,17 +132,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       ),
     );
   }
-
-  Widget _label(String text) => Container(
-        padding: const EdgeInsets.only(left: 5, bottom: 5),
-        child: Text(
-          "$text",
-          style: const TextStyle(
-              color: AppColors.COLOR_DARK,
-              letterSpacing: 0.15,
-              fontWeight: FontWeight.w500),
-        ),
-      );
 
   Container _buildTextFormField() {
     employeeData.companyName = companyName;
@@ -155,6 +145,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     );
   }
 
+
   DropdownButtonFormField _buildDropdown() {
     return DropdownButtonFormField(
       value: headName,
@@ -164,7 +155,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
         DropdownMenuItem(child: Text("นาง"), value: "นาง"),
         DropdownMenuItem(child: Text("นาย"), value: "นาย"),
       ],
-      decoration: _inputDecoration(hintText: 'คำนำหน้า', contextBloc: context),
+      decoration: _inputDecoration(hintText: 'คำนำหน้า'),
       onChanged: (value) {
         employeeData.headName = value;
       },
@@ -175,7 +166,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     return TextFormField(
       controller: _controllerfirstName,
       style: TextStyle(color: AppColors.COLOR_DARK),
-      decoration: _inputDecoration(hintText: "สมใจ", contextBloc: context),
+      decoration: _inputDecoration(hintText: "สมใจ"),
       focusNode: firstNameFocusNode,
       onSaved: (value) {
         employeeData.firstName = value;
@@ -187,7 +178,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     return TextFormField(
       controller: _controllerlastName,
       style: TextStyle(color: AppColors.COLOR_DARK),
-      decoration: _inputDecoration(hintText: "จริงจริง", contextBloc: context),
+      decoration: _inputDecoration(hintText: "จริงจริง"),
       focusNode: lastNameFocusNode,
       onSaved: (value) {
         employeeData.lastName = value;
@@ -200,7 +191,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       style: const TextStyle(color: AppColors.COLOR_DARK),
       controller: _controllerdetail,
       decoration:
-          _inputDecoration(hintText: "รายละเอียด", contextBloc: context),
+          _inputDecoration(hintText: "รายละเอียด"),
       onSaved: (value) {
         employeeData.detail = value;
       },
@@ -237,7 +228,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
 
   InputDecoration _inputDecoration({
     required String hintText,
-    required BuildContext contextBloc,
+    
   }) {
     return InputDecoration(
       contentPadding: const EdgeInsets.only(left: 25, top: 15, bottom: 15),
@@ -308,8 +299,8 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                 Navigator.pop(context,
                     MaterialPageRoute(builder: (context) => EmployeePage()));
               } catch (e) {
-                BotToast.showSimpleNotification(
-                    title: Constants.TEXT_FORM_FIELD);
+                BotToast.showText(
+                    text: Constants.TEXT_FORM_FIELD);
               }
             },
             child: Text("บันทึก")),

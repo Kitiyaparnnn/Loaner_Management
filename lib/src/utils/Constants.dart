@@ -27,9 +27,12 @@ class Constants {
   static const String LOGO_IMAGE = "$IMAGE_DIR/logo_pose.png";
   static const String SPLASH_IMAGE = "$IMAGE_DIR/splash.png";
 
-  //ตั้งค่า
-  static const String TEXT_SETTING_ROUND = "ตั้งค่าจำนวนรอบ";
-
+  //fill appointment
+  static const List<String> emp = ["นาย ก","นาย ข","นาย ค","นาย ง"];
+  static const List<String> hos = ["โรงพยาบาล ก","โรงพยาบาล ข","โรงพยาบาล ค","โรงพยาบาล ง"];
+  static const List<String> org = ["บริษัท ก","บริษัท ข","บริษัท ค","บริษัท ง"];
+  static const List<String> doc = ["แพทย์ ก","แพทย์ ข","แพทย์ ค","แพทย์ ง"];
+  static const List<String> dep = ["หน่วยงาน ก","หน่วยงาน ข","หน่วยงาน ค","หน่วยงาน ง"];
   static const String TEXT_ROOM = "Room";
   static const String TEXT_TEMPERATURE = "Temperature";
   static const String TEXT_HUMIDITY = "Humidity";

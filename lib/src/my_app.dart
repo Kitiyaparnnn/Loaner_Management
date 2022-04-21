@@ -62,6 +62,7 @@ class _MyApp extends State<MyApp> {
             theme: ThemeData(
               primarySwatch: AppColors.COLOR_SWATCH,
               fontFamily: Constants.APP_FONT,
+              scaffoldBackgroundColor: Colors.white
             ),
             routes: _route,
             home: LoginPage(),

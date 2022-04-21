@@ -134,7 +134,7 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
           style: const TextStyle(color: AppColors.COLOR_DARK),
           controller: _controllerdetail,
           decoration:
-              inputDecoration(hintText: "หมายเหตุ...", contextBloc: context),
+              inputDecoration(hintText: "หมายเหตุ..."),
           onChanged: (value) {
             widget.loaner.note = value;
             setState(() {});
