@@ -6,7 +6,7 @@ InputDecoration inputDecoration({
 }) {
   return InputDecoration(
     contentPadding: const EdgeInsets.only(left: 25, top: 15, bottom: 15),
-    hintStyle: const TextStyle(color: AppColors.COLOR_DARK),
+    hintStyle: const TextStyle(color: Colors.black45),
     fillColor: AppColors.COLOR_GREY,
     filled: true,
     hintText: '$hintText',
@@ -24,7 +24,7 @@ InputDecoration inputDecoration({
         Radius.circular(10.0),
       ),
       borderSide: const BorderSide(
-        color: AppColors.COLOR_DARK,
+        color: Colors.transparent,
         width: 1.0,
       ),
     ),

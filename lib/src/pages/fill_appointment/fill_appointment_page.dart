@@ -10,6 +10,7 @@ import 'package:loaner/src/utils/Constants.dart';
 import 'package:loaner/src/utils/ConvertDateFormat.dart';
 import 'package:loaner/src/utils/InputDecoration.dart';
 import 'package:loaner/src/utils/LabelFormat.dart';
+import 'package:loaner/src/utils/SelectDecoration.dart';
 
 class FillAppointmentPage extends StatefulWidget {
   FillAppointmentPage({Key? key}) : super(key: key);
@@ -75,7 +76,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       context: context,
       initialDate: currentDateSelect,
       firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
+      lastDate: DateTime(2030),
       helpText: "กรุณาเลือกวันที่",
       cancelText: Constants.TEXT_CANCEL,
       confirmText: Constants.TEXT_CONFIRM,
@@ -125,33 +126,35 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: GestureDetector(
-        onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
-        child: Scaffold(
-            appBar: AppBar(
-                centerTitle: true, title: Text(Constants.APPOINTMENT_TITLE)),
-            body: Column(
-              children: [
-                Expanded(
-                    child: SingleChildScrollView(
-                        child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  child: Column(children: [_buildForm(context)]),
-                )))
-              ],
-            )),
-      ),
-    );
+    return Scaffold(
+        appBar: AppBar(
+            centerTitle: true, title: Text(Constants.FILL_APPOINT_TITLE)),
+        body: SafeArea(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: GestureDetector(
+              onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+              child: _buildForm(context),
+            ),
+          ),
+        ));
   }
 
   Widget _buildForm(BuildContext context) {
     return Container(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
         children: [
+          const SizedBox(height: 20),
           _buildInput(),
-          const SizedBox(height: 25),
+          // const SizedBox(height: 25),
+          Expanded(
+            child: SingleChildScrollView(
+              child: _buildInputForm2(),
+            ),
+          ),
           _buildButtons(context),
         ],
       ),
@@ -161,173 +164,212 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   Widget _buildInput() {
     return Form(
       key: _formKey,
-      child: Container(
-        child: Column(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  label("บริษัท"),
+                  _buildTextFormField(_controllerCompanyName, "POSE"),
+                ],
+              ),
+              const SizedBox(height: 25),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  label("เจ้าหน้าที่บริษัท"),
+                  _buildDropdown(_controllerEmpName, Constants.emp),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(
+              height: 25,
+              child: Divider(
+                thickness: 5.0,
+                color: AppColors.COLOR_GREY,
+              )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInputForm2() {
+    return Container(
+      child: Column(children: [
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                label("บริษัท"),
-                _buildTextFormField(_controllerCompanyName, "POSE"),
-              ],
-            ),
-            const SizedBox(height: 25),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                label("เจ้าหน้าที่บริษัท"),
-                _buildDropdown(_controllerEmpName,Constants.emp),
-              ],
-            ),
-            const SizedBox(
-                height: 25,
-                child: Divider(
-                  thickness: 5.0,
-                  color: AppColors.COLOR_GREY,
-                )),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                label("โรงพยาบาล"),
-                _buildDropdown(_controllerHospitalName,Constants.hos),
-              ],
-            ),
-            const SizedBox(height: 25),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                label("หน่วยงานที่ต้องการตืดต่อ"),
-                _buildDropdown(_controllerOrganizeName,Constants.org),
-              ],
-            ),
-            const SizedBox(height: 25),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                label("เจ้าหน้าที่ผู้ติดต่อ"),
-                _buildTextFormField(
-                    _controllerCssdName, "เจ้าหน้าที่ผู้ติดต่อ"),
-              ],
-            ),
-            const SizedBox(height: 25),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                label("แพทย์ผู้ใช้อุปกรณ์"),
-                _buildDropdown(_controllerDoctorName,Constants.doc),
-              ],
-            ),
-            const SizedBox(height: 25),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  children: [label("หน่วยงาน"), _buildDropdown(_controllerDepName,Constants.dep)],
-                ),
-                Column(
-                  children: [
-                    label("ชื่อผู้ป่วย"),
-                    _buildTextFormField(_controllerPatientName, "ชื่อผู้ป่วย")
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 25),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  children: [
-                    label("วันที่ขอใช้"),
-                    InkWell(
-                      onTap: () {
-                        _datePickerShow(_controllerUseDate);
-                      },
-                      child: TextFormField(
-                        enabled: false,
-                        controller: _controllerUseDate,
-                        decoration:
-                            inputDecoration(hintText: currentDateSelectText),
-                      ),
-                    )
-                  ],
-                ),
-                Column(
-                  children: [
-                    label("เวลา"),
-                    InkWell(
-                      onTap: () {
-                        _timePickerShow(_controllerUseTime);
-                      },
-                      child: TextFormField(
-                        enabled: false,
-                        controller: _controllerUseTime,
-                        decoration:
-                            inputDecoration(hintText: currentTimeSelectText),
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 25),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  children: [
-                    label("วันที่นัดหมายเข้าพบ"),
-                    InkWell(
-                      onTap: () {
-                        _datePickerShow(_controllerAppDate);
-                      },
-                      child: TextFormField(
-                        enabled: false,
-                        controller: _controllerUseDate,
-                        decoration:
-                            inputDecoration(hintText: currentTimeSelectText),
-                      ),
-                    )
-                  ],
-                ),
-                Column(
-                  children: [
-                    label("เวลา"),
-                    InkWell(
-                      onTap: () {
-                        _datePickerShow(_controllerAppTime);
-                      },
-                      child: TextFormField(
-                        enabled: false,
-                        controller: _controllerAppTime,
-                        decoration:
-                            inputDecoration(hintText: currentTimeSelectText),
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            )
+            label("โรงพยาบาล"),
+            _buildDropdown(_controllerHospitalName, Constants.hos),
           ],
         ),
-      ),
+        const SizedBox(height: 25),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            label("หน่วยงานที่ต้องการตืดต่อ"),
+            _buildDropdown(_controllerOrganizeName, Constants.org),
+          ],
+        ),
+        const SizedBox(height: 25),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            label("เจ้าหน้าที่ผู้ติดต่อ"),
+            _buildTextFormField(_controllerCssdName, "เจ้าหน้าที่ผู้ติดต่อ"),
+          ],
+        ),
+        const SizedBox(height: 25),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            label("แพทย์ผู้ใช้อุปกรณ์"),
+            _buildDropdown(_controllerDoctorName, Constants.doc),
+          ],
+        ),
+        const SizedBox(height: 25),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * .45,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  label("หน่วยงาน"),
+                  _buildDropdown(_controllerDepName, Constants.dep)
+                ],
+              ),
+            ),
+            Spacer(),
+            Container(
+              width: MediaQuery.of(context).size.width * .4,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  label("ชื่อผู้ป่วย"),
+                  _buildTextFormField(_controllerPatientName, "ชื่อผู้ป่วย")
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 25),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * .4,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  label("วันที่ขอใช้"),
+                  InkWell(
+                    onTap: () {
+                      _datePickerShow(_controllerUseDate);
+                    },
+                    child: TextFormField(
+                      enabled: false,
+                      controller: _controllerUseDate,
+                      decoration:
+                          inputDecoration(hintText: currentDateSelectText),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Spacer(),
+            Container(
+              width: MediaQuery.of(context).size.width * .4,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  label("เวลา"),
+                  InkWell(
+                    onTap: () {
+                      _timePickerShow(_controllerUseTime);
+                    },
+                    child: TextFormField(
+                      enabled: false,
+                      controller: _controllerUseTime,
+                      decoration:
+                          inputDecoration(hintText: currentTimeSelectText),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 25),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * .4,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  label("วันที่นัดหมายเข้าพบ"),
+                  InkWell(
+                    onTap: () {
+                      _datePickerShow(_controllerAppDate);
+                    },
+                    child: TextFormField(
+                      enabled: false,
+                      controller: _controllerUseDate,
+                      decoration:
+                          inputDecoration(hintText: currentTimeSelectText),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Spacer(),
+            Container(
+              width: MediaQuery.of(context).size.width * .4,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  label("เวลา"),
+                  InkWell(
+                    onTap: () {
+                      _datePickerShow(_controllerAppTime);
+                    },
+                    child: TextFormField(
+                      enabled: false,
+                      controller: _controllerAppTime,
+                      decoration:
+                          inputDecoration(hintText: currentTimeSelectText),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        )
+      ]),
     );
   }
 
   Widget _buildButtons(BuildContext context) => Row(
         children: [
           InkWell(
-            onTap: () => Navigator.push(context,MaterialPageRoute(
-                          builder: (context) => LoanerSumPage(
-                              ))),
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LoanerSumPage())),
               child: Column(
-            children: [
-              Icon(Icons.shopping_basket_outlined),
-              Text("รายการ",
-                  style: TextStyle(color: AppColors.COLOR_DARK, fontSize: 12))
-            ],
-          )),
+                children: [
+                  Icon(Icons.shopping_basket_outlined),
+                  Text("รายการ",
+                      style:
+                          TextStyle(color: AppColors.COLOR_DARK, fontSize: 12))
+                ],
+              )),
+          Spacer(),
           ElevatedButton(
               onPressed: () {
                 try {
@@ -353,9 +395,12 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
         controller: text, decoration: inputDecoration(hintText: hintText));
   }
 
-  DropdownButton _buildDropdown(
+  DropdownButtonFormField _buildDropdown(
       TextEditingController form, List<String> items) {
-    return DropdownButton(
+    return DropdownButtonFormField(
+      validator: (value) => value == null ? "โปรดเลือก" : null,
+      decoration: selectDecoration(),
+      icon: Icon(Icons.expand_more_rounded),
       items: items.map<DropdownMenuItem<String>>((value) {
         return DropdownMenuItem(
           value: value,

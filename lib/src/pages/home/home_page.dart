@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:loaner/src/models/MenuChoice.dart';
 import 'package:loaner/src/models/MenuModel.dart';
 import 'package:loaner/src/pages/employee/employee_page.dart';
+import 'package:loaner/src/pages/fill_appointment/fill_appointment_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
 import 'package:loaner/src/services/SharedPreferencesService.dart';
 import 'package:loaner/src/utils/AppColors.dart';
@@ -75,7 +76,7 @@ class _HomePageState extends State<HomePage> {
         ? <MenuModel>[
             MenuModel(
               name: "${Constants.FILL_APPOINT_TITLE}",
-              route: EmployeePage(),
+              route: FillAppointmentPage(),
               color: AppColors.COLOR_PRIMARY,
               // imgName: "menu_event.png",
               isShow: true,

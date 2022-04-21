@@ -57,7 +57,6 @@ class _LoanerPageState extends State<LoanerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        backgroundColor: AppColors.COLOR_GREY,
         body: Container(
           height: MediaQuery.of(context).size.height,
           child: GestureDetector(
@@ -69,15 +68,15 @@ class _LoanerPageState extends State<LoanerPage> {
                 children: [
                   _searchBar(),
                   _loanerList(),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: ElevatedButton(
-                        onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoanerSumPage())),
-                        child: Text('รายการ')),
-                  )
+                  // Align(
+                  //   alignment: Alignment.bottomLeft,
+                  //   child: ElevatedButton(
+                  //       onPressed: () => Navigator.push(
+                  //           context,
+                  //           MaterialPageRoute(
+                  //               builder: (context) => LoanerSumPage())),
+                  //       child: Text('รายการ')),
+                  // )
                 ],
               )),
             ),
