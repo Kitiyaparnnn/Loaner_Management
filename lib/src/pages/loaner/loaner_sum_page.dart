@@ -17,18 +17,16 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
     LoanerModel(name: 'LoanerC', detail: '...', image: '', no: 2, note: ''),
     LoanerModel(name: 'LoanerD', detail: '...', image: '', no: 4, note: ''),
   ];
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(centerTitle: true, title: Text(Constants.LOANER_TITLE)),
-      body: SingleChildScrollView(child: ListView(
+      body: ListView(
         children: ListTile.divideTiles(
-          color: Colors.blue,
-          tiles: 
-               _mapList(selectedLoaners)
-        ).toList(),
-      )),
+                color: Colors.blue, tiles: _mapList(selectedLoaners))
+            .toList(),
+      ),
     );
   }
 
@@ -44,8 +42,8 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
                         style: TextStyle(
                             fontSize: 10, color: AppColors.COLOR_WHITE)),
                   ),
-            height: 30,
-            width: 30),
+            height: 50,
+            width: 50),
         title: Text(loaner.name!),
         subtitle:
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -53,12 +51,12 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
             'Detail: ${loaner.detail}',
             style: TextStyle(fontSize: 12),
           ),
-           Text(
+          Text(
             '${loaner.no} รายการ',
             style: TextStyle(fontSize: 12),
           ),
           Text(
-            'หมายเหตุซ: ${loaner.note}',
+            'หมายเหตุ: ${loaner.note}',
             style: TextStyle(fontSize: 12),
           ),
         ]),
