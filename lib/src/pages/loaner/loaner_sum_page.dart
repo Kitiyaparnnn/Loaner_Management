@@ -21,7 +21,8 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text(Constants.LOANER_TITLE)),
+      appBar:
+          AppBar(centerTitle: true, title: Text(Constants.LOANER_SUM_TITLE)),
       body: ListView(
         children: ListTile.divideTiles(
                 color: Colors.blue, tiles: _mapList(selectedLoaners))

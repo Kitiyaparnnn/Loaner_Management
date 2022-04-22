@@ -23,7 +23,6 @@ final loggerNoStack = Logger(
 );
 
 class _MyApp extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -60,10 +59,10 @@ class _MyApp extends State<MyApp> {
             title: Constants.APP_NAME,
             builder: BotToastInit(),
             theme: ThemeData(
-              primarySwatch: AppColors.COLOR_SWATCH,
-              fontFamily: Constants.APP_FONT,
-              scaffoldBackgroundColor: Colors.white
-            ),
+                primarySwatch: Colors.blue,
+                fontFamily: Constants.APP_FONT,
+                // backgroundColor: AppColors.COLOR_GREY,
+                scaffoldBackgroundColor: AppColors.COLOR_SWATCH),
             routes: _route,
             home: LoginPage(),
           );

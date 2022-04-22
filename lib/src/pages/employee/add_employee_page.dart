@@ -136,7 +136,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   Container _buildTextFormField() {
     employeeData.companyName = companyName;
     return Container(
-      child: Text(companyName, style: TextStyle(color: AppColors.COLOR_DARK)),
+      child: Text(companyName, style: TextStyle(color: AppColors.COLOR_BLACK)),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(
           const Radius.circular(10.0),
@@ -165,7 +165,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   TextFormField _buildTextFormFieldFirstName(BuildContext context) {
     return TextFormField(
       controller: _controllerfirstName,
-      style: TextStyle(color: AppColors.COLOR_DARK),
+      style: TextStyle(color: AppColors.COLOR_LIGHT),
       decoration: _inputDecoration(hintText: "สมใจ"),
       focusNode: firstNameFocusNode,
       onSaved: (value) {
@@ -177,7 +177,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   TextFormField _buildTextFormFieldLastName(BuildContext context) {
     return TextFormField(
       controller: _controllerlastName,
-      style: TextStyle(color: AppColors.COLOR_DARK),
+      style: TextStyle(color: AppColors.COLOR_LIGHT),
       decoration: _inputDecoration(hintText: "จริงจริง"),
       focusNode: lastNameFocusNode,
       onSaved: (value) {
@@ -188,7 +188,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
 
   TextFormField _buildTextFormFieldDetail() {
     return TextFormField(
-      style: const TextStyle(color: AppColors.COLOR_DARK),
+      style: const TextStyle(color: AppColors.COLOR_LIGHT),
       controller: _controllerdetail,
       decoration:
           _inputDecoration(hintText: "รายละเอียด"),
@@ -267,7 +267,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       children: [
         Container(
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.COLOR_DARK),
+            border: Border.all(color: AppColors.COLOR_LIGHT),
           ),
           child: imageFile != null
               ? Image.file(
@@ -313,7 +313,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
           return AlertDialog(
             title: Text(
               "Please choose an option",
-              style: TextStyle(color: AppColors.COLOR_DARK),
+              style: TextStyle(color: AppColors.COLOR_LIGHT),
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,

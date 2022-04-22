@@ -8,7 +8,7 @@ InputDecoration selectDecoration(
         color: Colors.black45,
         backgroundColor: AppColors.COLOR_GREY,
       ),
-      contentPadding: EdgeInsets.only(left: 25, top: 15, bottom: 15),
+      contentPadding: EdgeInsets.only(left: 10, top: 15, bottom: 15, right: 10),
       hintText: '$hintText',
       // labelText: '$labelText',
       hintStyle: TextStyle(color: Colors.black45),
@@ -28,7 +28,7 @@ InputDecoration selectDecoration(
           Radius.circular(radius),
         ),
         borderSide: BorderSide(
-          color: Colors.transparent,
+          color: AppColors.COLOR_GREY,
           width: 1,
         ),
       ),
@@ -37,7 +37,7 @@ InputDecoration selectDecoration(
           Radius.circular(radius),
         ),
         borderSide: BorderSide(
-          color: AppColors.COLOR_DARK,
+          color: AppColors.COLOR_GREY,
           width: 1,
         ),
       ),

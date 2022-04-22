@@ -103,7 +103,7 @@ class _LoanerPageState extends State<LoanerPage> {
     return Expanded(
       child: ListView(
         children: ListTile.divideTiles(
-                color: Colors.blue,
+                color: AppColors.COLOR_GREY,
                 tiles: items.length != 0 ? _mapList(items) : _mapList(loaners))
             .toList(),
       ),

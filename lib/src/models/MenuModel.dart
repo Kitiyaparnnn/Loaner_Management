@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class MenuModel {
   const MenuModel({
     required this.name,
-    // required this.subName,
+    required this.subName,
     required this.route,
     // required this.imgName,
     required this.color,
@@ -11,7 +11,7 @@ class MenuModel {
   });
 
   final String name;
-  // final String subName;
+  final String subName;
   final Widget route;
   // final String imgName;
   final Color color;

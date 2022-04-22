@@ -54,17 +54,17 @@ class _LoginPageState extends State<LoginPage>
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
-        color: Colors.transparent,
+        color: AppColors.COLOR_SWATCH,
         elevation: 0,
         child: const Text(
           "${Constants.CREATE_BY}",
-          style: const TextStyle(color: AppColors.COLOR_GREY, fontSize: 14),
+          style: const TextStyle(color: AppColors.COLOR_LIGHT, fontSize: 12),
           textAlign: TextAlign.center,
         ),
       ),
       body: SafeArea(
         child: Container(
-          decoration: const BoxDecoration(color: AppColors.COLOR_PINK
+          decoration: const BoxDecoration(color: AppColors.COLOR_GREY
               // image: DecorationImage(
               //     image: AssetImage('${Constants.IMAGE_DIR}/bg_login.png'),
               //     fit: BoxFit.cover),
@@ -109,16 +109,18 @@ class _LoginPageState extends State<LoginPage>
             Constants.APP_NAME,
             textAlign: TextAlign.center,
             style: TextStyle(
-                fontSize: 24,
-                color: AppColors.COLOR_DARK,
-                fontWeight: FontWeight.w600),
+                fontSize: 35,
+                color: AppColors.COLOR_BLACK,
+                fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 5),
           Text(
-            "Log in with your username and password.",
+            Constants.APP_SUBTITLE,
             textAlign: TextAlign.center,
             style: TextStyle(
-                fontSize: 14, color: AppColors.COLOR_GREY, letterSpacing: 0.15),
+                fontSize: 16,
+                color: AppColors.COLOR_LIGHT,
+                letterSpacing: 0.15),
           ),
         ],
       );
@@ -158,7 +160,8 @@ class _LoginPageState extends State<LoginPage>
                 _buildTextFormFieldPassword(context),
               ],
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: 15),
+            _buildRemember()
           ],
         ),
       ),
@@ -170,15 +173,16 @@ class _LoginPageState extends State<LoginPage>
         child: Text(
           "$text",
           style: const TextStyle(
-              color: AppColors.COLOR_DARK,
+              color: AppColors.COLOR_BLACK,
               letterSpacing: 0.15,
-              fontWeight: FontWeight.w500),
+              fontWeight: FontWeight.w500,
+              fontSize: 16),
         ),
       );
 
   TextFormField _buildTextFormFieldUsername() {
     return TextFormField(
-      style: const TextStyle(color: AppColors.COLOR_DARK),
+      style: const TextStyle(color: AppColors.COLOR_BLACK),
       controller: _controllerUsername,
       decoration: _inputDecoration(hintText: "username", contextBloc: context),
       onSaved: (value) {
@@ -193,7 +197,7 @@ class _LoginPageState extends State<LoginPage>
   TextFormField _buildTextFormFieldPassword(BuildContext context) {
     return TextFormField(
       controller: _controllerPassword,
-      style: TextStyle(color: AppColors.COLOR_DARK),
+      style: TextStyle(color: AppColors.COLOR_BLACK),
       decoration: _inputDecoration(
           hintText: "Insert your password here",
           passwordInput: true,
@@ -217,13 +221,13 @@ class _LoginPageState extends State<LoginPage>
   }) {
     return InputDecoration(
       contentPadding: const EdgeInsets.only(left: 25, top: 15, bottom: 15),
-      hintStyle: const TextStyle(color: AppColors.COLOR_GREY),
+      hintStyle: const TextStyle(color: AppColors.COLOR_LIGHT),
       fillColor: AppColors.COLOR_WHITE,
       filled: true,
       hintText: '$hintText',
       focusedBorder: const OutlineInputBorder(
         borderRadius: BorderRadius.all(
-          Radius.circular(10.0),
+          Radius.circular(8.0),
         ),
         borderSide: const BorderSide(
           color: AppColors.COLOR_PRIMARY,
@@ -232,23 +236,18 @@ class _LoginPageState extends State<LoginPage>
       ),
       enabledBorder: const OutlineInputBorder(
         borderRadius: BorderRadius.all(
-          Radius.circular(10.0),
+          Radius.circular(8.0),
         ),
         borderSide: const BorderSide(
-          color: Colors.transparent,
-          width: 1.0,
+          color: AppColors.COLOR_GREY,
+          width: 2.0,
         ),
       ),
       border: new OutlineInputBorder(
         borderRadius: const BorderRadius.all(
-          const Radius.circular(10.0),
+          const Radius.circular(8.0),
         ),
       ),
-      prefixIcon: Padding(
-          padding: EdgeInsetsDirectional.zero,
-          child: Icon(
-            passwordInput ? Icons.lock_outline : Icons.person_outlined,
-          )),
       suffixIcon: passwordInput
           ? Padding(
               padding: EdgeInsetsDirectional.zero,
@@ -263,7 +262,7 @@ class _LoginPageState extends State<LoginPage>
                   hidePassword
                       ? Icons.visibility_outlined
                       : Icons.visibility_off_outlined,
-                  color: AppColors.COLOR_GREY,
+                  color: AppColors.COLOR_BLACK,
                 ),
               ),
             )
@@ -272,7 +271,7 @@ class _LoginPageState extends State<LoginPage>
   }
 
   Widget _buildButtonLogin(BuildContext context) => RaisedButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         padding: EdgeInsets.all(0.0),
         color: Colors.transparent,
         onPressed: isEnabledButtonLogin
@@ -281,9 +280,7 @@ class _LoginPageState extends State<LoginPage>
                 loginData.isRemember = isRemember;
                 // BlocProvider.of<LoginBloc>(context)
                 //     .add(LoginEventOnPress(loginData: loginData));
-                // loading = !loading;
-                // setState(() {});
-                // await Future.delayed(Duration(seconds: 5));
+
                 if (loginData.username == 'supplier') {
                   isSupplier = true;
                 } else {
@@ -300,13 +297,17 @@ class _LoginPageState extends State<LoginPage>
         child: Container(
           decoration: BoxDecoration(
               color: AppColors.COLOR_PRIMARY,
-              borderRadius: BorderRadius.all(Radius.circular(12))),
+              borderRadius: BorderRadius.all(Radius.circular(8))),
           constraints: BoxConstraints(minHeight: 50.0),
           alignment: Alignment.center,
           child: Text(
             "เข้าสู่ระบบ",
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              letterSpacing: 0.15,
+            ),
           ),
         ),
       );
@@ -331,6 +332,47 @@ class _LoginPageState extends State<LoginPage>
               ),
             )
           : SizedBox(),
+    );
+  }
+
+  Widget _buildRemember() {
+    return Container(
+      child: Container(
+        child: Row(
+          children: [
+            Row(
+              children: [
+                Transform.scale(
+                  scale: 1,
+                  child: Checkbox(
+                    activeColor: AppColors.COLOR_PRIMARY,
+                    value: isRemember,
+                    onChanged: (value) {
+                      // BlocProvider.of<LoginBloc>(context).add(LoginEventIsRememberToggle(isRemember: isRemember));
+                      isRemember = value!;
+                      setState(() {});
+                    },
+                  ),
+                ),
+                SizedBox(width: 5),
+                Text(
+                  "จดจำฉันไว้",
+                  style: TextStyle(
+                      color: AppColors.COLOR_BLACK,
+                      fontSize: 16,
+                      letterSpacing: 0.15),
+                )
+              ],
+            ),
+            Spacer(),
+            Text("ลืมรหัสผ่าน?",
+                style: TextStyle(
+                  color: AppColors.COLOR_LIGHT,
+                  fontSize: 16,
+                ))
+          ],
+        ),
+      ),
     );
   }
 }

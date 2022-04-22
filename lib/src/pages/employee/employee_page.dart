@@ -100,8 +100,8 @@ class _EmployeePageState extends State<EmployeePage> {
     return Expanded(
       child: ListView(
         children: ListTile.divideTiles(
-          color: Colors.blue,
-          tiles: items.length != 0
+          color: AppColors.COLOR_GREY,
+          tiles: items.isNotEmpty
               ? items.map(
                   (employee) => ListTile(
                     leading: CircleAvatar(

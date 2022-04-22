@@ -93,7 +93,7 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
         Container(
             alignment: Alignment.topCenter,
             decoration: BoxDecoration(
-              border: Border.all(color: AppColors.COLOR_DARK),
+              border: Border.all(color: AppColors.COLOR_BLACK),
             ),
             child: SizedBox(
               height: 200,
@@ -131,7 +131,7 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
         ),
         label("หมายเหตุ"),
         TextFormField(
-          style: const TextStyle(color: AppColors.COLOR_DARK),
+          style: const TextStyle(color: AppColors.COLOR_LIGHT),
           controller: _controllerdetail,
           decoration:
               inputDecoration(hintText: "หมายเหตุ..."),

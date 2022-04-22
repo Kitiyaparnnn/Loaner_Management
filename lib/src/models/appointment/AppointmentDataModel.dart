@@ -1,7 +1,6 @@
 class AppointmentData {
   AppointmentData(
-      {
-      this.companyName,
+      {this.companyName,
       this.empName,
       this.hospitalName,
       this.organizeName,
@@ -12,10 +11,10 @@ class AppointmentData {
       this.useDate,
       this.useTime,
       this.appDate,
-      this.appTime});
+      this.appTime,
+      this.status});
 
   AppointmentData.fromJson(dynamic json) {
-    
     companyName = json['company_name'];
     empName = json['emp_name'];
     hospitalName = json['hospital_name'];
@@ -28,9 +27,9 @@ class AppointmentData {
     useTime = json['use_time'];
     appTime = json['app_time'];
     appDate = json['app_date'];
+    status = json['status'];
   }
 
-  
   String? companyName;
   String? empName;
   String? hospitalName;
@@ -43,10 +42,11 @@ class AppointmentData {
   String? useTime;
   String? appDate;
   String? appTime;
+  String? status;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    
+
     map['company_name'] = companyName;
     map['emp_name'] = empName;
     map['hospital_name'] = hospitalName;
@@ -59,6 +59,7 @@ class AppointmentData {
     map['use_time'] = useTime;
     map['app_date'] = appDate;
     map['app_time'] = appTime;
+    map['status'] = status;
     return map;
   }
 }

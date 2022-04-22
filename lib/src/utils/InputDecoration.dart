@@ -5,7 +5,8 @@ InputDecoration inputDecoration({
   required String hintText,
 }) {
   return InputDecoration(
-    contentPadding: const EdgeInsets.only(left: 25, top: 15, bottom: 15),
+    contentPadding:
+        const EdgeInsets.only(left: 10, top: 15, bottom: 15, right: 10),
     hintStyle: const TextStyle(color: Colors.black45),
     fillColor: AppColors.COLOR_GREY,
     filled: true,

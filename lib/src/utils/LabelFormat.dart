@@ -6,7 +6,7 @@ Widget label(String text) => Container(
         child: Text(
           "$text",
           style: const TextStyle(
-              color: AppColors.COLOR_DARK,
+              color: AppColors.COLOR_BLACK,
               letterSpacing: 0.15,
               fontWeight: FontWeight.w500),
         ),

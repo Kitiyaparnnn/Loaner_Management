@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 
 class Constants {
   //app name
-  static const String APP_NAME = "Loaner Management";
+  static const String APP_NAME = "เข้าสู่ระบบ";
+  static const String APP_SUBTITLE = "ลงชื่อเข้าใช้บัญชีของคุณ";
   static const String CREATE_BY =
-      "Pose intelligence Co.,Ltd. Professional \n Prevention Infection Control.";
+      "Copyright © 2022 - Pose Intelligence Limited";
   static const String LOADING_TEXT = "waiting...";
 
   //title
+  static const String DESCRIBE_TITLE =
+      "ซอร์ฟแวร์ที่มีประสิทธิภาพซึ่งสร้างขึ้น \nสำหรับนัดหมาย และ ยืนยันการนัดหมาย\nระหว่าง Supplier และ เจ้าหน้าที่โรงพยาบาล";
   static const String FILL_APPOINT_TITLE = "กรอกนัดหมาย";
   static const String CONFIRM_APPOINT_TITLE = "ยืนยันนัดหมาย";
   static const String APPOINTMENT_TITLE = "นัดหมาย";
   static const String LOANER_TITLE = "Loaner";
   static const String EMPLOYEE_TITLE = "เจ้าหน้าที่";
+  static const String HISTORY_TITLE = "ประวัติ";
+  static const String LOANER_SUM_TITLE = "รายการ Loaner";
 
   //app font
   static const String APP_FONT = "sans_thai";
@@ -28,28 +33,39 @@ class Constants {
   static const String SPLASH_IMAGE = "$IMAGE_DIR/splash.png";
 
   //fill appointment
-  static const List<String> emp = ["นาย ก","นาย ข","นาย ค","นาย ง"];
-  static const List<String> hos = ["โรงพยาบาล ก","โรงพยาบาล ข","โรงพยาบาล ค","โรงพยาบาล ง"];
-  static const List<String> org = ["บริษัท ก","บริษัท ข","บริษัท ค","บริษัท ง"];
-  static const List<String> doc = ["แพทย์ ก","แพทย์ ข","แพทย์ ค","แพทย์ ง"];
-  static const List<String> dep = ["หน่วยงาน ก","หน่วยงาน ข","หน่วยงาน ค","หน่วยงาน ง"];
-  static const String TEXT_ROOM = "Room";
-  static const String TEXT_TEMPERATURE = "Temperature";
-  static const String TEXT_HUMIDITY = "Humidity";
+  static const List<String> emp = ["นาย ก", "นาย ข", "นาย ค", "นาย ง"];
+  static const List<String> hos = [
+    "โรงพยาบาล ก",
+    "โรงพยาบาล ข",
+    "โรงพยาบาล ค",
+    "โรงพยาบาล ง"
+  ];
+  static const List<String> org = [
+    "บริษัท ก",
+    "บริษัท ข",
+    "บริษัท ค",
+    "บริษัท ง"
+  ];
+  static const List<String> doc = ["แพทย์ ก", "แพทย์ ข", "แพทย์ ค", "แพทย์ ง"];
+  static const List<String> dep = [
+    "หน่วยงาน ก",
+    "หน่วยงาน ข",
+    "หน่วยงาน ค",
+    "หน่วยงาน ง"
+  ];
+  static const List<String> status = [
+    "รอ cssd ยืนยัน",
+    "cssd ยืนยันแล้ว",
+    "เสร็จสิ้น",
+    "รอยืนยัน"
+  ];
 
-  //water
-  static const String WATER_TEXT_CLEANER = "Cleaner";
-  static const String WATER_TEXT_TESTER = "ผู้ทดสอบ :";
-  static const String WATER_TEXT_REGENERATE =
-      "Regenerate salt (ล้างด้วยน้ำเกลือ)";
-  static const String WATER_TEXT_HARDNESS_BLUE = "สีความกระด้าง (น้ำเงิน)";
-  static const String WATER_TEXT_HARDNESS_VIOLET = "สีความกระด้าง (ม่วง)";
-  static const String WATER_TEXT_HARDNESS_TITLE = "ค่าน้ำก่อนกรอง\n(TDS)";
-  static const String WATER_TEXT_HARDNESS_RANGE = "(0-200ppm)";
-  static const String WATER_TEXT_PH_TITLE = "ค่าความเป็น\nกรด/ด่าง";
-  static const String WATER_TEXT_PH_RANGE = "(7-8PH)";
-  static const String WATER_TEXT_TEMPERATURE_TITLE = "อุณหภูมิน้ำ\n(°C)";
-  static const String WATER_TEXT_TEMPERATURE_RANGE = "";
+//status
+  static const String APP_CREATE = "สร้างเอกสาร";
+  static const String APP_WAIT_CSSD = "รอ cssd ยืนยัน";
+  static const String APP_CONFIRM_CSSD = "cssd ยืนยันแล้ว";
+  static const String APP_COMPLETED = "เสร็จสิ้น";
+  static const String APP_WAITING = "รอยืนยัน";
 
   static const String TEXT_CONFIRM = "ตกลง";
   static const String TEXT_CANCEL = "ยกเลิก";
@@ -61,12 +77,12 @@ class Constants {
       "รหัสที่สแกนไม่มีอยู่ในระบบ กรุณาติดต่อเจ้าหน้านี้";
   static const String TEXT_FAILED = "ผิดพลาด";
   static const String TEXT_SUCCESS = "สำเร็จ";
+  static const String TEXT_PROFILE = "โปรไฟล์";
   static const String TEXT_LOGOUT = "ออกจากระบบ";
   static const String TEXT_SETTING = "ตั้งค่า";
   static const String TEXT_LOGOUT_MESSAGE = "คุณต้องการออกจากระบบใช่หรือไม่?";
   static const String TEXT_SAVE = "บันทึก";
   static const String TEXT_SOME_THING_WRONG =
       "มีบางอย่างผิดพลาด กรุณาลองใหม่อีกครั้ง";
-  static const String TEXT_FORM_FIELD =
-      "กรุณาตรวจกรอกข้อมูล";
+  static const String TEXT_FORM_FIELD = "กรุณาตรวจกรอกข้อมูล";
 }
