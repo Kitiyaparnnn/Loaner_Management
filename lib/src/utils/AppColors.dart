@@ -28,4 +28,5 @@ class AppColors {
   static const Color COLOR_BLUE2 = Color.fromRGBO(37, 124, 230, 1.0);
 
   static MaterialColor COLOR_SWATCH = MaterialColor(0xFFF6F9FE, color);
+  static MaterialColor COLOR_PRIMARY_SWATCH = MaterialColor(0xFF3377FF, color);
 }

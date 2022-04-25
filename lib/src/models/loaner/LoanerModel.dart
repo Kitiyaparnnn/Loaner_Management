@@ -1,26 +1,30 @@
 class LoanerModel {
-  LoanerModel({this.image, this.name, this.detail, this.no, this.note});
+  LoanerModel({this.group,this.image, this.name, this.detail, this.rent, this.note});
 
   LoanerModel.fromJson(dynamic json) {
+    group = json['group'];
     image = json['image'];
     name = json['name'];
     detail = json['detail'];
-    no = json['no'];
+    rent = json['rent'];
     note = json['note'];
   }
 
+  String? group;
   String? image;
   String? name;
   String? detail;
-  int? no;
+  int? rent;
+
   String? note;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
+    map['group'] = group;
     map['image'] = image;
     map['name'] = name;
     map['detail'] = detail;
-    map['no'] = no;
+    map['rent'] = rent;
     map['note'] = note;
     return map;
   }

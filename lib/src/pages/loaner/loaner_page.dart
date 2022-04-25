@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
+import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/loaner/loaner_detail_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_sum_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
+import 'package:loaner/src/utils/MyAppBar.dart';
 
 class LoanerPage extends StatefulWidget {
-  LoanerPage({Key? key}) : super(key: key);
-
+  LoanerPage({required this.isFillForm, required this.selectedLoaner});
+  bool isFillForm;
+  List<LoanerModel> selectedLoaner;
   @override
   State<LoanerPage> createState() => _LoanerPageState();
 }
@@ -15,13 +18,32 @@ class LoanerPage extends StatefulWidget {
 class _LoanerPageState extends State<LoanerPage> {
   TextEditingController editingController = TextEditingController();
   LoanerModel _loaner = LoanerModel();
-  List<LoanerModel> selectedLoaner = [];
+  bool isSearch = false;
 
   List<LoanerModel> loaners = [
-    LoanerModel(name: 'LoanerA', detail: '...', image: '', no: 0, note: ''),
-    LoanerModel(name: 'LoanerB', detail: '...', image: '', no: 0, note: ''),
-    LoanerModel(name: 'LoanerC', detail: '...', image: '', no: 0, note: ''),
-    LoanerModel(name: 'LoanerD', detail: '...', image: '', no: 0, note: ''),
+    LoanerModel(
+        name: 'LoanerA',
+        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+        rent: 0,
+        note: ''),
+    LoanerModel(
+        name: 'LoanerB',
+        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+        image: '',
+        rent: 0,
+        note: ''),
+    LoanerModel(
+        name: 'LoanerC',
+        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+        image: '',
+        rent: 0,
+        note: ''),
+    LoanerModel(
+        name: 'LoanerD',
+        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+        image: '',
+        rent: 0,
+        note: ''),
   ];
 
   List<LoanerModel> items = [];
@@ -55,8 +77,55 @@ class _LoanerPageState extends State<LoanerPage> {
 
   @override
   Widget build(BuildContext context) {
+    // logger.d(widget.selectedLoaner[0].toJson());
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          backgroundColor: AppColors.COLOR_SWATCH,
+          elevation: 0,
+          leading: IconButton(
+            splashRadius: 18,
+            icon: Icon(Icons.arrow_back_outlined, color: AppColors.COLOR_BLACK),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: Column(
+            children: [
+              Text(
+                Constants.LOANER_SUM_TITLE,
+                style: TextStyle(
+                  color: AppColors.COLOR_BLACK,
+                ),
+              )
+            ],
+          ),
+          actions: widget.isFillForm
+              ? null
+              : [
+                  IconButton(
+                    splashRadius: 18,
+                    icon: Icon(Icons.add_circle_outline,
+                        color: AppColors.COLOR_BLACK),
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                ],
+          centerTitle: true,
+        ),
+        floatingActionButton: widget.isFillForm
+            ? ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: CircleBorder(), padding: const EdgeInsets.all(15.0)),
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => LoanerSumPage(
+                              selectedLoaner: widget.selectedLoaner,
+                            ))),
+                child: Icon(
+                  widget.selectedLoaner.length != 0
+                      ? Icons.shopping_cart_outlined
+                      : Icons.add_shopping_cart_outlined,
+                  size: 28,
+                ))
+            : null,
         body: Container(
           height: MediaQuery.of(context).size.height,
           child: GestureDetector(
@@ -67,16 +136,8 @@ class _LoanerPageState extends State<LoanerPage> {
                   child: Column(
                 children: [
                   _searchBar(),
+                  SizedBox(height: 20),
                   _loanerList(),
-                  // Align(
-                  //   alignment: Alignment.bottomLeft,
-                  //   child: ElevatedButton(
-                  //       onPressed: () => Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //               builder: (context) => LoanerSumPage())),
-                  //       child: Text('รายการ')),
-                  // )
                 ],
               )),
             ),
@@ -87,62 +148,76 @@ class _LoanerPageState extends State<LoanerPage> {
   _searchBar() {
     return TextField(
       onChanged: (value) {
+        isSearch = !isSearch;
         filterSearchResults(value);
       },
       controller: editingController,
       decoration: InputDecoration(
-          labelText: "Search",
+          contentPadding:
+              const EdgeInsets.only(left: 10, top: 8, bottom: 8, right: 10),
           hintText: "Search",
+          hintStyle: TextStyle(fontSize: 16),
           prefixIcon: Icon(Icons.search),
           border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0)))),
+              borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          suffixIcon: editingController.text.isNotEmpty
+              ? GestureDetector(
+                  child: Icon(Icons.cancel_outlined),
+                  onTap: () {
+                    setState(() {
+                      editingController.text = "";
+                      items.clear();
+                      items.addAll(loaners);
+                    });
+                  })
+              : null),
     );
   }
 
   _loanerList() {
     return Expanded(
-      child: ListView(
-        children: ListTile.divideTiles(
-                color: AppColors.COLOR_GREY,
-                tiles: items.length != 0 ? _mapList(items) : _mapList(loaners))
-            .toList(),
+      child: ListView.builder(
+        itemCount: items.length != 0 ? items.length : loaners.length,
+        itemBuilder: ((context, index) => items.length != 0
+            ? _mapList(items, index)
+            : _mapList(loaners, index)),
       ),
     );
   }
 
-  _mapList(List<LoanerModel> object) {
-    return object.map(
-      (loaner) => ListTile(
-        leading: SizedBox(
-            child: loaner.image == null
-                ? null
-                : CircleAvatar(
-                    backgroundColor: Colors.blue,
-                    child: Text(loaner.name!,
-                        style: TextStyle(
-                            fontSize: 10, color: AppColors.COLOR_WHITE)),
-                  ),
-            height: 50,
-            width: 50),
-        title: Text(loaner.name!),
-        subtitle:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            'Detail: ${loaner.detail}',
-            style: TextStyle(fontSize: 12),
+  _mapList(List<LoanerModel> object, int index) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      color: AppColors.COLOR_WHITE,
+      elevation: 0.0,
+      child: ListTile(
+          leading: SizedBox(
+            height: 60,
+            width: 60,
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.COLOR_GREY,
+                  border: Border.all(color: AppColors.COLOR_GREY, width: 2.0)),
+              child: object[index].image != null ? null : Icon(Icons.image),
+            ),
           ),
-        ]),
-        trailing: IconButton(
-          icon: Icon(Icons.arrow_forward_ios_outlined),
-          onPressed: () => Navigator.push(
+          title: Text(object[index].name!, style: TextStyle(fontSize: 16)),
+          subtitle: Text(
+            object[index].detail!,
+            style: TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => LoanerDetailPage(
-                        loaner: loaner,
-                        selectedLoaner: selectedLoaner,
-                      ))),
-        ),
-      ),
+                        loaner: object[index],
+                        selectedLoaner: widget.selectedLoaner,
+                      )))),
     );
   }
 }

@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
               route: FillAppointmentPage(),
               color: AppColors.COLOR_WHITE,
               subName: "กรอกการนัดหมาย",
-              // imgName: "menu_event.png",
+              icon: Icons.edit_calendar_outlined,
               isShow: true,
             ),
             MenuModel(
@@ -110,15 +110,15 @@ class _HomePageState extends State<HomePage> {
               route: AppointmentPage(),
               color: AppColors.COLOR_WHITE,
               subName: "การนัดหมายทั้งหมด",
-              // imgName: "menu_water.png",
+              icon: Icons.calendar_month_outlined,
               isShow: true,
             ),
             MenuModel(
               name: "${Constants.LOANER_TITLE}",
-              route: LoanerPage(),
+              route: LoanerPage(isFillForm: false, selectedLoaner: []),
               color: AppColors.COLOR_WHITE,
               subName: "จัดการข้อมูล Loaner",
-              // imgName: "menu_setting.png",
+              icon: Icons.medical_services_outlined,
               isShow: true,
             ),
             MenuModel(
@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
               route: EmployeePage(),
               color: AppColors.COLOR_WHITE,
               subName: "จัดการเจ้าหน้าที่บริษัท",
-              // imgName: "menu_setting.png",
+              icon: Icons.person_outlined,
               isShow: true,
             ),
           ]
@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
               route: EmployeePage(),
               color: AppColors.COLOR_WHITE,
               subName: "ยืนยันกับเจ้าหน้าที่บริษัท",
-              // imgName: "menu_event.png",
+              icon: Icons.edit_calendar_outlined,
               isShow: true,
             ),
             MenuModel(
@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
               route: EmployeePage(),
               color: AppColors.COLOR_WHITE,
               subName: "การนัดหมายทั้งหมด",
-              // imgName: "menu_water.png",
+              icon: Icons.calendar_month_outlined,
               isShow: true,
             ),
           ];
@@ -196,12 +196,13 @@ class _HomePageState extends State<HomePage> {
                                       fontWeight: FontWeight.w400),
                                 ),
                                 Spacer(),
-                                Text(
-                                  "ดูทั้งหมด",
-                                  style: TextStyle(
-                                    color: AppColors.COLOR_PRIMARY,
-                                    fontSize: 12,
-                                  ),
+                                TextButton(
+                                  child: Text("ดูทั้งหมด",
+                                      style: TextStyle(
+                                        color: AppColors.COLOR_PRIMARY,
+                                        fontSize: 12,
+                                      )),
+                                  onPressed: () {},
                                 ),
                               ],
                             ),
@@ -334,7 +335,7 @@ class _HomePageState extends State<HomePage> {
         children: List.generate(menuList.length, (index) {
           String _menuName = menuList[index].name;
           String _subtitle = menuList[index].subName;
-          // String _imgName = menuList[index].imgName;
+          IconData _icon = menuList[index].icon;
           Widget _route = menuList[index].route;
           // bool _isShow = menuList[index].isShow;
           Color _color = menuList[index].color;
@@ -343,7 +344,7 @@ class _HomePageState extends State<HomePage> {
             visible: true,
             child: _buildMenuCard(
               menuName: _menuName,
-              // imageName: "$_imgName",
+              icon: _icon,
               subtitle: _subtitle,
               color: _color,
               page: _route,
@@ -358,7 +359,7 @@ class _HomePageState extends State<HomePage> {
       {required String menuName,
       required String subtitle,
       required Color color,
-      //  required String imageName,
+      required IconData icon,
       required Widget page}) {
     return Container(
       decoration: BoxDecoration(
@@ -370,20 +371,18 @@ class _HomePageState extends State<HomePage> {
         onTap: () => _menuRoute(page: page),
         child: Container(
           height: double.maxFinite,
-          padding: EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
+          padding: EdgeInsets.only(left: 5, top: 10, right: 10, bottom: 10),
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Container(
-                //   child: Image.asset(
-                //     "${Constants.IMAGE_DIR}/$imageName",
-                //     width: 70,
-                //     height: 70,
-                //   ),
-                // ),
-                SizedBox(height: 10),
+                Icon(
+                  icon,
+                  size: 40,
+                  color: AppColors.COLOR_LIGHT,
+                ),
+                SizedBox(height: 20),
                 Wrap(
                   children: [
                     Text(
@@ -425,19 +424,45 @@ class _HomePageState extends State<HomePage> {
       child: ListView.builder(
         itemCount: appointmentsData.length,
         itemBuilder: (context, index) => Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          color: AppColors.COLOR_WHITE,
+          elevation: 0.0,
           child: Row(children: [
-            SizedBox(height: 30, width: 30),
+            SizedBox(
+              height: 80,
+              width: 80,
+              // child: Column(
+              //   children: [
+              //     Container(
+              //         padding: EdgeInsets.all(2.0),
+              //         width: MediaQuery.of(context).size.width,
+              //         color: AppColors.COLOR_PRIMARY,
+              //         child: Text(
+              //             "${appointmentsData[index].appDate![0]}${appointmentsData[index].appDate![1]}")),
+              //   ],
+              // ),
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(appointmentsData[index].hospitalName!),
-                Text("หน่วยงาน: ${appointmentsData[index].organizeName}"),
+                Text(appointmentsData[index].hospitalName!,
+                    style: TextStyle(fontSize: 14)),
+                Text("${appointmentsData[index].organizeName}",
+                    style:
+                        TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT)),
                 Row(
                   children: [
-                    Icon(Icons.calendar_month_outlined),
-                    Text("วันที่นัดหมาย: ${appointmentsData[index].appDate}"),
+                    Icon(Icons.calendar_month_outlined,
+                        color: AppColors.COLOR_PRIMARY, size: 14),
+                    Text("วันที่นัดหมาย: ${appointmentsData[index].appDate}",
+                        style: TextStyle(
+                            fontSize: 12, color: AppColors.COLOR_PRIMARY)),
                     SizedBox(width: 10),
-                    Text("เวลา: ${appointmentsData[index].appTime}")
+                    Text("เวลา: ${appointmentsData[index].appTime} น.",
+                        style: TextStyle(
+                            fontSize: 12, color: AppColors.COLOR_PRIMARY))
                   ],
                 ),
               ],

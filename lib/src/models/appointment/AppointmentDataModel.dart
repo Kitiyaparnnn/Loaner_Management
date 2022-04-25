@@ -1,3 +1,5 @@
+import 'package:loaner/src/models/loaner/LoanerModel.dart';
+
 class AppointmentData {
   AppointmentData(
       {this.companyName,
@@ -12,7 +14,8 @@ class AppointmentData {
       this.useTime,
       this.appDate,
       this.appTime,
-      this.status});
+      this.status,
+      this.loaners});
 
   AppointmentData.fromJson(dynamic json) {
     companyName = json['company_name'];
@@ -28,6 +31,7 @@ class AppointmentData {
     appTime = json['app_time'];
     appDate = json['app_date'];
     status = json['status'];
+    loaners = json['loaners'];
   }
 
   String? companyName;
@@ -43,6 +47,7 @@ class AppointmentData {
   String? appDate;
   String? appTime;
   String? status;
+  List<LoanerModel>? loaners;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -60,6 +65,7 @@ class AppointmentData {
     map['app_date'] = appDate;
     map['app_time'] = appTime;
     map['status'] = status;
+    map['loaners'] = loaners;
     return map;
   }
 }

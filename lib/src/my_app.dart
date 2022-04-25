@@ -59,7 +59,7 @@ class _MyApp extends State<MyApp> {
             title: Constants.APP_NAME,
             builder: BotToastInit(),
             theme: ThemeData(
-                primarySwatch: Colors.blue,
+                primarySwatch: AppColors.COLOR_PRIMARY_SWATCH,
                 fontFamily: Constants.APP_FONT,
                 // backgroundColor: AppColors.COLOR_GREY,
                 scaffoldBackgroundColor: AppColors.COLOR_SWATCH),

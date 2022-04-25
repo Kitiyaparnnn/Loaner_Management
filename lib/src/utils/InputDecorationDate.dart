@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 
-InputDecoration inputDecoration({
-  required String hintText,
+InputDecoration inputDecorationDate({
+  required String hintText,required bool isDate
 }) {
   return InputDecoration(
     contentPadding:
@@ -38,5 +38,6 @@ InputDecoration inputDecoration({
         width: 1.0,
       ),
     ),
+    suffixIcon:  Icon(isDate? Icons.calendar_month_outlined: Icons.access_time_filled_outlined,color: AppColors.COLOR_LIGHT,)
   );
 }

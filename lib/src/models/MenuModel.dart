@@ -5,7 +5,7 @@ class MenuModel {
     required this.name,
     required this.subName,
     required this.route,
-    // required this.imgName,
+    required this.icon,
     required this.color,
     required this.isShow,
   });
@@ -13,7 +13,7 @@ class MenuModel {
   final String name;
   final String subName;
   final Widget route;
-  // final String imgName;
+  final IconData icon;
   final Color color;
   final bool isShow;
 }

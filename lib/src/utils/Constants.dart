@@ -59,7 +59,12 @@ class Constants {
     "เสร็จสิ้น",
     "รอยืนยัน"
   ];
-
+ static const List<String> group = [
+    "หมวดหมู่ ก",
+    "หมวดหมู่ ข",
+    "หมวดหมู่ ค",
+    "หมวดหมู่ ง"
+  ];
 //status
   static const String APP_CREATE = "สร้างเอกสาร";
   static const String APP_WAIT_CSSD = "รอ cssd ยืนยัน";
