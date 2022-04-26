@@ -37,7 +37,7 @@ class NewTime {
 
 class _FillAppointmentPageState extends State<FillAppointmentPage> {
   bool isSupplier = true;
-  final appointment = AppointmentData();
+  final appointment = AppointmentData(status: Constants.status[0]);
   var _formKey = GlobalKey<FormState>();
   var _formKey2 = GlobalKey<FormState>();
   bool isEnabledButtonSave = true;

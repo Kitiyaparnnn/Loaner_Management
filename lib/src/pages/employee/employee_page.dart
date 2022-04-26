@@ -79,7 +79,7 @@ class _EmployeePageState extends State<EmployeePage> {
         actions: [
           IconButton(
               icon: Icon(Icons.person_add_alt_1_outlined,
-                  color: AppColors.COLOR_BLACK),
+                  color: AppColors.COLOR_BLACK, size: 30),
               onPressed: () => Navigator.push(context,
                   MaterialPageRoute(builder: (context) => AddEmployeePage()))),
         ],
@@ -185,7 +185,7 @@ class _EmployeePageState extends State<EmployeePage> {
                 ),
           object[index].isTrained!
               ? Text('o ผ่านการอบรม',
-                  style: TextStyle(fontSize: 12, color: AppColors.COLOR_GREEN))
+                  style: TextStyle(fontSize: 12, color: AppColors.COLOR_GREEN2))
               : Text('o ไม่ผ่านการอบรม',
                   style: TextStyle(fontSize: 12, color: AppColors.COLOR_RED))
         ]),

@@ -103,7 +103,7 @@ class _LoanerPageState extends State<LoanerPage> {
               : [
                   IconButton(
                       icon: Icon(Icons.add_circle_outline,
-                          color: AppColors.COLOR_BLACK),
+                          color: AppColors.COLOR_BLACK,size: 30,),
                       onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(

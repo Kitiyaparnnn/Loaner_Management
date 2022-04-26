@@ -22,9 +22,11 @@ class AppColors {
   static const Color COLOR_WHITE = Color.fromRGBO(255, 255, 255, 1.0);
   static const Color COLOR_GREY = Color.fromRGBO(242, 242, 245, 1.0);
   static const Color COLOR_RED = Color.fromRGBO(251, 78, 78, 1.0);
-  static const Color COLOR_GREEN = Color.fromRGBO(42, 199, 105, 1.0);
-  static const Color COLOR_YELLOW = Color.fromRGBO(246, 166, 9, 1.0);
-  static const Color COLOR_BLUE = Color.fromRGBO(75, 156, 255, 1.0);
+  static const Color COLOR_GREEN = Color.fromRGBO(222, 247, 232, 1.0);
+  static const Color COLOR_GREEN2 = Color.fromRGBO(42, 199, 105, 1.0);
+  static const Color COLOR_YELLOW = Color.fromRGBO(246, 166, 9, 0.2);
+  static const Color COLOR_YELLOW2 = Color.fromRGBO(246, 166, 9, 1.0);
+  static const Color COLOR_BLUE = Color.fromRGBO(51, 119, 255, 0.2);
   static const Color COLOR_BLUE2 = Color.fromRGBO(37, 124, 230, 1.0);
 
   static MaterialColor COLOR_SWATCH = MaterialColor(0xFFF6F9FE, color);

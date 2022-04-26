@@ -195,7 +195,11 @@ class _HomePageState extends State<HomePage> {
                                         color: AppColors.COLOR_PRIMARY,
                                         fontSize: 12,
                                       )),
-                                  onPressed: () {},
+                                  onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => AppointmentPage(),
+                                      )),
                                 ),
                               ],
                             ),
@@ -431,7 +435,7 @@ class _HomePageState extends State<HomePage> {
             borderRadius: BorderRadius.circular(10),
           ),
           color: AppColors.COLOR_WHITE,
-          elevation: 0.0,
+          elevation: 1.0,
           child: Row(children: [
             SizedBox(
               height: 80,

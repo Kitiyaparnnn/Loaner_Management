@@ -17,7 +17,7 @@ class Constants {
   static const String LOANER_TITLE = "Loaner";
   static const String EMPLOYEE_TITLE = "เจ้าหน้าที่";
   static const String EMPLOYEE_ADD_TITLE = "เพิ่มเจ้าหน้าที่";
-  static const String HISTORY_TITLE = "ประวัติ";
+  static const String HISTORY_TITLE = "ประวัตินัดหมาย";
   static const String LOANER_SUM_TITLE = "รายการ Loaner";
 
   //app font
@@ -55,6 +55,7 @@ class Constants {
     "หน่วยงาน ง"
   ];
   static const List<String> status = [
+    "สร้างเอกสาร",
     "รอ cssd ยืนยัน",
     "cssd ยืนยันแล้ว",
     "เสร็จสิ้น",
