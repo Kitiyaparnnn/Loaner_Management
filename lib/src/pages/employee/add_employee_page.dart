@@ -9,7 +9,10 @@ import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/employee/employee_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
+import 'package:loaner/src/utils/DropdownInput.dart';
 import 'package:loaner/src/utils/LabelFormat.dart';
+import 'package:loaner/src/utils/MyAppBar.dart';
+import 'package:loaner/src/utils/TextFormFieldInput.dart';
 
 class AddEmployeePage extends StatefulWidget {
   AddEmployeePage({Key? key}) : super(key: key);
@@ -19,42 +22,64 @@ class AddEmployeePage extends StatefulWidget {
 }
 
 class _AddEmployeePageState extends State<AddEmployeePage> {
-  final employeeData = EmployeeDataModel(isTrained: false, image: "");
+  final employeeData = EmployeeDataModel(isTrained: false);
   var _formKey = GlobalKey<FormState>();
-  bool isEnabledButtonSave = true;
 
-  String companyName = 'POSE';
-  TextEditingController _controllerfirstName =
+  TextEditingController _controllerCompany =
       new TextEditingController(text: "");
-  TextEditingController _controllerlastName =
+  TextEditingController _controllerHeadName =
       new TextEditingController(text: "");
-  TextEditingController _controllerdetail = new TextEditingController(text: "");
-  String headName = "คำนำหน้า";
+  TextEditingController _controllerFirstName =
+      new TextEditingController(text: "");
+  TextEditingController _controllerLastName =
+      new TextEditingController(text: "");
+  TextEditingController _controllerDetail = new TextEditingController(text: "");
+  TextEditingController _controllerImage = new TextEditingController(text: "");
 
   File? imageFile;
-
-  FocusNode firstNameFocusNode = FocusNode();
-  FocusNode lastNameFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text(Constants.EMPLOYEE_TITLE)),
-      backgroundColor: AppColors.COLOR_GREY,
-      body: SafeArea(
-          child: Container(
-        height: MediaQuery.of(context).size.height,
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
-          child: SingleChildScrollView(
-              child: Container(
-            child: Center(
-                child: Column(
-              children: [const SizedBox(height: 30), _buildForm(context)],
-            )),
-          )),
-        ),
-      )),
+        appBar: myAppBar(title: Constants.EMPLOYEE_ADD_TITLE, context: context),
+        body: SafeArea(
+            child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+            child: SingleChildScrollView(
+                child: Center(
+                    child: Column(
+              children: [const SizedBox(height: 10), _buildForm(context)],
+            ))),
+          ),
+        )),
+        bottomNavigationBar: imageFile != null ? _bottomButton() : null);
+  }
+
+  Widget _bottomButton() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.all(8.0),
+              primary: AppColors.COLOR_PRIMARY),
+          onPressed: () {
+            try {
+              if (_formKey.currentState!.validate()) {
+                _validate();
+                logger.d(employeeData.toJson());
+                Navigator.pop(context,
+                    MaterialPageRoute(builder: (context) => EmployeePage()));
+              } else {
+                BotToast.showText(text: Constants.TEXT_FORM_FIELD);
+              }
+            } catch (e) {
+              // print(e);
+              BotToast.showText(text: Constants.TEXT_FORM_FIELD);
+            }
+          },
+          child: Text("บันทึก", style: TextStyle(fontSize: 16))),
     );
   }
 
@@ -64,10 +89,9 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       child: Column(
         children: [
           _buildInput(),
-          const SizedBox(height: 25),
+          const SizedBox(height: 10),
           _buildImportImage(),
-          const SizedBox(height: 30),
-          _buildButtonSave(context),
+          const SizedBox(height: 10),
         ],
       ),
     );
@@ -76,125 +100,55 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   Widget _buildInput() {
     return Form(
       key: _formKey,
-      child: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                label("บริษัท"),
-                _buildTextFormField(),
-              ],
-            ),
-            const SizedBox(height: 25),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                label("คำนำหน้า"),
-                _buildDropdown(),
-              ],
-            ),
-            const SizedBox(height: 25),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                label("ชื่อ"),
-                _buildTextFormFieldFirstName(context),
-              ],
-            ),
-            const SizedBox(height: 25),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                label("นามสกุล"),
-                _buildTextFormFieldLastName(context),
-              ],
-            ),
-            const SizedBox(height: 25),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                label("รายละเอียด"),
-                _buildTextFormFieldDetail(),
-              ],
-            ),
-            const SizedBox(height: 25),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                label("ผ่านการ Trained"),
-                _buildCheckBox(),
-              ],
-            )
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildTextFormField(_controllerCompany, "บริษัท"),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildDropdown(_controllerHeadName, Constants.head, "คำนำหน้า"),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildTextFormField(_controllerFirstName, "ชื่อ"),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildTextFormField(_controllerLastName, "นามสกุล"),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildLongTextFormField(_controllerDetail, "รายละเอียด (ถ้ามี)"),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("ผ่านการอบรม",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              _buildCheckBox(),
+            ],
+          )
+        ],
       ),
-    );
-  }
-
-  Container _buildTextFormField() {
-    employeeData.companyName = companyName;
-    return Container(
-      child: Text(companyName, style: TextStyle(color: AppColors.COLOR_BLACK)),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(
-          const Radius.circular(10.0),
-        ),
-      ),
-    );
-  }
-
-
-  DropdownButtonFormField _buildDropdown() {
-    return DropdownButtonFormField(
-      value: headName,
-      items: [
-        DropdownMenuItem(child: Text("คำนำหน้า"), value: "คำนำหน้า"),
-        DropdownMenuItem(child: Text("นางสาว"), value: "นางสาว"),
-        DropdownMenuItem(child: Text("นาง"), value: "นาง"),
-        DropdownMenuItem(child: Text("นาย"), value: "นาย"),
-      ],
-      decoration: _inputDecoration(hintText: 'คำนำหน้า'),
-      onChanged: (value) {
-        employeeData.headName = value;
-      },
-    );
-  }
-
-  TextFormField _buildTextFormFieldFirstName(BuildContext context) {
-    return TextFormField(
-      controller: _controllerfirstName,
-      style: TextStyle(color: AppColors.COLOR_LIGHT),
-      decoration: _inputDecoration(hintText: "สมใจ"),
-      focusNode: firstNameFocusNode,
-      onSaved: (value) {
-        employeeData.firstName = value;
-      },
-    );
-  }
-
-  TextFormField _buildTextFormFieldLastName(BuildContext context) {
-    return TextFormField(
-      controller: _controllerlastName,
-      style: TextStyle(color: AppColors.COLOR_LIGHT),
-      decoration: _inputDecoration(hintText: "จริงจริง"),
-      focusNode: lastNameFocusNode,
-      onSaved: (value) {
-        employeeData.lastName = value;
-      },
-    );
-  }
-
-  TextFormField _buildTextFormFieldDetail() {
-    return TextFormField(
-      style: const TextStyle(color: AppColors.COLOR_LIGHT),
-      controller: _controllerdetail,
-      decoration:
-          _inputDecoration(hintText: "รายละเอียด"),
-      onSaved: (value) {
-        employeeData.detail = value;
-      },
     );
   }
 
@@ -202,6 +156,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     return Row(
       children: [
         IconButton(
+            highlightColor: AppColors.COLOR_PRIMARY,
             onPressed: () {
               employeeData.isTrained = true;
               setState(() {});
@@ -209,11 +164,12 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
             icon: Icon(employeeData.isTrained!
                 ? Icons.radio_button_checked_outlined
                 : Icons.radio_button_unchecked_outlined)),
-        Text("เคย"),
+        Text("เคยอบรม"),
         SizedBox(
           width: 20,
         ),
         IconButton(
+            highlightColor: AppColors.COLOR_PRIMARY,
             onPressed: () {
               employeeData.isTrained = false;
               setState(() {});
@@ -221,90 +177,91 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
             icon: Icon(employeeData.isTrained!
                 ? Icons.radio_button_unchecked_outlined
                 : Icons.radio_button_checked_outlined)),
-        Text("ไม่เคย"),
+        Text("ไม่เคยอบรม"),
       ],
-    );
-  }
-
-  InputDecoration _inputDecoration({
-    required String hintText,
-    
-  }) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.only(left: 25, top: 15, bottom: 15),
-      hintStyle: const TextStyle(color: AppColors.COLOR_GREY),
-      fillColor: AppColors.COLOR_WHITE,
-      filled: true,
-      hintText: '$hintText',
-      focusedBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(10.0),
-        ),
-        borderSide: const BorderSide(
-          color: AppColors.COLOR_PRIMARY,
-          width: 2,
-        ),
-      ),
-      enabledBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(10.0),
-        ),
-        borderSide: const BorderSide(
-          color: Colors.transparent,
-          width: 1.0,
-        ),
-      ),
-      border: new OutlineInputBorder(
-        borderRadius: const BorderRadius.all(
-          const Radius.circular(10.0),
-        ),
-      ),
     );
   }
 
   Widget _buildImportImage() {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: AppColors.COLOR_LIGHT),
-          ),
-          child: imageFile != null
-              ? Image.file(
-                  imageFile!,
-                  width: 200,
-                  height: 200,
-                  fit: BoxFit.cover,
-                )
-              : SizedBox(
-                  width: 200,
-                  height: 200,
+        Text("อัปโหลดรูปถ่ายของคุณ",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text("เราต้องแน่ใจว่าเป็นคุณ ถ่ายรูปให้เห็นหน้า",
+            style: TextStyle(fontSize: 12, color: AppColors.COLOR_LIGHT)),
+        const SizedBox(height: 10),
+        imageFile == null
+            ? InkWell(
+                onTap: () => _showImageDialog(),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: AppColors.COLOR_WHITE,
+                      borderRadius: BorderRadius.circular(8.0),
+                      border: Border.all(color: AppColors.COLOR_GREY)),
+                  height: 150,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                            onPressed: () => _showImageDialog(),
+                            icon: Icon(Icons.file_download_outlined,
+                                color: AppColors.COLOR_PRIMARY)),
+                        Text("ลากรูปภาพไปที่โซนหรือคลิกอัปโหลด",
+                            style: TextStyle(
+                                fontSize: 12, color: AppColors.COLOR_LIGHT))
+                      ],
+                    ),
+                  ),
                 ),
-        ),
-        Spacer(),
-        ElevatedButton(
-            child: Text("เพิ่มรูปภาพ"), onPressed: () => _showImageDialog())
+              )
+            : Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                color: AppColors.COLOR_WHITE,
+                elevation: 0.0,
+                child: ListTile(
+                  contentPadding: EdgeInsets.all(10.0),
+                  leading: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: AppColors.COLOR_GREY,
+                        border: Border.all(
+                            color: AppColors.COLOR_GREY, width: 2.0)),
+                    height: 60,
+                    width: 60,
+                    child: Image.file(
+                      imageFile!,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  title: Text(
+                    imageFile!.path.split("/").last,
+                    style:
+                        TextStyle(fontSize: 16, color: AppColors.COLOR_PRIMARY),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Text(
+                      (imageFile!.readAsBytesSync().lengthInBytes /
+                                  (1024 * 1024))
+                              .toStringAsFixed(2) +
+                          " Mb",
+                      style: TextStyle(
+                          fontSize: 12, color: AppColors.COLOR_LIGHT)),
+                  trailing: IconButton(
+                      icon: Icon(Icons.delete_outline_outlined,
+                          color: AppColors.COLOR_RED),
+                      onPressed: () {
+                        imageFile = null;
+                        setState(() {});
+                      }),
+                ),
+              )
       ],
     );
   }
-
-  Widget _buildButtonSave(BuildContext context) => Align(
-        alignment: Alignment.bottomRight,
-        child: ElevatedButton(
-            onPressed: () {
-              try {
-                _formKey.currentState!.save();
-                imageFile != null ? _convertBase64() : null;
-                logger.d(employeeData.toJson());
-                Navigator.pop(context,
-                    MaterialPageRoute(builder: (context) => EmployeePage()));
-              } catch (e) {
-                BotToast.showText(
-                    text: Constants.TEXT_FORM_FIELD);
-              }
-            },
-            child: Text("บันทึก")),
-      );
 
   void _showImageDialog() {
     showDialog(
@@ -312,8 +269,8 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
         builder: (context) {
           return AlertDialog(
             title: Text(
-              "Please choose an option",
-              style: TextStyle(color: AppColors.COLOR_LIGHT),
+              Constants.TEXT_IMPORT_IMAGE,
+              style: TextStyle(color: AppColors.COLOR_BLACK, fontSize: 16),
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -383,6 +340,17 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   void _convertBase64() {
     final bytes = imageFile!.readAsBytesSync();
     String img64 = base64Encode(bytes);
-    employeeData.image = img64;
+    _controllerImage.text = img64;
+  }
+
+  void _validate() {
+    _convertBase64();
+    employeeData.companyName = _controllerCompany.text;
+    employeeData.headName = _controllerHeadName.text;
+    employeeData.firstName = _controllerFirstName.text;
+    employeeData.lastName = _controllerLastName.text;
+    employeeData.detail = _controllerDetail.text;
+    employeeData.image = _controllerImage.text;
+    setState(() {});
   }
 }

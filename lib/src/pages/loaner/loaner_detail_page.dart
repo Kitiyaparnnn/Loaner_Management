@@ -53,7 +53,6 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
         note: ''),
   ];
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,6 +143,8 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
           SizedBox(height: 10),
           label("หมายเหตุ"),
           TextFormField(
+            keyboardType: TextInputType.multiline,
+            maxLines: 4,
             style: const TextStyle(color: AppColors.COLOR_LIGHT, fontSize: 16),
             controller: _controllerdetail,
             decoration: inputDecoration(hintText: "หมายเหตุ"),
@@ -164,7 +165,8 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
                     setState(() {});
                   },
                   icon: Icon(Icons.remove)),
-              Text('$no', style: TextStyle(fontSize: 21)),
+              Text('$no',
+                  style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold)),
               IconButton(
                 splashRadius: 10.0,
                 highlightColor: AppColors.COLOR_PRIMARY,

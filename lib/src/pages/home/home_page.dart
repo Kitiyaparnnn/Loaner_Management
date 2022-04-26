@@ -102,32 +102,28 @@ class _HomePageState extends State<HomePage> {
               route: FillAppointmentPage(),
               color: AppColors.COLOR_WHITE,
               subName: "กรอกการนัดหมาย",
-              icon: Icons.edit_calendar_outlined,
-              isShow: true,
+              image: "${Constants.IMAGE_DIR}/menu-fill.png",
             ),
             MenuModel(
               name: "${Constants.APPOINTMENT_TITLE}",
               route: AppointmentPage(),
               color: AppColors.COLOR_WHITE,
               subName: "การนัดหมายทั้งหมด",
-              icon: Icons.calendar_month_outlined,
-              isShow: true,
+              image: "${Constants.IMAGE_DIR}/menu-app.png",
             ),
             MenuModel(
               name: "${Constants.LOANER_TITLE}",
               route: LoanerPage(isFillForm: false, selectedLoaner: []),
               color: AppColors.COLOR_WHITE,
               subName: "จัดการข้อมูล Loaner",
-              icon: Icons.medical_services_outlined,
-              isShow: true,
+              image: "${Constants.IMAGE_DIR}/menu-loaner.png",
             ),
             MenuModel(
               name: "${Constants.EMPLOYEE_TITLE}",
               route: EmployeePage(),
               color: AppColors.COLOR_WHITE,
               subName: "จัดการเจ้าหน้าที่บริษัท",
-              icon: Icons.person_outlined,
-              isShow: true,
+              image: "${Constants.IMAGE_DIR}/menu-person.png",
             ),
           ]
         : <MenuModel>[
@@ -136,23 +132,19 @@ class _HomePageState extends State<HomePage> {
               route: EmployeePage(),
               color: AppColors.COLOR_WHITE,
               subName: "ยืนยันกับเจ้าหน้าที่บริษัท",
-              icon: Icons.edit_calendar_outlined,
-              isShow: true,
+              image: "${Constants.IMAGE_DIR}/menu-app.png",
             ),
             MenuModel(
               name: "${Constants.APPOINTMENT_TITLE}",
               route: EmployeePage(),
               color: AppColors.COLOR_WHITE,
               subName: "การนัดหมายทั้งหมด",
-              icon: Icons.calendar_month_outlined,
-              isShow: true,
+              image: "${Constants.IMAGE_DIR}/menu-app.png",
             ),
           ];
 
     _menu.map((menu) {
-      if (menu.isShow) {
-        menuList.add(menu);
-      }
+      menuList.add(menu);
     }).toList();
   }
 
@@ -168,6 +160,7 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: [
                   _buildAppBar(),
+                  SizedBox(height: 15),
                   Expanded(
                     child: Container(
                       margin: EdgeInsets.only(top: 10, bottom: 30),
@@ -182,7 +175,7 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(
                                   color: AppColors.COLOR_BLACK,
                                   fontSize: 21,
-                                  fontWeight: FontWeight.w400),
+                                  fontWeight: FontWeight.bold),
                             ),
                             _buildMenu(),
                             SizedBox(height: 20),
@@ -193,7 +186,7 @@ class _HomePageState extends State<HomePage> {
                                   style: TextStyle(
                                       color: AppColors.COLOR_BLACK,
                                       fontSize: 21,
-                                      fontWeight: FontWeight.w400),
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 Spacer(),
                                 TextButton(
@@ -222,28 +215,39 @@ class _HomePageState extends State<HomePage> {
   Widget _buildAppBar() {
     return Container(
       // margin: EdgeInsets.only(top: 30),
-      padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+      padding: EdgeInsets.only(left: 20, right: 10, top: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(),
           SizedBox(
             width: 5,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "สวัสดี ! 🖐🏻",
-                style: TextStyle(fontSize: 21, color: AppColors.COLOR_BLACK),
-              ),
-              Text(
-                "คุณ $fullName",
-                style: TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT),
-              ),
-            ],
+          Container(
+            height: 50,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "สวัสดี ! 🖐🏻",
+                    style: TextStyle(
+                        fontSize: 21,
+                        color: AppColors.COLOR_BLACK,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    "คุณ $fullName",
+                    style:
+                        TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT),
+                  ),
+                ),
+              ],
+            ),
           ),
           Expanded(child: SizedBox(height: 15)),
           PopupMenuButton(
@@ -335,16 +339,15 @@ class _HomePageState extends State<HomePage> {
         children: List.generate(menuList.length, (index) {
           String _menuName = menuList[index].name;
           String _subtitle = menuList[index].subName;
-          IconData _icon = menuList[index].icon;
+          String _image = menuList[index].image;
           Widget _route = menuList[index].route;
-          // bool _isShow = menuList[index].isShow;
           Color _color = menuList[index].color;
 
           return Visibility(
             visible: true,
             child: _buildMenuCard(
               menuName: _menuName,
-              icon: _icon,
+              image: _image,
               subtitle: _subtitle,
               color: _color,
               page: _route,
@@ -359,7 +362,7 @@ class _HomePageState extends State<HomePage> {
       {required String menuName,
       required String subtitle,
       required Color color,
-      required IconData icon,
+      required String image,
       required Widget page}) {
     return Container(
       decoration: BoxDecoration(
@@ -371,16 +374,16 @@ class _HomePageState extends State<HomePage> {
         onTap: () => _menuRoute(page: page),
         child: Container(
           height: double.maxFinite,
-          padding: EdgeInsets.only(left: 5, top: 10, right: 10, bottom: 10),
+          padding: EdgeInsets.only(top: 10, right: 10, bottom: 10),
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  icon,
-                  size: 40,
-                  color: AppColors.COLOR_LIGHT,
+                Image.asset(
+                  image,
+                  width: 60,
+                  height: 60,
                 ),
                 SizedBox(height: 20),
                 Wrap(
@@ -390,7 +393,7 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(
                           fontSize: 16,
                           color: AppColors.COLOR_BLACK,
-                          fontWeight: FontWeight.w400),
+                          fontWeight: FontWeight.bold),
                     ),
                     Text(
                       subtitle,

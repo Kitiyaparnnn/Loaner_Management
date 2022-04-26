@@ -16,6 +16,7 @@ class Constants {
   static const String APPOINTMENT_TITLE = "นัดหมาย";
   static const String LOANER_TITLE = "Loaner";
   static const String EMPLOYEE_TITLE = "เจ้าหน้าที่";
+  static const String EMPLOYEE_ADD_TITLE = "เพิ่มเจ้าหน้าที่";
   static const String HISTORY_TITLE = "ประวัติ";
   static const String LOANER_SUM_TITLE = "รายการ Loaner";
 
@@ -59,12 +60,15 @@ class Constants {
     "เสร็จสิ้น",
     "รอยืนยัน"
   ];
- static const List<String> group = [
+  static const List<String> group = [
     "หมวดหมู่ ก",
     "หมวดหมู่ ข",
     "หมวดหมู่ ค",
     "หมวดหมู่ ง"
   ];
+
+  static const List<String> head = ["นาย", "นางสาว", "นาง"];
+
 //status
   static const String APP_CREATE = "สร้างเอกสาร";
   static const String APP_WAIT_CSSD = "รอ cssd ยืนยัน";
@@ -90,4 +94,5 @@ class Constants {
   static const String TEXT_SOME_THING_WRONG =
       "มีบางอย่างผิดพลาด กรุณาลองใหม่อีกครั้ง";
   static const String TEXT_FORM_FIELD = "กรุณาตรวจกรอกข้อมูล";
+  static const String TEXT_IMPORT_IMAGE = "โปรดเลือกวิธีการอัพโหลดรูปภาพ";
 }

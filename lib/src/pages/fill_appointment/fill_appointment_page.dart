@@ -181,7 +181,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           _buildInput(),
           const SizedBox(height: 20),
           Expanded(
@@ -208,7 +208,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                   _buildTextFormField(_controllerCompanyName, "บริษัท"),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

@@ -5,15 +5,15 @@ class MenuModel {
     required this.name,
     required this.subName,
     required this.route,
-    required this.icon,
+    required this.image,
     required this.color,
-    required this.isShow,
+
   });
 
   final String name;
   final String subName;
   final Widget route;
-  final IconData icon;
+  final String image;
   final Color color;
-  final bool isShow;
+
 }

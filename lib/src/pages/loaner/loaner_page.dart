@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/my_app.dart';
+import 'package:loaner/src/pages/loaner/loaner_create_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_detail_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_sum_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
@@ -16,7 +17,7 @@ class LoanerPage extends StatefulWidget {
 }
 
 class _LoanerPageState extends State<LoanerPage> {
-  TextEditingController editingController = TextEditingController();
+  TextEditingController editingController = TextEditingController(text: "");
   LoanerModel _loaner = LoanerModel();
   bool isSearch = false;
 
@@ -51,6 +52,7 @@ class _LoanerPageState extends State<LoanerPage> {
   @override
   void initState() {
     items.clear();
+    editingController.text = "";
     super.initState();
   }
 
@@ -77,13 +79,12 @@ class _LoanerPageState extends State<LoanerPage> {
 
   @override
   Widget build(BuildContext context) {
-    // logger.d(widget.selectedLoaner[0].toJson());
+    logger.d(widget.selectedLoaner);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.COLOR_SWATCH,
           elevation: 0,
           leading: IconButton(
-            splashRadius: 18,
             icon: Icon(Icons.arrow_back_outlined, color: AppColors.COLOR_BLACK),
             onPressed: () => Navigator.of(context).pop(),
           ),
@@ -101,11 +102,12 @@ class _LoanerPageState extends State<LoanerPage> {
               ? null
               : [
                   IconButton(
-                    splashRadius: 18,
-                    icon: Icon(Icons.add_circle_outline,
-                        color: AppColors.COLOR_BLACK),
-                    onPressed: () => Navigator.of(context).pop(),
-                  )
+                      icon: Icon(Icons.add_circle_outline,
+                          color: AppColors.COLOR_BLACK),
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoanerCreatePage()))),
                 ],
           centerTitle: true,
         ),
@@ -119,19 +121,17 @@ class _LoanerPageState extends State<LoanerPage> {
                         builder: (context) => LoanerSumPage(
                               selectedLoaner: widget.selectedLoaner,
                             ))),
-                child: Icon(
-                  widget.selectedLoaner.length != 0
-                      ? Icons.shopping_cart_outlined
-                      : Icons.add_shopping_cart_outlined,
-                  size: 28,
-                ))
+                child: widget.selectedLoaner.length != 0
+                    ? Image.asset('${Constants.IMAGE_DIR}/basket-notemt.png')
+                    : Image.asset('${Constants.IMAGE_DIR}/basket-emt.png'),
+              )
             : null,
         body: Container(
           height: MediaQuery.of(context).size.height,
           child: GestureDetector(
             onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               child: Center(
                   child: Column(
                 children: [
@@ -176,9 +176,11 @@ class _LoanerPageState extends State<LoanerPage> {
 
   _loanerList() {
     return Expanded(
-      child: ListView.builder(
-        itemCount: items.length != 0 ? items.length : loaners.length,
-        itemBuilder: ((context, index) => items.length != 0
+      child: loaners.isEmpty? Center(
+              child: Text(Constants.TEXT_DATA_NOT_FOUND),
+            ): ListView.builder(
+        itemCount: items.isNotEmpty ? items.length : loaners.length,
+        itemBuilder: ((context, index) => items.isNotEmpty
             ? _mapList(items, index)
             : _mapList(loaners, index)),
       ),
