@@ -58,7 +58,7 @@ class Constants {
     "สร้างเอกสาร",
     "รอ cssd ยืนยัน",
     "cssd ยืนยันแล้ว",
-    "เสร็จสิ้น",
+    "Completed",
     "รอยืนยัน"
   ];
   static const List<String> group = [

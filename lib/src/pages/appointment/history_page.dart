@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/utils/AppColors.dart';
+import 'package:loaner/src/utils/AppointmentCard.dart';
 import 'package:loaner/src/utils/Constants.dart';
 import 'package:loaner/src/utils/ConvertDateFormat.dart';
 import 'package:loaner/src/utils/DropdownInput.dart';
 import 'package:loaner/src/utils/InputDecorationDate.dart';
+import 'package:loaner/src/utils/MyAppBar.dart';
+import 'package:loaner/src/utils/TextFormFieldInput.dart';
 
 class HistoryPage extends StatefulWidget {
   HistoryPage({Key? key}) : super(key: key);
@@ -14,19 +18,19 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   bool isCompleted = false;
-  List<AppointmentData> appointmentsData = [
+  List<AppointmentData> appointments = [
     AppointmentData(
         hospitalName: "โรงพยาบาล ก",
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
-        status: Constants.status[0]),
+        status: Constants.status[3]),
     AppointmentData(
         hospitalName: "โรงพยาบาล ก",
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
-        status: Constants.status[1])
+        status: Constants.status[4])
   ];
 
   TextEditingController editingController = TextEditingController();
@@ -59,59 +63,96 @@ class _HistoryPageState extends State<HistoryPage> {
     }
   }
 
-  AppointmentData? appointments;
-
   @override
   Widget build(BuildContext context) {
-    return Container();
-  }
-
-  
-  Widget _buildHistory() {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .6,
-                child: buildDropdown(
-                    _controllerStatus, Constants.status, "สภานะนัดหมาย"),
-              ),
-              Icon(Icons.search_outlined)
-            ],
+    return Scaffold(
+      appBar: myAppBar(title: Constants.HISTORY_TITLE, context: context),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 10),
+                _buildForm(),
+                SizedBox(height: 10),
+                _appointmentList(),
+              ],
+            ),
           ),
-          SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .6,
-                child: buildDropdown(
-                    _controllerHospitalName, Constants.hos, "โรงพยาบาล"),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .3,
-                child: InkWell(
-                  onTap: () {
-                    _datePickerShow(_controllerAppDate);
-                  },
-                  child: TextFormField(
-                    enabled: false,
-                    controller: _controllerAppDate,
-                    decoration: inputDecorationDate(hintText: "วันที่นัดหมาย", isDate: true,),
-                  ),
-                ),
-              )
-            ],
-          ),
-          SizedBox(height: 10),
-          
-        ],
+        ),
       ),
     );
+  }
+
+  _buildForm() {
+    return Form(
+      // key: _formKey,
+      child: Column(children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width * .45,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildDropdown(
+                      _controllerStatus, Constants.status, "สถานะการนัดหมาย"),
+                ],
+              ),
+            ),
+            Spacer(),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * .4,
+              child: InkWell(
+                onTap: () {
+                  _datePickerShow(_controllerAppDate);
+                },
+                child: TextFormField(
+                  enabled: false,
+                  controller: _controllerAppDate,
+                  decoration: inputDecorationDate(
+                      hintText: "วันที่ขอใช้", isDate: true),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildDropdown(_controllerStatus, Constants.hos, "โรงพยาบาล"),
+          ],
+        )
+      ]),
+    );
+  }
+
+  _appointmentList() {
+    // print(items.length);
+    return Expanded(
+      child: appointments.length == 0
+          ? Center(
+              child: Text(Constants.TEXT_DATA_NOT_FOUND),
+            )
+          : ListView.builder(
+              itemCount: appointments.length,
+              itemBuilder: ((context, index) => _mapList(appointments, index)),
+            ),
+    );
+  }
+
+  _mapList(List<AppointmentData> object, int index) {
+    List<Color> _color = object[index].status! == Constants.status[3]
+        ? [AppColors.COLOR_GREEN2, AppColors.COLOR_GREEN]
+        : [AppColors.COLOR_YELLOW2, AppColors.COLOR_YELLOW];
+
+    return appointmentCard(
+        color: _color, object: object[index], context: context);
   }
 }
