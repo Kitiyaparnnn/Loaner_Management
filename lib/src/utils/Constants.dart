@@ -13,6 +13,7 @@ class Constants {
       "ซอร์ฟแวร์ที่มีประสิทธิภาพซึ่งสร้างขึ้น \nสำหรับนัดหมาย และ ยืนยันการนัดหมาย\nระหว่าง Supplier และ เจ้าหน้าที่โรงพยาบาล";
   static const String FILL_APPOINT_TITLE = "กรอกนัดหมาย";
   static const String CONFIRM_APPOINT_TITLE = "ยืนยันนัดหมาย";
+    static const String DETAIL_APPOINT_TITLE = "รายละเอียดการนัดหมาย";
   static const String APPOINTMENT_TITLE = "นัดหมาย";
   static const String LOANER_TITLE = "Loaner";
   static const String EMPLOYEE_TITLE = "เจ้าหน้าที่";
@@ -91,6 +92,7 @@ class Constants {
   static const String TEXT_LOGOUT = "ออกจากระบบ";
   static const String TEXT_SETTING = "ตั้งค่า";
   static const String TEXT_LOGOUT_MESSAGE = "คุณต้องการออกจากระบบใช่หรือไม่?";
+  static const String TEXT_SAVE_MESSAGE = "คุณต้องการบันทึกการนัดหมาย";
   static const String TEXT_SAVE = "บันทึก";
   static const String TEXT_SOME_THING_WRONG =
       "มีบางอย่างผิดพลาด กรุณาลองใหม่อีกครั้ง";

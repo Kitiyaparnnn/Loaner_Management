@@ -1,5 +1,3 @@
-// ignore_for_file: sized_box_for_whitespace
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
@@ -164,7 +162,10 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
                     no = no - 1;
                     setState(() {});
                   },
-                  icon: Icon(Icons.remove)),
+                  icon: Icon(
+                    Icons.remove,
+                    color: AppColors.COLOR_PRIMARY,
+                  )),
               Text('$no',
                   style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold)),
               IconButton(
@@ -174,7 +175,7 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
                   no = no + 1;
                   setState(() {});
                 },
-                icon: Icon(Icons.add),
+                icon: Icon(Icons.add, color: AppColors.COLOR_PRIMARY),
               )
             ],
           ),

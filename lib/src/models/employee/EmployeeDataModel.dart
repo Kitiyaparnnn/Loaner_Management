@@ -6,8 +6,7 @@ class EmployeeDataModel {
       this.lastName,
       this.detail,
       this.isTrained,
-      this.image
-      });
+      this.image});
 
   String? companyName;
   String? headName;
@@ -37,5 +36,9 @@ class EmployeeDataModel {
     map['isTrained'] = isTrained;
     map['image'] = image;
     return map;
+  }
+
+  String username() {
+    return firstName! + lastName!;
   }
 }

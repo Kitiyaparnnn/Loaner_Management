@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/models/appointment/AppointmentSearchModel.dart';
+import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/AppointmentCard.dart';
 import 'package:loaner/src/utils/Constants.dart';
@@ -7,6 +9,7 @@ import 'package:loaner/src/utils/ConvertDateFormat.dart';
 import 'package:loaner/src/utils/DropdownInput.dart';
 import 'package:loaner/src/utils/InputDecorationDate.dart';
 import 'package:loaner/src/utils/MyAppBar.dart';
+import 'package:loaner/src/utils/SelectDecoration.dart';
 import 'package:loaner/src/utils/TextFormFieldInput.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -17,7 +20,8 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-  bool isCompleted = false;
+  final AppointmentSearchModel search = AppointmentSearchModel();
+
   List<AppointmentData> appointments = [
     AppointmentData(
         hospitalName: "โรงพยาบาล ก",
@@ -33,7 +37,6 @@ class _HistoryPageState extends State<HistoryPage> {
         status: Constants.status[4])
   ];
 
-  TextEditingController editingController = TextEditingController();
   TextEditingController _controllerStatus = new TextEditingController(text: "");
   TextEditingController _controllerAppDate =
       new TextEditingController(text: "");
@@ -59,7 +62,9 @@ class _HistoryPageState extends State<HistoryPage> {
     if (chooseDate != null) {
       currentDateSelect = chooseDate;
       date.text = ConvertDateFormat.convertDateFormat(date: chooseDate);
+      validate();
       setState(() {});
+      logger.d(search.toJson());
     }
   }
 
@@ -89,48 +94,45 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   _buildForm() {
-    return Form(
-      // key: _formKey,
-      child: Column(children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * .45,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildDropdown(
-                      _controllerStatus, Constants.status, "สถานะการนัดหมาย"),
-                ],
+    return Column(children: [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .45,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDropdown(
+                    _controllerStatus, Constants.status, "สถานะการนัดหมาย"),
+              ],
+            ),
+          ),
+          Spacer(),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .4,
+            child: InkWell(
+              onTap: () {
+                _datePickerShow(_controllerAppDate);
+              },
+              child: TextFormField(
+                enabled: false,
+                controller: _controllerAppDate,
+                decoration:
+                    inputDecorationDate(hintText: "วันที่ขอใช้", isDate: true),
               ),
             ),
-            Spacer(),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * .4,
-              child: InkWell(
-                onTap: () {
-                  _datePickerShow(_controllerAppDate);
-                },
-                child: TextFormField(
-                  enabled: false,
-                  controller: _controllerAppDate,
-                  decoration: inputDecorationDate(
-                      hintText: "วันที่ขอใช้", isDate: true),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            buildDropdown(_controllerStatus, Constants.hos, "โรงพยาบาล"),
-          ],
-        )
-      ]),
-    );
+          ),
+        ],
+      ),
+      const SizedBox(height: 10),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildDropdown(_controllerHospitalName, Constants.hos, "โรงพยาบาล"),
+        ],
+      )
+    ]);
   }
 
   _appointmentList() {
@@ -154,5 +156,31 @@ class _HistoryPageState extends State<HistoryPage> {
 
     return appointmentCard(
         color: _color, object: object[index], context: context);
+  }
+
+  validate() {
+    search.status = _controllerStatus.text;
+    search.hospital = _controllerHospitalName.text;
+    search.date = _controllerAppDate.text;
+  }
+
+  DropdownButtonFormField _buildDropdown(
+      TextEditingController form, List<String> items, String hintText) {
+    return DropdownButtonFormField(
+      decoration: selectDecoration(hintText: hintText),
+      icon: Icon(Icons.expand_more_rounded),
+      items: items.map<DropdownMenuItem<String>>((value) {
+        return DropdownMenuItem(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      onChanged: (value) {
+        form.text = value;
+        validate();
+        setState(() {});
+        logger.d(search.toJson());
+      },
+    );
   }
 }

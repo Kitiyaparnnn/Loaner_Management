@@ -4,6 +4,8 @@ import 'package:loaner/src/models/MenuChoice.dart';
 import 'package:loaner/src/models/MenuModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
 import 'package:loaner/src/pages/appointment/appointment_page.dart';
+import 'package:loaner/src/pages/confirm_appointment/confirm_appointment_page.dart';
+import 'package:loaner/src/pages/confirm_appointment/detail_appointment_page.dart';
 import 'package:loaner/src/pages/employee/employee_page.dart';
 import 'package:loaner/src/pages/fill_appointment/fill_appointment_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
@@ -99,14 +101,14 @@ class _HomePageState extends State<HomePage> {
         ? <MenuModel>[
             MenuModel(
               name: "${Constants.FILL_APPOINT_TITLE}",
-              route: FillAppointmentPage(),
+              route: FillAppointmentPage(isSupplier: true),
               color: AppColors.COLOR_WHITE,
               subName: "กรอกการนัดหมาย",
               image: "${Constants.IMAGE_DIR}/menu-fill.png",
             ),
             MenuModel(
               name: "${Constants.APPOINTMENT_TITLE}",
-              route: AppointmentPage(),
+              route: AppointmentPage(isSupplier: true),
               color: AppColors.COLOR_WHITE,
               subName: "การนัดหมายทั้งหมด",
               image: "${Constants.IMAGE_DIR}/menu-app.png",
@@ -129,14 +131,14 @@ class _HomePageState extends State<HomePage> {
         : <MenuModel>[
             MenuModel(
               name: "${Constants.CONFIRM_APPOINT_TITLE}",
-              route: EmployeePage(),
+              route: ConfirmAppointmentPage(),
               color: AppColors.COLOR_WHITE,
               subName: "ยืนยันกับเจ้าหน้าที่บริษัท",
-              image: "${Constants.IMAGE_DIR}/menu-app.png",
+              image: "${Constants.IMAGE_DIR}/menu-fill.png",
             ),
             MenuModel(
               name: "${Constants.APPOINTMENT_TITLE}",
-              route: EmployeePage(),
+              route: AppointmentPage(isSupplier: false),
               color: AppColors.COLOR_WHITE,
               subName: "การนัดหมายทั้งหมด",
               image: "${Constants.IMAGE_DIR}/menu-app.png",
@@ -198,7 +200,9 @@ class _HomePageState extends State<HomePage> {
                                   onPressed: () => Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => AppointmentPage(),
+                                        builder: (context) => widget.isSupplier
+                                            ? AppointmentPage(isSupplier: true)
+                                            : ConfirmAppointmentPage(),
                                       )),
                                 ),
                               ],
@@ -298,36 +302,37 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildDescribe() {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
-              colors: [AppColors.COLOR_BLUE, AppColors.COLOR_BLUE2])),
-      padding: EdgeInsets.only(left: 15, top: 10, right: 10, bottom: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Loaner \nManagement",
-            style: TextStyle(
-                fontSize: 21,
-                color: AppColors.COLOR_WHITE,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 2),
-            overflow: TextOverflow.ellipsis,
-          ),
-          SizedBox(height: 10),
-          Text(
-            Constants.DESCRIBE_TITLE,
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.COLOR_WHITE,
-            ),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+                colors: [AppColors.COLOR_BLUE, AppColors.COLOR_BLUE2])),
+        child: Image.asset("${Constants.IMAGE_DIR}/loaner-ad.png",
+            fit: BoxFit.cover)
+        // Column(
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: [
+        //     Text(
+        //       "Loaner \nManagement",
+        //       style: TextStyle(
+        //           fontSize: 21,
+        //           color: AppColors.COLOR_WHITE,
+        //           fontWeight: FontWeight.w700,
+        //           letterSpacing: 2),
+        //       overflow: TextOverflow.ellipsis,
+        //     ),
+        //     SizedBox(height: 10),
+        //     Text(
+        //       Constants.DESCRIBE_TITLE,
+        //       style: TextStyle(
+        //         fontSize: 12,
+        //         color: AppColors.COLOR_WHITE,
+        //       ),
+        //       overflow: TextOverflow.ellipsis,
+        //     ),
+        //   ],
+        // ),
+        );
   }
 
   Widget _buildMenu() {

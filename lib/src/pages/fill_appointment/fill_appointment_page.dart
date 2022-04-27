@@ -1,12 +1,14 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/models/employee/EmployeeDataModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/appointment/appointment_page.dart';
 import 'package:loaner/src/pages/home/home_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_sum_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
+import 'package:loaner/src/utils/AskForConfirmToSave.dart';
 import 'package:loaner/src/utils/Constants.dart';
 import 'package:loaner/src/utils/ConvertDateFormat.dart';
 import 'package:loaner/src/utils/InputDecoration.dart';
@@ -16,8 +18,9 @@ import 'package:loaner/src/utils/MyAppBar.dart';
 import 'package:loaner/src/utils/SelectDecoration.dart';
 
 class FillAppointmentPage extends StatefulWidget {
-  FillAppointmentPage({Key? key}) : super(key: key);
-  AppointmentData? appointmented;
+  FillAppointmentPage({required this.isSupplier});
+
+  bool isSupplier;
   @override
   State<FillAppointmentPage> createState() => _FillAppointmentPageState();
 }
@@ -36,8 +39,14 @@ class NewTime {
 }
 
 class _FillAppointmentPageState extends State<FillAppointmentPage> {
-  bool isSupplier = true;
-  final appointment = AppointmentData(status: Constants.status[0]);
+  final EmployeeDataModel employee = EmployeeDataModel(
+      firstName: 'abcd',
+      lastName: 'efgh',
+      detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+      isTrained: true);
+
+  final AppointmentData appointment =
+      AppointmentData(status: Constants.status[0]);
   var _formKey = GlobalKey<FormState>();
   var _formKey2 = GlobalKey<FormState>();
   bool isEnabledButtonSave = true;
@@ -49,7 +58,6 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       ConvertDateFormat.convertTimeFormat(date: DateTime.now());
   TimeOfDay currentTimeSelect = TimeOfDay.now();
 
-  String companyName = 'POSE';
   TextEditingController _controllerCompanyName =
       new TextEditingController(text: "");
   TextEditingController _controllerEmpName =
@@ -161,8 +169,8 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                   _controllerAppDate.text != "") {
                 validate();
                 logger.d(appointment.toJson());
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AppointmentPage()));
+                askForConfirmToSave(
+                    context: context, isSupplier: widget.isSupplier);
               } else {
                 BotToast.showText(text: Constants.TEXT_FORM_FIELD);
               }
@@ -183,7 +191,10 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
         children: [
           const SizedBox(height: 10),
           _buildInput(),
-          const SizedBox(height: 20),
+          Divider(
+            color: AppColors.COLOR_GREY,
+            thickness: 2.0,
+          ),
           Expanded(
             child: SingleChildScrollView(
               child: _buildInputForm2(),
@@ -216,6 +227,18 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                       _controllerEmpName, Constants.emp, "เจ้าหน้าที่บริษัท"),
                 ],
               ),
+              const SizedBox(height: 10),
+              Visibility(
+                  visible: widget.isSupplier ? false : true,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("ผ่านการอบรม",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      _buildCheckBox(),
+                    ],
+                  ))
             ],
           ),
         ],
@@ -233,7 +256,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
             _buildDropdown(_controllerHospitalName, Constants.hos, "โรงพยาบาล"),
           ],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -241,14 +264,14 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                 "หน่วยงานที่ต้องการติดต่อ"),
           ],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildTextFormField(_controllerCssdName, "เจ้าหน้าที่ผู้ติดต่อ"),
           ],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -256,21 +279,21 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                 _controllerDoctorName, Constants.doc, "แพทย์ผู้ใช้อุปกรณ์"),
           ],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildDropdown(_controllerDepName, Constants.dep, "หน่วยงาน")
           ],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildTextFormField(_controllerPatientName, "ชื่อผู้ป่วย")
           ],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -310,7 +333,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
             ),
           ],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -339,50 +362,56 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextFormField(
+                  InkWell(
                     onTap: () {
                       _timePickerShow(_controllerAppTime);
                     },
-                    enabled: false,
-                    controller: _controllerAppTime,
-                    decoration:
-                        inputDecorationDate(hintText: "เวลา", isDate: false),
+                    child: TextFormField(
+                      enabled: false,
+                      controller: _controllerAppTime,
+                      decoration:
+                          inputDecorationDate(hintText: "เวลา", isDate: false),
+                    ),
                   )
                 ],
               ),
             ),
           ],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         _buildButtons(context),
       ]),
     );
   }
 
-  Widget _buildButtons(BuildContext context) => TextButton.icon(
-      style: TextButton.styleFrom(
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          minimumSize: Size(MediaQuery.of(context).size.width, 50),
-          side: BorderSide(color: AppColors.COLOR_PRIMARY, width: 2.0)),
-      onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => LoanerPage(
-                    isFillForm: true,
-                    selectedLoaner: [],
-                  ))),
-      icon: Icon(
-        Icons.add_circle_outline_outlined,
-        color: AppColors.COLOR_PRIMARY,
-      ),
-      label: Text("เพิ่มรายการ Loaner",
-          style: TextStyle(color: AppColors.COLOR_PRIMARY, fontSize: 16)));
+  Widget _buildButtons(BuildContext context) => Visibility(
+        visible: widget.isSupplier,
+        child: TextButton.icon(
+            style: TextButton.styleFrom(
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                minimumSize: Size(MediaQuery.of(context).size.width, 50),
+                side: BorderSide(color: AppColors.COLOR_PRIMARY, width: 2.0)),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LoanerPage(
+                          isFillForm: true,
+                          selectedLoaner: [],
+                        ))),
+            icon: Icon(
+              Icons.add_circle_outline_outlined,
+              color: AppColors.COLOR_PRIMARY,
+            ),
+            label: Text("เพิ่มรายการ Loaner",
+                style:
+                    TextStyle(color: AppColors.COLOR_PRIMARY, fontSize: 16))),
+      );
 
   TextFormField _buildTextFormField(
       TextEditingController text, String hintText) {
     return TextFormField(
-        validator: (value) => value == null ? "โปรดกรอกข้อมูล" : null,
+        validator: (value) => value == "" ? "โปรดกรอกข้อมูล" : null,
         controller: text,
         decoration: inputDecoration(hintText: hintText));
   }
@@ -419,5 +448,35 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
     appointment.useTime = _controllerUseTime.text;
     appointment.appTime = _controllerAppTime.text;
     setState(() {});
+  }
+
+  Row _buildCheckBox() {
+    return Row(
+      children: [
+        IconButton(
+            highlightColor: AppColors.COLOR_PRIMARY,
+            onPressed: () {
+              employee.isTrained = true;
+              setState(() {});
+            },
+            icon: Icon(employee.isTrained!
+                ? Icons.radio_button_checked_outlined
+                : Icons.radio_button_unchecked_outlined)),
+        Text("เคยอบรม"),
+        SizedBox(
+          width: 20,
+        ),
+        IconButton(
+            highlightColor: AppColors.COLOR_PRIMARY,
+            onPressed: () {
+              employee.isTrained = false;
+              setState(() {});
+            },
+            icon: Icon(employee.isTrained!
+                ? Icons.radio_button_unchecked_outlined
+                : Icons.radio_button_checked_outlined)),
+        Text("ไม่เคยอบรม"),
+      ],
+    );
   }
 }

@@ -41,11 +41,16 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
           onPressed: () {
             try {
               if (widget.selectedLoaner != null) {
-                logger.d(widget.selectedLoaner![1].toJson());
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AppointmentPage()));
+                // logger.d(widget.selectedLoaner![1].toJson());
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AppointmentPage(
+                              isSupplier: true,
+                            )));
               }
             } catch (e) {
+              print(e);
               BotToast.showText(text: Constants.TEXT_FORM_FIELD);
             }
           },

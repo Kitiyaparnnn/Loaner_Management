@@ -4,14 +4,15 @@ import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/appointment/history_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/AppointmentCard.dart';
+import 'package:loaner/src/utils/AppointmentCard_cssd.dart';
 import 'package:loaner/src/utils/Constants.dart';
 import 'package:loaner/src/utils/ConvertDateFormat.dart';
 import 'package:loaner/src/utils/InputDecoration.dart';
 import 'package:loaner/src/utils/SelectDecoration.dart';
 
 class AppointmentPage extends StatefulWidget {
-  AppointmentPage({Key? key}) : super(key: key);
-
+  AppointmentPage({required this.isSupplier});
+  bool isSupplier;
   @override
   State<AppointmentPage> createState() => _AppointmentPageState();
 }
@@ -19,18 +20,21 @@ class AppointmentPage extends StatefulWidget {
 class _AppointmentPageState extends State<AppointmentPage> {
   List<AppointmentData> appointments = [
     AppointmentData(
+        companyName: "บริษัท ก",
         hospitalName: "โรงพยาบาล ก",
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
         status: Constants.status[2]),
     AppointmentData(
+        companyName: "บริษัท ก",
         hospitalName: "โรงพยาบาล ง",
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
         status: Constants.status[1]),
     AppointmentData(
+        companyName: "บริษัท ก",
         hospitalName: "โรงพยาบาล ง",
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
@@ -59,14 +63,18 @@ class _AppointmentPageState extends State<AppointmentPage> {
           ],
         ),
         actions: [
-          IconButton(
-              icon: Icon(
-                Icons.history_outlined,
-                color: AppColors.COLOR_BLACK,
-                size: 30,
-              ),
-              onPressed: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HistoryPage()))),
+          widget.isSupplier
+              ? IconButton(
+                  icon: Icon(
+                    Icons.history_outlined,
+                    color: AppColors.COLOR_BLACK,
+                    size: 30,
+                  ),
+                  onPressed: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HistoryPage())))
+              : SizedBox(
+                  width: 10,
+                ),
         ],
         centerTitle: true,
       ),
@@ -110,6 +118,13 @@ class _AppointmentPageState extends State<AppointmentPage> {
             ? [AppColors.COLOR_YELLOW2, AppColors.COLOR_YELLOW]
             : [AppColors.COLOR_GREEN2, AppColors.COLOR_GREEN];
 
-    return appointmentCard(color:_color,object: object[index],context: context);
+    return widget.isSupplier
+        ? appointmentCard(
+            color: _color, object: object[index], context: context)
+        : appointmentCard_cssd(
+            color: _color,
+            object: object[index],
+            context: context,
+            isCompleted: true);
   }
 }

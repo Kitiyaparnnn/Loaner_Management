@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/pages/confirm_appointment/detail_appointment_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 
-Card appointmentCard(
+Card appointmentCard_cssd(
     {required List<Color> color,
     required AppointmentData object,
-    required BuildContext context}) {
+    required BuildContext context,
+    required bool isCompleted}) {
   return Card(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
@@ -30,7 +32,7 @@ Card appointmentCard(
                   children: [
                     Row(
                       children: [
-                        Text(object.hospitalName!,
+                        Text(object.companyName!,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         Spacer(),
@@ -45,16 +47,6 @@ Card appointmentCard(
                                   style:
                                       TextStyle(fontSize: 12, color: color[0])),
                             ))
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text("หน่วยงาน : ",
-                            style: TextStyle(
-                                fontSize: 14, color: AppColors.COLOR_LIGHT)),
-                        Text(object.organizeName!,
-                            style: TextStyle(
-                                fontSize: 14, color: AppColors.COLOR_BLACK))
                       ],
                     ),
                     Row(
@@ -78,11 +70,12 @@ Card appointmentCard(
             ),
           ),
         ),
-        onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  LoanerPage(isFillForm: true, selectedLoaner: []),
-            ))),
+        onTap: () => isCompleted
+            ? null
+            : Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DetailAppointmentPage(),
+                ))),
   );
 }

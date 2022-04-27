@@ -119,7 +119,7 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
                 buildLongTextFormField(_controllerDetail, "รายละเอียด (ถ้ามี)")
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [buildStockTextFormField(_controllerStock)],

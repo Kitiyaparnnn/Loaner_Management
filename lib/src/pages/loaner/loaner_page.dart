@@ -102,8 +102,11 @@ class _LoanerPageState extends State<LoanerPage> {
               ? null
               : [
                   IconButton(
-                      icon: Icon(Icons.add_circle_outline,
-                          color: AppColors.COLOR_BLACK,size: 30,),
+                      icon: Icon(
+                        Icons.add_circle_outline,
+                        color: AppColors.COLOR_BLACK,
+                        size: 30,
+                      ),
                       onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -176,14 +179,16 @@ class _LoanerPageState extends State<LoanerPage> {
 
   _loanerList() {
     return Expanded(
-      child: loaners.isEmpty? Center(
+      child: loaners.isEmpty
+          ? Center(
               child: Text(Constants.TEXT_DATA_NOT_FOUND),
-            ): ListView.builder(
-        itemCount: items.isNotEmpty ? items.length : loaners.length,
-        itemBuilder: ((context, index) => items.isNotEmpty
-            ? _mapList(items, index)
-            : _mapList(loaners, index)),
-      ),
+            )
+          : ListView.builder(
+              itemCount: items.isNotEmpty ? items.length : loaners.length,
+              itemBuilder: ((context, index) => items.isNotEmpty
+                  ? _mapList(items, index)
+                  : _mapList(loaners, index)),
+            ),
     );
   }
 
@@ -213,13 +218,15 @@ class _LoanerPageState extends State<LoanerPage> {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => LoanerDetailPage(
-                        loaner: object[index],
-                        selectedLoaner: widget.selectedLoaner,
-                      )))),
+          onTap: () => widget.isFillForm
+              ? Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LoanerDetailPage(
+                            loaner: object[index],
+                            selectedLoaner: widget.selectedLoaner,
+                          )))
+              : null),
     );
   }
 }

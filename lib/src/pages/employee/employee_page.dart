@@ -184,9 +184,9 @@ class _EmployeePageState extends State<EmployeePage> {
                   style: TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT),
                 ),
           object[index].isTrained!
-              ? Text('o ผ่านการอบรม',
+              ? Text('• ผ่านการอบรม',
                   style: TextStyle(fontSize: 12, color: AppColors.COLOR_GREEN2))
-              : Text('o ไม่ผ่านการอบรม',
+              : Text('• ไม่ผ่านการอบรม',
                   style: TextStyle(fontSize: 12, color: AppColors.COLOR_RED))
         ]),
       ),
