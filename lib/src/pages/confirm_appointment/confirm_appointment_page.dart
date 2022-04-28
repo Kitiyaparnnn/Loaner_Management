@@ -13,22 +13,22 @@ class ConfirmAppointmentPage extends StatefulWidget {
 }
 
 class _ConfirmAppointmentPageState extends State<ConfirmAppointmentPage> {
-  List<AppointmentData> appointments = [
-    AppointmentData(
+  List<AppointmentDataModel> appointments = [
+    AppointmentDataModel(
         companyName: "บริษัท ก",
         hospitalName: "โรงพยาบาล ก",
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
         status: Constants.status[1]),
-    AppointmentData(
+    AppointmentDataModel(
         companyName: "บริษัท ก",
         hospitalName: "โรงพยาบาล ง",
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
         status: Constants.status[1]),
-    AppointmentData(
+    AppointmentDataModel(
         companyName: "บริษัท ก",
         hospitalName: "โรงพยาบาล ง",
         organizeName: "บริษัท ก",
@@ -73,7 +73,7 @@ class _ConfirmAppointmentPageState extends State<ConfirmAppointmentPage> {
     );
   }
 
-  _mapList(List<AppointmentData> object, int index) {
+  _mapList(List<AppointmentDataModel> object, int index) {
     List<Color> _color = [AppColors.COLOR_YELLOW2, AppColors.COLOR_YELLOW];
 
     return appointmentCard_cssd(

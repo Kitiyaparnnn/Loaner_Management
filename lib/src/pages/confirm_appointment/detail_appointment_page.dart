@@ -17,7 +17,7 @@ class DetailAppointmentPage extends StatefulWidget {
 }
 
 class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
-  final AppointmentData appointment = AppointmentData(
+  final AppointmentDataModel appointment = AppointmentDataModel(
       companyName: "บริษัท ก",
       empName: "นพกร มังกรใส",
       cssdName: "สายสาคร นครยานพ",

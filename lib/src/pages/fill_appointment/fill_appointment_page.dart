@@ -45,8 +45,8 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
       isTrained: true);
 
-  final AppointmentData appointment =
-      AppointmentData(status: Constants.status[0]);
+  final AppointmentDataModel appointment =
+      AppointmentDataModel(status: Constants.status[0]);
   var _formKey = GlobalKey<FormState>();
   var _formKey2 = GlobalKey<FormState>();
   bool isEnabledButtonSave = true;

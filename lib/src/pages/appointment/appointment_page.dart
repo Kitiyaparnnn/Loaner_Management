@@ -18,22 +18,22 @@ class AppointmentPage extends StatefulWidget {
 }
 
 class _AppointmentPageState extends State<AppointmentPage> {
-  List<AppointmentData> appointments = [
-    AppointmentData(
+  List<AppointmentDataModel> appointments = [
+    AppointmentDataModel(
         companyName: "บริษัท ก",
         hospitalName: "โรงพยาบาล ก",
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
         status: Constants.status[2]),
-    AppointmentData(
+    AppointmentDataModel(
         companyName: "บริษัท ก",
         hospitalName: "โรงพยาบาล ง",
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
         status: Constants.status[1]),
-    AppointmentData(
+    AppointmentDataModel(
         companyName: "บริษัท ก",
         hospitalName: "โรงพยาบาล ง",
         organizeName: "บริษัท ก",
@@ -111,7 +111,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
     );
   }
 
-  _mapList(List<AppointmentData> object, int index) {
+  _mapList(List<AppointmentDataModel> object, int index) {
     List<Color> _color = object[index].status! == Constants.status[0]
         ? [AppColors.COLOR_PRIMARY, AppColors.COLOR_BLUE]
         : object[index].status! == Constants.status[1]

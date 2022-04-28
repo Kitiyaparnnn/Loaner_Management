@@ -22,14 +22,14 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   final AppointmentSearchModel search = AppointmentSearchModel();
 
-  List<AppointmentData> appointments = [
-    AppointmentData(
+  List<AppointmentDataModel> appointments = [
+    AppointmentDataModel(
         hospitalName: "โรงพยาบาล ก",
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
         status: Constants.status[3]),
-    AppointmentData(
+    AppointmentDataModel(
         hospitalName: "โรงพยาบาล ก",
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
@@ -149,7 +149,7 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  _mapList(List<AppointmentData> object, int index) {
+  _mapList(List<AppointmentDataModel> object, int index) {
     List<Color> _color = object[index].status! == Constants.status[3]
         ? [AppColors.COLOR_GREEN2, AppColors.COLOR_GREEN]
         : [AppColors.COLOR_YELLOW2, AppColors.COLOR_YELLOW];

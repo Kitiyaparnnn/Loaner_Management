@@ -1,7 +1,7 @@
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 
-class AppointmentData {
-  AppointmentData(
+class AppointmentDataModel {
+  AppointmentDataModel(
       {this.companyName,
       this.empName,
       this.hospitalName,
@@ -17,7 +17,7 @@ class AppointmentData {
       this.status,
       this.loaners});
 
-  AppointmentData.fromJson(dynamic json) {
+  AppointmentDataModel.fromJson(dynamic json) {
     companyName = json['company_name'];
     empName = json['emp_name'];
     hospitalName = json['hospital_name'];

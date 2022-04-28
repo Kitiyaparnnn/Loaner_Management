@@ -1,15 +1,17 @@
-// ignore_for_file: unnecessary_string_interpolations
-
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loaner/src/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:loaner/src/blocs/login/bloc/login_bloc.dart';
 import 'package:loaner/src/models/login/LoginModel.dart';
 import 'package:loaner/src/pages/home/home_page.dart';
 import 'package:loaner/src/services/SharedPreferencesService.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
+import 'package:loaner/src/utils/DialogCustom.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -33,7 +35,6 @@ class _LoginPageState extends State<LoginPage>
   FocusNode passwordFocusNode = FocusNode();
 
   bool isRemember = false;
-  bool loading = false;
   bool isSupplier = true;
 
   @override
@@ -64,28 +65,55 @@ class _LoginPageState extends State<LoginPage>
       ),
       body: SafeArea(
         child: Container(
-          decoration: const BoxDecoration(color: AppColors.COLOR_GREY
-              // image: DecorationImage(
-              //     image: AssetImage('${Constants.IMAGE_DIR}/bg_login.png'),
-              //     fit: BoxFit.cover),
-              ),
           height: MediaQuery.of(context).size.height,
           child: GestureDetector(
             onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
             child: SingleChildScrollView(
               child: Container(
+                height: MediaQuery.of(context).size.height,
                 child: Center(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 30),
-                      // _buildLogo(),
-                      const SizedBox(height: 40),
-                      _buildTitle(),
-                      const SizedBox(height: 30),
-                      _buildForm(context),
-                      const SizedBox(height: 50),
-                      // _loading()
+                  child: MultiBlocListener(
+                    listeners: [
+                      BlocListener<LoginBloc, LoginState>(
+                        listener: (context, state) {
+                          BotToast.closeAllLoading();
+
+                          if (state is LoginStateLoading) {
+                            BotToast.showLoading();
+                          }
+
+                          if (state is LoginStateFailure ||
+                              state is LoginStateInValid) {
+                            isEnabledButtonLogin = true;
+                            WidgetsBinding.instance!.addPostFrameCallback(
+                              (_) => dialogCustom(
+                                context: context,
+                                title: Constants.TEXT_FAILED,
+                                content: Constants.TEXT_LOGIN_FAILED,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      BlocListener<AuthenticationBloc, AuthenticationState>(
+                        listener: (context, state) {
+                          BotToast.closeAllLoading();
+                          if (state is AuthenticationUnauthenticated) {
+                            isEnabledButtonLogin = true;
+                          }
+                        },
+                      ),
                     ],
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 30),
+                        // _buildLogo(),
+                        const SizedBox(height: 40),
+                        _buildTitle(),
+                        const SizedBox(height: 30),
+                        _buildForm(context),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -130,7 +158,31 @@ class _LoginPageState extends State<LoginPage>
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
         children: [
-          _buildInput(),
+          BlocBuilder<LoginBloc, LoginState>(
+            builder: (context, state) {
+              if (state is LoginStateIsRemember) {
+                isRemember = state.isRemember;
+              }
+
+              if (state is LoginStateLoading) {
+                isEnabledButtonLogin = false;
+              }
+
+              if (state is LoginStateLoaded) {
+                isEnabledButtonLogin = true;
+              }
+
+              if (state is LoginStateIsRememberToggle) {
+                isRemember = state.isRemember;
+              }
+
+              if (state is LoginStateIsShowPassword) {
+                hidePassword = state.isShow;
+              }
+
+              return _buildInput();
+            },
+          ),
           const SizedBox(height: 30),
           _buildButtonLogin(context),
         ],
@@ -141,29 +193,27 @@ class _LoginPageState extends State<LoginPage>
   Widget _buildInput() {
     return Form(
       key: _formKey,
-      child: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _label("ชื่อผู้ใช้"),
-                _buildTextFormFieldUsername(),
-              ],
-            ),
-            const SizedBox(height: 25),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _label("รหัสผ่าน"),
-                _buildTextFormFieldPassword(context),
-              ],
-            ),
-            SizedBox(height: 15),
-            _buildRemember()
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _label("ชื่อผู้ใช้"),
+              _buildTextFormFieldUsername(),
+            ],
+          ),
+          const SizedBox(height: 25),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _label("รหัสผ่าน"),
+              _buildTextFormFieldPassword(context),
+            ],
+          ),
+          SizedBox(height: 15),
+          _buildRemember()
+        ],
       ),
     );
   }
@@ -184,7 +234,8 @@ class _LoginPageState extends State<LoginPage>
     return TextFormField(
       style: const TextStyle(color: AppColors.COLOR_BLACK),
       controller: _controllerUsername,
-      decoration: _inputDecoration(hintText: "username", contextBloc: context),
+      decoration:
+          _inputDecoration(hintText: "ชื่อผู้ใช้", contextBloc: context),
       onSaved: (value) {
         loginData.username = value;
       },
@@ -199,9 +250,7 @@ class _LoginPageState extends State<LoginPage>
       controller: _controllerPassword,
       style: TextStyle(color: AppColors.COLOR_BLACK),
       decoration: _inputDecoration(
-          hintText: "Insert your password here",
-          passwordInput: true,
-          contextBloc: context),
+          hintText: "รหัสผ่าน", passwordInput: true, contextBloc: context),
       obscureText: !hidePassword,
       focusNode: passwordFocusNode,
       onSaved: (value) {
@@ -209,7 +258,8 @@ class _LoginPageState extends State<LoginPage>
       },
       onFieldSubmitted: (String value) {
         _formKey.currentState!.save();
-        // BlocProvider.of<LoginBloc>(context).add(LoginEventOnPress(loginData: loginData));
+        BlocProvider.of<LoginBloc>(context)
+            .add(LoginEventOnPress(loginData: loginData));
       },
     );
   }
@@ -253,10 +303,8 @@ class _LoginPageState extends State<LoginPage>
               padding: EdgeInsetsDirectional.zero,
               child: GestureDetector(
                 onTap: () {
-                  setState(() {
-                    hidePassword = !hidePassword;
-                  });
-                  // BlocProvider.of<LoginBloc>(contextBloc).add(LoginEventIsShowPasswordToggle(isShow: hidePassword));
+                  BlocProvider.of<LoginBloc>(contextBloc).add(
+                      LoginEventIsShowPasswordToggle(isShow: hidePassword));
                 },
                 child: Icon(
                   hidePassword
@@ -270,70 +318,49 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 
-  Widget _buildButtonLogin(BuildContext context) => RaisedButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        padding: EdgeInsets.all(0.0),
-        color: Colors.transparent,
-        onPressed: isEnabledButtonLogin
-            ? () async {
-                _formKey.currentState!.save();
-                loginData.isRemember = isRemember;
-                // BlocProvider.of<LoginBloc>(context)
-                //     .add(LoginEventOnPress(loginData: loginData));
+  Widget _buildButtonLogin(BuildContext context) =>
+      BlocBuilder<LoginBloc, LoginState>(
+        builder: (context, state) {
+          return RaisedButton(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            padding: EdgeInsets.all(0.0),
+            color: Colors.transparent,
+            onPressed: isEnabledButtonLogin
+                ? () async {
+                    _formKey.currentState!.save();
+                    loginData.isRemember = isRemember;
+                    // BlocProvider.of<LoginBloc>(context)
+                    //     .add(LoginEventOnPress(loginData: loginData));
 
-                if (loginData.username == 'supplier') {
-                  isSupplier = true;
-                } else {
-                  isSupplier = false;
-                }
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => HomePage(
-                              isSupplier: isSupplier,
-                            )));
-              }
-            : null,
-        child: Container(
-          decoration: BoxDecoration(
-              color: AppColors.COLOR_PRIMARY,
-              borderRadius: BorderRadius.all(Radius.circular(8))),
-          constraints: BoxConstraints(minHeight: 50.0),
-          alignment: Alignment.center,
-          child: Text(
-            "เข้าสู่ระบบ",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              letterSpacing: 0.15,
-            ),
-          ),
-        ),
-      );
-
-  Widget _loading() {
-    return Container(
-      color: Colors.transparent,
-      child: loading
-          ? Center(
-              child: Column(
-                children: [
-                  Platform.isIOS
-                      ? CupertinoActivityIndicator()
-                      : CircularProgressIndicator(
-                          color: AppColors.COLOR_SECONDARY),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(Constants.LOADING_TEXT,
-                      style: TextStyle(color: AppColors.COLOR_GREY))
-                ],
+                    if (loginData.username == 'supplier') {
+                      isSupplier = true;
+                    } else {
+                      isSupplier = false;
+                    }
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomePage()));
+                  }
+                : null,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: AppColors.COLOR_PRIMARY,
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              constraints: BoxConstraints(minHeight: 50.0),
+              alignment: Alignment.center,
+              child: Text(
+                "เข้าสู่ระบบ",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  letterSpacing: 0.15,
+                ),
               ),
-            )
-          : SizedBox(),
-    );
-  }
+            ),
+          );
+        },
+      );
 
   Widget _buildRemember() {
     return Container(
@@ -348,9 +375,8 @@ class _LoginPageState extends State<LoginPage>
                     activeColor: AppColors.COLOR_PRIMARY,
                     value: isRemember,
                     onChanged: (value) {
-                      // BlocProvider.of<LoginBloc>(context).add(LoginEventIsRememberToggle(isRemember: isRemember));
-                      isRemember = value!;
-                      setState(() {});
+                      BlocProvider.of<LoginBloc>(context).add(
+                          LoginEventIsRememberToggle(isRemember: isRemember));
                     },
                   ),
                 ),

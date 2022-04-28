@@ -1,10 +1,15 @@
+import 'package:bloc/bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loaner/src/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:loaner/src/pages/home/home_page.dart';
 import 'package:loaner/src/pages/login/login_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
+import 'package:loaner/src/utils/DialogCustom.dart';
 import 'package:logger/logger.dart';
 
 class MyApp extends StatefulWidget {
@@ -37,8 +42,8 @@ class _MyApp extends State<MyApp> {
     }
 
     var _route = <String, WidgetBuilder>{
-      // Constants.HOME_ROUTE: (context) => HomePage(),
-      // Constants.LOGIN_ROUTE: (context) => LoginPage(),
+      Constants.HOME_ROUTE: (context) => HomePage(),
+      Constants.LOGIN_ROUTE: (context) => LoginPage(),
     };
     return FutureBuilder(
         future: Init.instance.initialize(),
@@ -61,10 +66,31 @@ class _MyApp extends State<MyApp> {
             theme: ThemeData(
                 primarySwatch: AppColors.COLOR_PRIMARY_SWATCH,
                 fontFamily: Constants.APP_FONT,
-                // backgroundColor: AppColors.COLOR_GREY,
                 scaffoldBackgroundColor: AppColors.COLOR_SWATCH),
             routes: _route,
-            home: LoginPage(),
+            home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+              builder: (context, state) {
+                BotToast.closeAllLoading();
+
+                if (state is AuthenticationUnauthenticated) {
+                  if (state.showAlert) {
+                    state.showAlert = false;
+                    WidgetsBinding.instance?.addPostFrameCallback((_) => dialogCustom(
+                          context: context,
+                          title: Constants.TEXT_FAILED,
+                          content: state.message,
+                        ));
+                  }
+                  return LoginPage();
+                }
+
+                if (state is AuthenticationAuthenticated) {
+                  return HomePage();
+                }
+
+                  return LoginPage();
+              },
+            ),
           );
         });
   }

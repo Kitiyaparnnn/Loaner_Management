@@ -6,7 +6,7 @@ import 'package:loaner/src/utils/AppColors.dart';
 
 Card appointmentCard_cssd(
     {required List<Color> color,
-    required AppointmentData object,
+    required AppointmentDataModel object,
     required BuildContext context,
     required bool isCompleted}) {
   return Card(

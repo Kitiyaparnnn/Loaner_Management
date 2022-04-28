@@ -1,5 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:loaner/src/models/MenuChoice.dart';
 import 'package:loaner/src/models/MenuModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
@@ -9,14 +10,14 @@ import 'package:loaner/src/pages/confirm_appointment/detail_appointment_page.dar
 import 'package:loaner/src/pages/employee/employee_page.dart';
 import 'package:loaner/src/pages/fill_appointment/fill_appointment_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
+import 'package:loaner/src/services/AppointmentService.dart';
 import 'package:loaner/src/services/SharedPreferencesService.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/AskForConfirmToLogout.dart';
 import 'package:loaner/src/utils/Constants.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key, required this.isSupplier}) : super(key: key);
-  bool isSupplier;
+  HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -35,22 +36,23 @@ List<MenuChoice> choices = const <MenuChoice>[
       key: "LOGOUT"),
 ];
 
-List<AppointmentData> appointmentsData = [
-  AppointmentData(
+List<AppointmentDataModel> appointmentsData = [
+  AppointmentDataModel(
       hospitalName: "โรงพยาบาล ก",
       organizeName: "บริษัท ก",
       appDate: "22-04-2022",
       appTime: "12:00",
       status: Constants.status[0]),
-  AppointmentData(
+  AppointmentDataModel(
       hospitalName: "โรงพยาบาล ก",
       organizeName: "บริษัท ก",
-      appDate: "22-04-2022",
+      appDate: "28-04-2022",
       appTime: "12:00",
       status: Constants.status[1])
 ];
 
 class _HomePageState extends State<HomePage> {
+  bool isSupplier = true;
   void _select(MenuChoice choice) {
     switch (choice.key) {
       case "SETTING":
@@ -69,11 +71,25 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     loading();
     getFullName();
-    generateMenu();
+    getMachine();
     super.initState();
   }
 
+  String _convertToDay(String date) {
+    final dateDatetime = DateFormat('dd-MM-yyyy').parse(date);
+
+    String day = DateFormat('EEEE').format(dateDatetime);
+
+    return day;
+  }
+
+  List<AppointmentDataModel> appointList = [];
+
   Future<void> getMachine() async {
+    // final _appointmentService = AppointmentService();
+
+    // appointList =
+    //     await _appointmentService.getAppointments(status: Constants.status[2]);
     await generateMenu();
     if (this.mounted) {
       setState(() {});
@@ -97,7 +113,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> generateMenu() async {
     menuList.clear();
-    var _menu = widget.isSupplier
+    var _menu = isSupplier
         ? <MenuModel>[
             MenuModel(
               name: "${Constants.FILL_APPOINT_TITLE}",
@@ -200,7 +216,7 @@ class _HomePageState extends State<HomePage> {
                                   onPressed: () => Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => widget.isSupplier
+                                        builder: (context) => isSupplier
                                             ? AppointmentPage(isSupplier: true)
                                             : ConfirmAppointmentPage(),
                                       )),
@@ -308,31 +324,7 @@ class _HomePageState extends State<HomePage> {
             gradient: LinearGradient(
                 colors: [AppColors.COLOR_BLUE, AppColors.COLOR_BLUE2])),
         child: Image.asset("${Constants.IMAGE_DIR}/loaner-ad.png",
-            fit: BoxFit.cover)
-        // Column(
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //     Text(
-        //       "Loaner \nManagement",
-        //       style: TextStyle(
-        //           fontSize: 21,
-        //           color: AppColors.COLOR_WHITE,
-        //           fontWeight: FontWeight.w700,
-        //           letterSpacing: 2),
-        //       overflow: TextOverflow.ellipsis,
-        //     ),
-        //     SizedBox(height: 10),
-        //     Text(
-        //       Constants.DESCRIBE_TITLE,
-        //       style: TextStyle(
-        //         fontSize: 12,
-        //         color: AppColors.COLOR_WHITE,
-        //       ),
-        //       overflow: TextOverflow.ellipsis,
-        //     ),
-        //   ],
-        // ),
-        );
+            fit: BoxFit.cover));
   }
 
   Widget _buildMenu() {
@@ -435,52 +427,80 @@ class _HomePageState extends State<HomePage> {
       height: double.maxFinite,
       child: ListView.builder(
         itemCount: appointmentsData.length,
-        itemBuilder: (context, index) => Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          color: AppColors.COLOR_WHITE,
-          elevation: 1.0,
-          child: Row(children: [
-            SizedBox(
-              height: 80,
-              width: 80,
-              // child: Column(
-              //   children: [
-              //     Container(
-              //         padding: EdgeInsets.all(2.0),
-              //         width: MediaQuery.of(context).size.width,
-              //         color: AppColors.COLOR_PRIMARY,
-              //         child: Text(
-              //             "${appointmentsData[index].appDate![0]}${appointmentsData[index].appDate![1]}")),
-              //   ],
-              // ),
+        itemBuilder: (context, index) {
+          String day = _convertToDay(appointmentsData[index].appDate!);
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(appointmentsData[index].hospitalName!,
-                    style: TextStyle(fontSize: 14)),
-                Text("${appointmentsData[index].organizeName}",
-                    style:
-                        TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT)),
-                Row(
-                  children: [
-                    Icon(Icons.calendar_month_outlined,
-                        color: AppColors.COLOR_PRIMARY, size: 14),
-                    Text("วันที่นัดหมาย: ${appointmentsData[index].appDate}",
-                        style: TextStyle(
-                            fontSize: 12, color: AppColors.COLOR_PRIMARY)),
-                    SizedBox(width: 10),
-                    Text("เวลา: ${appointmentsData[index].appTime} น.",
-                        style: TextStyle(
-                            fontSize: 12, color: AppColors.COLOR_PRIMARY))
-                  ],
+            color: AppColors.COLOR_WHITE,
+            elevation: 1.0,
+            child: Row(children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: 60,
+                  width: 60,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.all(2.0),
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                              color: AppColors.COLOR_PRIMARY,
+                              borderRadius: BorderRadius.circular(8.0)),
+                          child: Center(
+                            child: Text(
+                                "${appointmentsData[index].appDate![0]}${appointmentsData[index].appDate![1]}",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: AppColors.COLOR_WHITE)),
+                          )),
+                      Container(
+                          padding: EdgeInsets.all(2.0),
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                              color: AppColors.COLOR_GREY,
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(8.0),
+                                  bottomRight: Radius.circular(8.0))),
+                          child: Center(
+                            child: Text(day,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.COLOR_BLACK)),
+                          ))
+                    ],
+                  ),
                 ),
-              ],
-            )
-          ]),
-        ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(appointmentsData[index].hospitalName!,
+                      style: TextStyle(fontSize: 14)),
+                  Text("${appointmentsData[index].organizeName}",
+                      style: TextStyle(
+                          fontSize: 14, color: AppColors.COLOR_LIGHT)),
+                  Row(
+                    children: [
+                      Icon(Icons.calendar_month_outlined,
+                          color: AppColors.COLOR_PRIMARY, size: 14),
+                      Text("วันที่นัดหมาย: ${appointmentsData[index].appDate}",
+                          style: TextStyle(
+                              fontSize: 12, color: AppColors.COLOR_PRIMARY)),
+                      SizedBox(width: 10),
+                      Text("เวลา: ${appointmentsData[index].appTime} น.",
+                          style: TextStyle(
+                              fontSize: 12, color: AppColors.COLOR_PRIMARY))
+                    ],
+                  ),
+                ],
+              )
+            ]),
+          );
+        },
       ),
     );
   }

@@ -5,7 +5,7 @@ import 'package:loaner/src/utils/AppColors.dart';
 
 Card appointmentCard(
     {required List<Color> color,
-    required AppointmentData object,
+    required AppointmentDataModel object,
     required BuildContext context}) {
   return Card(
     shape: RoundedRectangleBorder(
