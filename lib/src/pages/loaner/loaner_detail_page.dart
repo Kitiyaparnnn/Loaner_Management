@@ -1,5 +1,7 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
@@ -11,16 +13,16 @@ import 'package:loaner/src/utils/LabelFormat.dart';
 import 'package:loaner/src/utils/MyAppBar.dart';
 
 class LoanerDetailPage extends StatefulWidget {
-  LoanerDetailPage({required this.loaner, required this.selectedLoaner});
+  LoanerDetailPage({required this.loaner});
 
   LoanerModel loaner;
-  List<LoanerModel> selectedLoaner;
+
   @override
   State<LoanerDetailPage> createState() => _LoanerDetailPageState();
 }
 
 class _LoanerDetailPageState extends State<LoanerDetailPage> {
-  TextEditingController _controllerdetail = new TextEditingController(text: "");
+  TextEditingController _controllernote = new TextEditingController(text: "");
   var _formKey = GlobalKey<FormState>();
   int no = 0;
 
@@ -63,21 +65,7 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
                 padding: const EdgeInsets.all(8.0),
                 primary: AppColors.COLOR_PRIMARY),
             onPressed: () {
-              try {
-                widget.loaner.rent = no;
-                logger.d(widget.loaner.toJson());
-                widget.selectedLoaner.add(widget.loaner);
-                Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LoanerPage(
-                              isFillForm: true,
-                              selectedLoaner: widget.selectedLoaner,
-                            )));
-              } catch (e) {
-                print(e);
-                BotToast.showText(text: Constants.TEXT_FORM_FIELD);
-              }
+              validate();
             },
             child: Text("เพิ่มรายการ", style: TextStyle(fontSize: 16))),
       ),
@@ -144,43 +132,53 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
             keyboardType: TextInputType.multiline,
             maxLines: 4,
             style: const TextStyle(color: AppColors.COLOR_LIGHT, fontSize: 16),
-            controller: _controllerdetail,
+            controller: _controllernote,
             decoration: inputDecoration(hintText: "หมายเหตุ"),
             onChanged: (value) {
-              widget.loaner.note = value;
-              setState(() {});
+              _controllernote.text = value;
             },
           ),
           Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconButton(
-                  splashRadius: 10.0,
-                  highlightColor: AppColors.COLOR_PRIMARY,
-                  onPressed: () {
+              InkWell(
+                  onTap: () {
                     no = no - 1;
                     setState(() {});
                   },
-                  icon: Icon(
-                    Icons.remove,
-                    color: AppColors.COLOR_PRIMARY,
-                  )),
-              Text('$no',
-                  style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold)),
-              IconButton(
-                splashRadius: 10.0,
-                highlightColor: AppColors.COLOR_PRIMARY,
-                onPressed: () {
-                  no = no + 1;
-                  setState(() {});
-                },
-                icon: Icon(Icons.add, color: AppColors.COLOR_PRIMARY),
-              )
+                  child: Image.asset("${Constants.IMAGE_DIR}/minus.png")),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                child: Text('$no',
+                    style:
+                        TextStyle(fontSize: 21, fontWeight: FontWeight.bold)),
+              ),
+              InkWell(
+                  onTap: () {
+                    no = no + 1;
+                    setState(() {});
+                  },
+                  child: Image.asset("${Constants.IMAGE_DIR}/plus.png"))
             ],
           ),
         ],
       ),
     );
+  }
+
+  validate() {
+    if (no > 0) {
+      widget.loaner.rent = no;
+      widget.loaner.note = _controllernote.text;
+      context
+          .read<AppointmentBloc>()
+          .add(AppointmentAddLoaner(loaner: widget.loaner));
+      Navigator.pop(
+        context,
+      );
+    } else {
+      BotToast.showText(text: Constants.TEXT_FORM_FIELD);
+    }
   }
 }

@@ -1,9 +1,12 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/appointment/appointment_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
+import 'package:loaner/src/utils/AskForConfirmToSave.dart';
 import 'package:loaner/src/utils/Constants.dart';
 import 'package:loaner/src/utils/LabelFormat.dart';
 import 'package:loaner/src/utils/MyAppBar.dart';
@@ -16,17 +19,32 @@ class LoanerSumPage extends StatefulWidget {
 }
 
 class _LoanerSumPageState extends State<LoanerSumPage> {
+  List<LoanerModel> loaners = [];
+
+  @override
+  void initState() {
+    context.read<AppointmentBloc>().add(AppointmentGetLoaner());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(title: Constants.LOANER_SUM_TITLE, context: context),
-      body: widget.selectedLoaner!.length != 0
-          ? ListView.builder(
-              itemCount: widget.selectedLoaner!.length,
-              itemBuilder: ((context, index) =>
-                  _mapList(widget.selectedLoaner!, index)),
-            )
-          : Center(child: Text(Constants.TEXT_DATA_NOT_FOUND)),
+      appBar: myAppBar(context: context, title: Constants.LOANER_SUM_TITLE),
+      body: BlocBuilder<AppointmentBloc, AppointmentState>(
+        builder: (context, state) {
+          if (state is AppointmentStateGetLoaner) {
+            loaners = state.loaners;
+          }
+
+          return loaners.length != 0
+              ? ListView.builder(
+                  itemCount: loaners.length,
+                  itemBuilder: ((context, index) => _mapList(loaners, index)),
+                )
+              : Center(child: Text(Constants.TEXT_DATA_NOT_FOUND));
+        },
+      ),
       bottomNavigationBar: _bottomButton(),
     );
   }
@@ -40,17 +58,10 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
               primary: AppColors.COLOR_PRIMARY),
           onPressed: () {
             try {
-              if (widget.selectedLoaner != null) {
-                // logger.d(widget.selectedLoaner![1].toJson());
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AppointmentPage(
-                              isSupplier: true,
-                            )));
-              }
+              context.read<AppointmentBloc>().add(AppointmentButtonOnPress2());
+              askForConfirmToSave(context: context, isSupplier: true);
             } catch (e) {
-              print(e);
+              logger.e(e);
               BotToast.showText(text: Constants.TEXT_FORM_FIELD);
             }
           },
@@ -101,24 +112,26 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(
-                          splashRadius: 10.0,
-                          highlightColor: AppColors.COLOR_PRIMARY,
-                          onPressed: () {
-                            object[index].rent = object[index].rent! - 1;
-                            setState(() {});
+                      InkWell(
+                          onTap: () {
+                            context
+                                .read<AppointmentBloc>()
+                                .add(AppointmentMinusLoaner(index: index));
                           },
-                          icon: Icon(Icons.remove)),
-                      Text("${object[index].rent}",
-                          style: TextStyle(fontSize: 21)),
-                      IconButton(
-                        splashRadius: 10.0,
-                        highlightColor: AppColors.COLOR_PRIMARY,
-                        onPressed: () {
-                          object[index].rent = object[index].rent! + 1;
-                          setState(() {});
+                          child:
+                              Image.asset("${Constants.IMAGE_DIR}/minus.png")),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: Text("${object[index].rent}",
+                            style: TextStyle(fontSize: 21)),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          context
+                              .read<AppointmentBloc>()
+                              .add(AppointmentPlusLoaner(index: index));
                         },
-                        icon: Icon(Icons.add),
+                        child: Image.asset("${Constants.IMAGE_DIR}/plus.png"),
                       )
                     ],
                   )
@@ -134,8 +147,15 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
                     color: AppColors.COLOR_GREY,
                     thickness: 2.0,
                   ),
-                  label("หมายเหตุ*"),
-                  Text(object[index].detail!,
+                  Row(children: [
+                    Text("หมายเหตุ",
+                        style: TextStyle(
+                            fontSize: 14, color: AppColors.COLOR_BLACK)),
+                    Text("*",
+                        style:
+                            TextStyle(fontSize: 14, color: AppColors.COLOR_RED))
+                  ]),
+                  Text(object[index].note!,
                       style:
                           TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT))
                 ],

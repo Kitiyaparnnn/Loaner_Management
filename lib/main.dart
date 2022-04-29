@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/BlocObserver.dart';
+import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:loaner/src/blocs/login/bloc/login_bloc.dart';
 import 'package:loaner/src/my_app.dart';
@@ -22,6 +23,9 @@ void main() async{
           ),
           BlocProvider<LoginBloc>(
             create: (_) => LoginBloc(authenticationBloc: BlocProvider.of<AuthenticationBloc>(_))..add(LoginEventStart()),
+          ),
+          BlocProvider<AppointmentBloc>(
+            create: (_) => AppointmentBloc(),
           ),
         ],
         child: MyApp(),

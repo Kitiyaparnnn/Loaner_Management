@@ -1,4 +1,4 @@
-class PreferenceKey{
+class PreferenceKey {
   static final String isLogin = "isLogin";
   static final String isRemember = "isRemember";
   static final String username = "username";
@@ -11,5 +11,6 @@ class PreferenceKey{
   static final String empCode = "empCode";
   static final String depId = "depId";
   static final String depName = "depName";
-
+  static final String companyName = "companyName";
+  static final String role = "role";
 }

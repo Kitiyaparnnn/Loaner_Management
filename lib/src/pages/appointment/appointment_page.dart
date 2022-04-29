@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/appointment/history_page.dart';
+import 'package:loaner/src/pages/home/home_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/AppointmentCard.dart';
 import 'package:loaner/src/utils/AppointmentCard_cssd.dart';
@@ -25,14 +27,41 @@ class _AppointmentPageState extends State<AppointmentPage> {
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
-        status: Constants.status[2]),
+        status: Constants.status[2],
+        loaners: [
+          LoanerModel(
+              name: 'LoanerA',
+              detail:
+                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+              rent: 3,
+              note: ''),
+          LoanerModel(
+              name: 'LoanerB',
+              detail:
+                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+              rent: 2,
+              note: ''),
+        ]),
     AppointmentDataModel(
         companyName: "บริษัท ก",
         hospitalName: "โรงพยาบาล ง",
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
-        status: Constants.status[1]),
+        status: Constants.status[1], loaners: [
+          LoanerModel(
+              name: 'LoanerA',
+              detail:
+                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+              rent: 3,
+              note: ''),
+          LoanerModel(
+              name: 'LoanerB',
+              detail:
+                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+              rent: 2,
+              note: ''),
+        ]),
     AppointmentDataModel(
         companyName: "บริษัท ก",
         hospitalName: "โรงพยาบาล ง",
@@ -50,7 +79,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_outlined, color: AppColors.COLOR_BLACK),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              )),
         ),
         title: Column(
           children: [

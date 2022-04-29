@@ -6,7 +6,8 @@ class LoginDataUserModel {
       this.lastName,
       this.depId,
       this.depName,
-      this.companyName});
+      this.companyName,
+      this.role});
 
   LoginDataUserModel.fromJson(dynamic json) {
     userId = json['user_id'];
@@ -16,6 +17,7 @@ class LoginDataUserModel {
     depId = json['dep_id'];
     depName = json['dep_name'];
     companyName = json['company_name'];
+    role = json['role'];
   }
   String? userId;
   String? empCode;
@@ -24,6 +26,7 @@ class LoginDataUserModel {
   String? depId;
   String? depName;
   String? companyName;
+  String? role;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -34,6 +37,7 @@ class LoginDataUserModel {
     map['dep_id'] = depId;
     map['dep_name'] = depName;
     map['company_name'] = companyName;
+    map['role'] = role;
     return map;
   }
 }

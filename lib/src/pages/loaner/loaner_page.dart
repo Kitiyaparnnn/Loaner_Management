@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/loaner/loaner_create_page.dart';
@@ -48,11 +50,11 @@ class _LoanerPageState extends State<LoanerPage> {
   ];
 
   List<LoanerModel> items = [];
+  int loanerCount = 0;
 
   @override
   void initState() {
     items.clear();
-    editingController.text = "";
     super.initState();
   }
 
@@ -79,7 +81,7 @@ class _LoanerPageState extends State<LoanerPage> {
 
   @override
   Widget build(BuildContext context) {
-    logger.d(widget.selectedLoaner);
+    // logger.d(widget.selectedLoaner);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.COLOR_SWATCH,
@@ -115,18 +117,27 @@ class _LoanerPageState extends State<LoanerPage> {
           centerTitle: true,
         ),
         floatingActionButton: widget.isFillForm
-            ? ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(), padding: const EdgeInsets.all(15.0)),
-                onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LoanerSumPage(
-                              selectedLoaner: widget.selectedLoaner,
-                            ))),
-                child: widget.selectedLoaner.length != 0
-                    ? Image.asset('${Constants.IMAGE_DIR}/basket-notemt.png')
-                    : Image.asset('${Constants.IMAGE_DIR}/basket-emt.png'),
+            ? BlocBuilder<AppointmentBloc, AppointmentState>(
+                builder: (context, state) {
+                  if (state is AppointmentStateCountLoaner) {
+                    loanerCount = state.loanerCount;
+                  }
+                  return ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        padding: const EdgeInsets.all(15.0)),
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoanerSumPage(
+                                  selectedLoaner: widget.selectedLoaner,
+                                ))),
+                    child: loanerCount != 0
+                        ? Image.asset(
+                            '${Constants.IMAGE_DIR}/basket-notemt.png')
+                        : Image.asset('${Constants.IMAGE_DIR}/basket-emt.png'),
+                  );
+                },
               )
             : null,
         body: Container(
@@ -224,8 +235,9 @@ class _LoanerPageState extends State<LoanerPage> {
                   MaterialPageRoute(
                       builder: (context) => LoanerDetailPage(
                             loaner: object[index],
-                            selectedLoaner: widget.selectedLoaner,
-                          )))
+                          ))).then((value) => context
+                  .read<AppointmentBloc>()
+                  .add(AppointmentCountLoaner())) //bloc count selectedLoaners
               : null),
     );
   }

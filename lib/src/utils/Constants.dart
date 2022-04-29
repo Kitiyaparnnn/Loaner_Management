@@ -13,7 +13,7 @@ class Constants {
       "ซอร์ฟแวร์ที่มีประสิทธิภาพซึ่งสร้างขึ้น \nสำหรับนัดหมาย และ ยืนยันการนัดหมาย\nระหว่าง Supplier และ เจ้าหน้าที่โรงพยาบาล";
   static const String FILL_APPOINT_TITLE = "กรอกนัดหมาย";
   static const String CONFIRM_APPOINT_TITLE = "ยืนยันนัดหมาย";
-    static const String DETAIL_APPOINT_TITLE = "รายละเอียดการนัดหมาย";
+  static const String DETAIL_APPOINT_TITLE = "รายละเอียดการนัดหมาย";
   static const String APPOINTMENT_TITLE = "นัดหมาย";
   static const String LOANER_TITLE = "Loaner";
   static const String EMPLOYEE_TITLE = "เจ้าหน้าที่";
@@ -33,6 +33,7 @@ class Constants {
   //login
   static const String LOGO_IMAGE = "$IMAGE_DIR/logo_pose.png";
   static const String SPLASH_IMAGE = "$IMAGE_DIR/splash.png";
+  static const List<String> role = ["supplier", "cssd"];
 
   //fill appointment
   static const List<String> emp = ["นาย ก", "นาย ข", "นาย ค", "นาย ง"];
@@ -96,6 +97,6 @@ class Constants {
   static const String TEXT_SAVE = "บันทึก";
   static const String TEXT_SOME_THING_WRONG =
       "มีบางอย่างผิดพลาด กรุณาลองใหม่อีกครั้ง";
-  static const String TEXT_FORM_FIELD = "กรุณาตรวจกรอกข้อมูล";
+  static const String TEXT_FORM_FIELD = "กรุณาตรวจการกรอกข้อมูล";
   static const String TEXT_IMPORT_IMAGE = "โปรดเลือกวิธีการอัพโหลดรูปภาพ";
 }

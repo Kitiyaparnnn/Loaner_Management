@@ -1,5 +1,7 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
 import 'package:loaner/src/models/employee/EmployeeDataModel.dart';
 import 'package:loaner/src/my_app.dart';
@@ -7,6 +9,7 @@ import 'package:loaner/src/pages/appointment/appointment_page.dart';
 import 'package:loaner/src/pages/home/home_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_sum_page.dart';
+import 'package:loaner/src/services/SharedPreferencesService.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/AskForConfirmToSave.dart';
 import 'package:loaner/src/utils/Constants.dart';
@@ -18,9 +21,15 @@ import 'package:loaner/src/utils/MyAppBar.dart';
 import 'package:loaner/src/utils/SelectDecoration.dart';
 
 class FillAppointmentPage extends StatefulWidget {
-  FillAppointmentPage({required this.isSupplier});
+  FillAppointmentPage({
+    required this.isSupplier,
+    this.appointNo = "",
+    this.appointStatus = "สร้างเอกสาร",
+  });
 
   bool isSupplier;
+  String appointNo;
+  String appointStatus;
   @override
   State<FillAppointmentPage> createState() => _FillAppointmentPageState();
 }
@@ -46,10 +55,9 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       isTrained: true);
 
   final AppointmentDataModel appointment =
-      AppointmentDataModel(status: Constants.status[0]);
+      AppointmentDataModel(status: Constants.status[0], loaners: []);
   var _formKey = GlobalKey<FormState>();
   var _formKey2 = GlobalKey<FormState>();
-  bool isEnabledButtonSave = true;
 
   String currentDateSelectText =
       ConvertDateFormat.convertDateFormat(date: DateTime.now());
@@ -123,19 +131,33 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       controller.text = ConvertDateFormat.convertTimeFormat(
           date: DateTime(currentDateSelect.year, currentDateSelect.month,
               currentDateSelect.minute, chooseTime.hour, chooseTime.minute));
-
-      // updateOneTime(controller);
     }
   }
 
+  bool isLoading = true;
+  bool isDocument = false;
+
   @override
   void initState() {
-    // _controllerUseDate.text = currentDateSelectText;
-    // _controllerAppDate.text = currentDateSelectText;
-    // _controllerUseTime.text = currentTimeSelectText;
-    // _controllerAppTime.text = currentTimeSelectText;
-    // _controllerCompanyName.text = companyName;
+    getCompanyName();
+
+    isDocument = widget.appointNo == "" ? false : true;
+
+    getDocumentDetail();
     super.initState();
+  }
+
+  getDocumentDetail() {
+    if (isDocument) {
+      BlocProvider.of<AppointmentBloc>(context)
+          .add(AppointmentGetDetail(appNo: widget.appointNo));
+    }
+  }
+
+  Future<void> getCompanyName() async {
+    final _sharedPreferencesService = SharedPreferencesService();
+    _controllerCompanyName.text =
+        await _sharedPreferencesService.preferenceGetCompany();
   }
 
   @override
@@ -162,21 +184,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
               padding: const EdgeInsets.all(8.0),
               primary: AppColors.COLOR_PRIMARY),
           onPressed: () {
-            try {
-              if (_formKey2.currentState!.validate() &&
-                  _formKey.currentState!.validate() &&
-                  _controllerUseDate.text != "" &&
-                  _controllerAppDate.text != "") {
-                validate();
-                logger.d(appointment.toJson());
-                askForConfirmToSave(
-                    context: context, isSupplier: widget.isSupplier);
-              } else {
-                BotToast.showText(text: Constants.TEXT_FORM_FIELD);
-              }
-            } catch (e) {
-              BotToast.showText(text: Constants.TEXT_FORM_FIELD);
-            }
+            validate(2);
           },
           child: Text("บันทึก", style: TextStyle(fontSize: 16))),
     );
@@ -379,12 +387,12 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
           ],
         ),
         const SizedBox(height: 10),
-        _buildButtons(context),
+        _buildButtonAddLoaner(context),
       ]),
     );
   }
 
-  Widget _buildButtons(BuildContext context) => Visibility(
+  Widget _buildButtonAddLoaner(BuildContext context) => Visibility(
         visible: widget.isSupplier,
         child: TextButton.icon(
             style: TextButton.styleFrom(
@@ -392,13 +400,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                     borderRadius: BorderRadius.all(Radius.circular(8.0))),
                 minimumSize: Size(MediaQuery.of(context).size.width, 50),
                 side: BorderSide(color: AppColors.COLOR_PRIMARY, width: 2.0)),
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => LoanerPage(
-                          isFillForm: true,
-                          selectedLoaner: [],
-                        ))),
+            onPressed: () => {validate(1)},
             icon: Icon(
               Icons.add_circle_outline_outlined,
               color: AppColors.COLOR_PRIMARY,
@@ -434,20 +436,41 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
     );
   }
 
-  validate() {
-    appointment.companyName = _controllerCompanyName.text;
-    appointment.empName = _controllerEmpName.text;
-    appointment.hospitalName = _controllerHospitalName.text;
-    appointment.organizeName = _controllerOrganizeName.text;
-    appointment.cssdName = _controllerCssdName.text;
-    appointment.docName = _controllerDepName.text;
-    appointment.depName = _controllerDepName.text;
-    appointment.patientName = _controllerPatientName.text;
-    appointment.useDate = _controllerUseDate.text;
-    appointment.appDate = _controllerAppDate.text;
-    appointment.useTime = _controllerUseTime.text;
-    appointment.appTime = _controllerAppTime.text;
-    setState(() {});
+  validate(int button) {
+    if (_formKey2.currentState!.validate() &&
+        _formKey.currentState!.validate() &&
+        _controllerUseDate.text != "" &&
+        _controllerAppDate.text != "") {
+      appointment.companyName = _controllerCompanyName.text;
+      appointment.empName = _controllerEmpName.text;
+      appointment.hospitalName = _controllerHospitalName.text;
+      appointment.organizeName = _controllerOrganizeName.text;
+      appointment.cssdName = _controllerCssdName.text;
+      appointment.docName = _controllerDepName.text;
+      appointment.depName = _controllerDepName.text;
+      appointment.patientName = _controllerPatientName.text;
+      appointment.useDate = _controllerUseDate.text;
+      appointment.appDate = _controllerAppDate.text;
+      appointment.useTime = _controllerUseTime.text;
+      appointment.appTime = _controllerAppTime.text;
+      context
+          .read<AppointmentBloc>()
+          .add(AppointmentButtonOnPress(appointment: appointment));
+      if (button == 1) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => LoanerPage(
+                      isFillForm: true,
+                      selectedLoaner: [],
+                    )));
+      } else {
+        logger.d(appointment.toJson());
+        askForConfirmToSave(context: context, isSupplier: widget.isSupplier);
+      }
+    } else {
+      BotToast.showText(text: Constants.TEXT_FORM_FIELD);
+    }
   }
 
   Row _buildCheckBox() {

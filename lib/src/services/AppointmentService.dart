@@ -17,9 +17,9 @@ class AppointmentService {
       final _url = Uri.parse(Urls.appointmentUrl);
       var _response;
 
-       Map<String, dynamic> _body = {
+      Map<String, dynamic> _body = {
         'function': "GET_APPOINTMENTS",
-        "status" : status
+        "status": status
       };
 
       logger.i(_body);
@@ -32,12 +32,82 @@ class AppointmentService {
       if (_response.statusCode == 200) {
         final List _jsonResponse = json.decode(_response.body);
 
-        List<AppointmentDataModel> _resultData = _jsonResponse.map((i) => AppointmentDataModel.fromJson(i)).toList();
+        List<AppointmentDataModel> _resultData =
+            _jsonResponse.map((i) => AppointmentDataModel.fromJson(i)).toList();
         _result = _resultData;
       }
 
       return _result;
+    } catch (e) {
+      logger.e(e);
+      return _result;
+    }
+  }
 
+  Future<AppointmentDataModel> getAppointmentDetail(
+      {required String appNo}) async {
+    AppointmentDataModel _result = AppointmentDataModel();
+
+    try {
+      final _url = Uri.parse(Urls.appointmentUrl);
+      var _response;
+
+      Map<String, dynamic> _body = {
+        'function': "GET_APPOINTMENTS_DETAIL",
+        "appNo": appNo
+      };
+
+      logger.i(_body);
+
+      _response = await http.post(
+        _url,
+        body: jsonEncode(_body),
+      );
+
+      if (_response.statusCode == 200) {
+        final List _jsonResponse = json.decode(_response.body);
+
+        final AppointmentDataModel _resultData =
+            AppointmentDataModel.fromJson(_jsonResponse);
+        _result = _resultData;
+      }
+
+      return _result;
+    } catch (e) {
+      logger.e(e);
+      return _result;
+    }
+  }
+
+  Future<AppointmentDataModel> createAppointment(
+      {required AppointmentDataModel app}) async {
+    AppointmentDataModel _result = AppointmentDataModel();
+
+    try {
+      final _url = Uri.parse(Urls.appointmentUrl);
+      var _response;
+
+      Map<String, dynamic> _body = {
+        'function': "CREATE_APPOINTMENTS",
+        "data": app
+      };
+
+      logger.i(_body);
+
+      _response = await http.post(
+        _url,
+        body: jsonEncode(_body),
+      );
+
+      if (_response.statusCode == 200) {
+        final List _jsonResponse = json.decode(_response.body);
+
+        final AppointmentDataModel _resultData =
+            AppointmentDataModel.fromJson(_jsonResponse);
+        _result = _resultData;
+      }
+
+      return _result;
     } catch (e) {
       logger.e(e);
       return _result;

@@ -42,13 +42,15 @@ List<AppointmentDataModel> appointmentsData = [
       organizeName: "บริษัท ก",
       appDate: "22-04-2022",
       appTime: "12:00",
-      status: Constants.status[0]),
+      status: Constants.status[0],
+      loaners: []),
   AppointmentDataModel(
       hospitalName: "โรงพยาบาล ก",
       organizeName: "บริษัท ก",
       appDate: "28-04-2022",
       appTime: "12:00",
-      status: Constants.status[1])
+      status: Constants.status[1],
+      loaners: [])
 ];
 
 class _HomePageState extends State<HomePage> {
@@ -69,8 +71,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    loading();
+    getRole();
     getFullName();
+    loading();
     getMachine();
     super.initState();
   }
@@ -109,11 +112,17 @@ class _HomePageState extends State<HomePage> {
     fullName = await _sharedPreferencesService.preferenceGetFullName();
   }
 
+  String role = "supplier";
+  Future<void> getRole() async {
+    final _sharedPreferencesService = SharedPreferencesService();
+    fullName = await _sharedPreferencesService.preferenceGetRole();
+  }
+
   List<MenuModel> menuList = [];
 
   Future<void> generateMenu() async {
     menuList.clear();
-    var _menu = isSupplier
+    var _menu = role == Constants.role[0]
         ? <MenuModel>[
             MenuModel(
               name: "${Constants.FILL_APPOINT_TITLE}",

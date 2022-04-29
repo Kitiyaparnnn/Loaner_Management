@@ -81,8 +81,8 @@ Card appointmentCard(
         onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  LoanerPage(isFillForm: true, selectedLoaner: []),
+              builder: (context) => LoanerPage(
+                  isFillForm: true, selectedLoaner: object.loaners ?? []),
             ))),
   );
 }
