@@ -26,7 +26,9 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     on<AppointmentMinusLoaner>(_mapAppointmentMinusLoanerToState);
     on<AppointmentPlusLoaner>(_mapAppointmentPlusLoanerToState);
     on<AppointmentGetAll>(_mapAppointmentGetAllToState);
-    on<AppointmentGetBySearch>(_mapAppointmentGetBySearch);
+    on<AppointmentGetBySearch>(_mapAppointmentGetBySearchToState);
+    on<AppointmentGetByStatus>(_mapAppointmentGetByStatusToState);
+    on<AppointmentGetToEdit>(_mapAppointmentGetToEditToState);
   }
 
   _mapAppointmentGetDetailToState(
@@ -38,7 +40,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
 
     // final _result =
     //     await _appointmentService.getAppointmentDetail(appNo: event.appNo);
-    // emit(AppointmentStateGetDetail(data: event.app));
+    emit(AppointmentStateGetDetail(data: event.app));
   }
 
   _mapAppointmentButtonOnPressToState(
@@ -52,23 +54,28 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       // emit(AppointmentStateButtonOnPressed(result: _result, isLoading: false));
 
       // add(AppointmentGetDetail(appNo: _result.appNo!));
-      logger.d(appointment.toJson());
+      if (!event.isEdit) {
+        logger.d(appointment.toJson());
+        appointment.loaners = [];
+      } else {
+        add(AppointmentGetDetail(app: appointment));
+      }
     }
 
-    appointment.loaners = [];
+    logger.d(appointment.toJson());
   }
 
   _mapAppointmentButtonOnPress2ToState(
       AppointmentButtonOnPress2 event, Emitter emit) async {
-    if (event.isEdit) {
+    if (!event.isEdit) {
       //update appointment loaner data to database
-
-    } else {
-      //create new appointment to database
-      // final _result =
-      //     await _appointmentService.createAppointment(app: appointment);
+      logger.d(appointment.toJson());
       appointment.loaners = [];
     }
+
+    //create new appointment to database
+    // final _result =
+    //     await _appointmentService.createAppointment(app: appointment);
 
     logger.d(appointment.toJson());
   }
@@ -129,7 +136,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     add(AppointmentGetLoaner());
   }
 
-  _mapAppointmentGetAllToState(AppointmentGetAll event, Emitter emit) {
+  _mapAppointmentGetAllToState(AppointmentGetAll event, Emitter emit) async {
     final List<AppointmentDataModel> _result = [];
 
     //  final _result =
@@ -137,12 +144,29 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     emit(AppointmentStateGetAll(data: _result));
   }
 
-  _mapAppointmentGetBySearch(AppointmentGetBySearch event, Emitter emit) async {
+  _mapAppointmentGetBySearchToState(
+      AppointmentGetBySearch event, Emitter emit) async {
     emit(AppointmentStateLoading());
     logger.d(event.search.toJson());
     final List<AppointmentDataModel> _result = [];
     //  final _result = await _appointmentService.getAppointmentsBySearch(status: event.search.status,hospital: event.search.hospital,date: event.search.date);
 
     emit(AppointmentStateGetAll(data: _result));
+  }
+
+  _mapAppointmentGetByStatusToState(
+      AppointmentGetByStatus event, Emitter emit) async {
+    emit(AppointmentStateLoading());
+    final List<AppointmentDataModel> _result = [];
+
+    //  final _result =
+    // await _appointmentService.getAppointmentsByStatus(status: event.status);
+
+    emit(AppointmentStateGetAll(data: _result));
+  }
+
+  _mapAppointmentGetToEditToState(AppointmentGetToEdit event, Emitter emit) {
+    emit(AppointmentStateLoading());
+    emit(AppointmentStateGetDetail(data: appointment));
   }
 }

@@ -89,7 +89,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
   ];
   @override
   void initState() {
-    context.read<AppointmentBloc>().add(AppointmentGetAll());
+    widget.isSupplier
+        ? context.read<AppointmentBloc>().add(AppointmentGetAll())
+        : context.read<AppointmentBloc>().add(AppointmentGetByStatus(status: "2"));
     super.initState();
   }
 
@@ -157,7 +159,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
     return BlocBuilder<AppointmentBloc, AppointmentState>(
       builder: (context, state) {
         if (state is AppointmentStateGetAll) {
-          appointments = state.data;
+          // appointments = state.data;
         }
 
         return Expanded(

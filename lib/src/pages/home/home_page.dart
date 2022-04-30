@@ -54,6 +54,7 @@ List<AppointmentDataModel> appointmentsData = [
 ];
 
 class _HomePageState extends State<HomePage> {
+  String role = "cssd";
   bool isSupplier = true;
   void _select(MenuChoice choice) {
     switch (choice.key) {
@@ -71,7 +72,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    getRole();
     getFullName();
     loading();
     getMachine();
@@ -110,12 +110,8 @@ class _HomePageState extends State<HomePage> {
   Future<void> getFullName() async {
     final _sharedPreferencesService = SharedPreferencesService();
     fullName = await _sharedPreferencesService.preferenceGetFullName();
-  }
-
-  String role = "supplier";
-  Future<void> getRole() async {
-    final _sharedPreferencesService = SharedPreferencesService();
-    fullName = await _sharedPreferencesService.preferenceGetRole();
+    role = await _sharedPreferencesService.preferenceGetRole();
+    isSupplier = role == "supplier" ? true : false;
   }
 
   List<MenuModel> menuList = [];
@@ -126,7 +122,7 @@ class _HomePageState extends State<HomePage> {
         ? <MenuModel>[
             MenuModel(
               name: "${Constants.FILL_APPOINT_TITLE}",
-              route: FillAppointmentPage(isSupplier: true),
+              route: FillAppointmentPage(isSupplier: true, appointStatus: "0"),
               color: AppColors.COLOR_WHITE,
               subName: "กรอกการนัดหมาย",
               image: "${Constants.IMAGE_DIR}/menu-fill.png",
@@ -140,7 +136,8 @@ class _HomePageState extends State<HomePage> {
             ),
             MenuModel(
               name: "${Constants.LOANER_TITLE}",
-              route: LoanerPage(isFillForm: false, selectedLoaner: [],isEdit:false),
+              route: LoanerPage(
+                  isFillForm: false, selectedLoaner: [], isEdit: false),
               color: AppColors.COLOR_WHITE,
               subName: "จัดการข้อมูล Loaner",
               image: "${Constants.IMAGE_DIR}/menu-loaner.png",

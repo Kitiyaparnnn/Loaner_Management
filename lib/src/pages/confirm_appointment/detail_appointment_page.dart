@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
 import 'package:loaner/src/models/employee/EmployeeDataModel.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
@@ -17,50 +19,7 @@ class DetailAppointmentPage extends StatefulWidget {
 }
 
 class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
-  final AppointmentDataModel appointment = AppointmentDataModel(
-      companyName: "บริษัท ก",
-      empName: "นพกร มังกรใส",
-      cssdName: "สายสาคร นครยานพ",
-      organizeName: "หน่วยงาน ก",
-      docName: "นพ.สวัสดี มีมาคร",
-      depName: "หน่วยงาน ก",
-      patientName: "มานาบี ชีวันนา",
-      useDate: "13-02-2022",
-      useTime: "12:00",
-      appDate: "23-02-2022",
-      appTime: "11:00",
-      loaners: [
-        LoanerModel(
-            name: 'LoanerA',
-            detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-            rent: 3,
-            note: ''),
-        LoanerModel(
-            name: 'LoanerB',
-            detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-            rent: 2,
-            note: ''),
-        LoanerModel(
-            name: 'LoanerC',
-            detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-            rent: 2,
-            note: ''),
-        LoanerModel(
-            name: 'LoanerD',
-            detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-            rent: 2,
-            note: ''),
-        LoanerModel(
-            name: 'LoanerE',
-            detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-            rent: 2,
-            note: ''),
-        LoanerModel(
-            name: 'LoanerF',
-            detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-            rent: 2,
-            note: '')
-      ]);
+  AppointmentDataModel appointment = AppointmentDataModel();
 
   final EmployeeDataModel employee = EmployeeDataModel(
       firstName: 'abcd',
@@ -79,21 +38,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
             style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(8.0),
                 primary: AppColors.COLOR_PRIMARY),
-            onPressed: () {
-              try {
-                appointment.status = Constants.status[2];
-                setState(() {});
-                logger.d(appointment.toJson());
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AppointmentPage(
-                              isSupplier: false,
-                            )));
-              } catch (e) {
-                logger.e(e);
-              }
-            },
+            onPressed: () => validate(),
             child: Text("ยืนยันการนัดหมาย", style: TextStyle(fontSize: 16))),
       ),
       body: GestureDetector(
@@ -102,37 +47,45 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
           child: Container(
             width: MediaQuery.of(context).size.width,
             // height: double.maxFinite,
-            child: Column(
-              children: [
-                _showAllDetail(),
-                SizedBox(height: 20),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20)),
-                    color: AppColors.COLOR_WHITE,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 20),
-                            child: Text("รายการ Loaner",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: AppColors.COLOR_BLACK,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                          _showLoaner()
-                        ]),
-                  ),
-                ),
-              ],
+            child: BlocBuilder<AppointmentBloc, AppointmentState>(
+              builder: (context, state) {
+                if (state is AppointmentStateGetDetail) {
+                  appointment = state.data;
+                  logger.w(state.data.toJson());
+                }
+                return Column(
+                  children: [
+                    _showAllDetail(appointment),
+                    SizedBox(height: 20),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20)),
+                        color: AppColors.COLOR_WHITE,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20),
+                                child: Text("รายการ Loaner",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: AppColors.COLOR_BLACK,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                              _showLoaner(appointment.loaners!)
+                            ]),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -140,7 +93,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
     );
   }
 
-  _showAllDetail() {
+  _showAllDetail(AppointmentDataModel appointment) {
     List<Color> _color = employee.isTrained!
         ? [AppColors.COLOR_GREEN2, AppColors.COLOR_GREEN]
         : [AppColors.COLOR_YELLOW2, AppColors.COLOR_YELLOW];
@@ -154,7 +107,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                   fontSize: 21,
                   color: AppColors.COLOR_BLACK,
                   fontWeight: FontWeight.bold)),
-          Text("เจ้าหน้าที่ : ${appointment.empName}",
+          Text("เจ้าหน้าที่ : ${Constants.emp[appointment.empName]}",
               style: TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT)),
           Container(
               decoration: BoxDecoration(
@@ -218,7 +171,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     Text("แพทย์ผู้ใช้อุปกรณ์ :",
                         style: TextStyle(
                             fontSize: 12, color: AppColors.COLOR_LIGHT)),
-                    Text(appointment.docName!,
+                    Text(Constants.doc[appointment.docName]!,
                         style: TextStyle(
                             fontSize: 14,
                             color: AppColors.COLOR_BLACK,
@@ -243,7 +196,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     Text("หน่วยงาน :",
                         style: TextStyle(
                             fontSize: 12, color: AppColors.COLOR_LIGHT)),
-                    Text(appointment.organizeName!,
+                    Text(Constants.org[appointment.organizeName]!,
                         style: TextStyle(
                             fontSize: 14,
                             color: AppColors.COLOR_BLACK,
@@ -314,12 +267,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     borderRadius: BorderRadius.all(Radius.circular(8.0))),
                 minimumSize: Size(MediaQuery.of(context).size.width, 50),
                 side: BorderSide(color: AppColors.COLOR_PRIMARY, width: 2.0)),
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => FillAppointmentPage(
-                          isSupplier: false,
-                        ))),
+            onPressed: () => validateToEdit(),
             icon: Icon(
               Icons.edit_note_outlined,
               color: AppColors.COLOR_PRIMARY,
@@ -329,12 +277,12 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     TextStyle(color: AppColors.COLOR_PRIMARY, fontSize: 16))),
       );
 
-  _showLoaner() {
+  _showLoaner(List<LoanerModel> loaners) {
     return Flexible(
       child: ListView.builder(
         primary: false,
         shrinkWrap: true,
-        itemCount: appointment.loaners!.length,
+        itemCount: loaners.length,
         itemBuilder: (context, index) => Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -351,15 +299,13 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                       color: AppColors.COLOR_GREY,
                       border:
                           Border.all(color: AppColors.COLOR_GREY, width: 2.0)),
-                  child: appointment.loaners![index].image != null
-                      ? null
-                      : Icon(Icons.image),
+                  child:
+                      loaners[index].image != null ? null : Icon(Icons.image),
                 ),
               ),
-              title: Text(appointment.loaners![index].name!,
-                  style: TextStyle(fontSize: 16)),
+              title: Text(loaners[index].name!, style: TextStyle(fontSize: 16)),
               subtitle: Text(
-                appointment.loaners![index].detail!,
+                loaners[index].detail!,
                 style: TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -367,5 +313,30 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
             )),
       ),
     );
+  }
+
+  validateToEdit() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => FillAppointmentPage(
+                  isSupplier: false,
+                  appointStatus: "1",
+                )));
+  }
+
+  validate() {
+    appointment.status = "2";
+
+    context
+        .read<AppointmentBloc>()
+        .add(AppointmentButtonOnPress(appointment: appointment, isEdit: false));
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AppointmentPage(
+                  isSupplier: false,
+                )));
   }
 }

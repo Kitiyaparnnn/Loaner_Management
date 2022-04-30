@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/BlocObserver.dart';
 import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:loaner/src/blocs/employee/bloc/employee_bloc.dart';
 import 'package:loaner/src/blocs/loaner/bloc/loaner_bloc.dart';
 import 'package:loaner/src/blocs/login/bloc/login_bloc.dart';
 import 'package:loaner/src/my_app.dart';
@@ -33,6 +34,9 @@ void main() async {
           ),
           BlocProvider<LoanerBloc>(
             create: (_) => LoanerBloc(),
+          ),
+           BlocProvider<EmployeeBloc>(
+            create: (_) => EmployeeBloc(),
           ),
         ],
         child: MyApp(),

@@ -14,6 +14,7 @@ class Constants {
   static const String FILL_APPOINT_TITLE = "กรอกนัดหมาย";
   static const String CONFIRM_APPOINT_TITLE = "ยืนยันนัดหมาย";
   static const String DETAIL_APPOINT_TITLE = "รายละเอียดการนัดหมาย";
+  static const String EDIT_APPOINT_TITLE = "แก้ไขการนัดหมาย";
   static const String APPOINTMENT_TITLE = "นัดหมาย";
   static const String LOANER_TITLE = "Loaner";
   static const String EMPLOYEE_TITLE = "เจ้าหน้าที่";
@@ -37,26 +38,26 @@ class Constants {
 
   //fill appointment
   static const Map<String, String> emp = {
-    "0": "นาย ก",
+    "0": "นพกร มังกรใส",
     "1": "นาย ข",
     "2": "นาย ค",
     "3": "นาย ง"
   };
   static const Map<String, String> hos = {
-    "0": "โรงพยาบาล ก",
+    "0": "Hospital A",
     "1": "โรงพยาบาล ข",
     "2": "โรงพยาบาล ค",
     "3": "โรงพยาบาล ง"
   };
 
   static const Map<String, String> org = {
-    "0": "บริษัท ก",
+    "0": "หน่วยงาน ก",
     "1": "บริษัท ข",
     "2": "บริษัท ค",
     "3": "บริษัท ง"
   };
   static const Map<String, String> doc = {
-    "0": "แพทย์ ก",
+    "0": "นพ.สวัสดี มีมาคร",
     "1": "แพทย์ ข",
     "2": "แพทย์ ค",
     "3": "แพทย์ ง"
@@ -81,7 +82,11 @@ class Constants {
     "3": "หมวดหมู่ ง"
   };
 
-  static const Map<String, String> head = {"0": "นาย", "1": "นางสาว", "2": "นาง"};
+  static const Map<String, String> head = {
+    "0": "นาย",
+    "1": "นางสาว",
+    "2": "นาง"
+  };
 
 //status
   static const String APP_CREATE = "สร้างเอกสาร";

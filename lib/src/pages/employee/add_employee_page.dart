@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loaner/src/blocs/employee/bloc/employee_bloc.dart';
 import 'package:loaner/src/models/employee/EmployeeDataModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/employee/employee_page.dart';
@@ -64,21 +66,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
           style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(8.0),
               primary: AppColors.COLOR_PRIMARY),
-          onPressed: () {
-            try {
-              if (_formKey.currentState!.validate()) {
-                _validate();
-                logger.d(employeeData.toJson());
-                Navigator.pop(context,
-                    MaterialPageRoute(builder: (context) => EmployeePage()));
-              } else {
-                BotToast.showText(text: Constants.TEXT_FORM_FIELD);
-              }
-            } catch (e) {
-              // print(e);
-              BotToast.showText(text: Constants.TEXT_FORM_FIELD);
-            }
-          },
+          onPressed: () => validate(),
           child: Text("บันทึก", style: TextStyle(fontSize: 16))),
     );
   }
@@ -343,14 +331,21 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     _controllerImage.text = img64;
   }
 
-  void _validate() {
-    _convertBase64();
-    employeeData.companyName = _controllerCompany.text;
-    employeeData.headName = _controllerHeadName.text;
-    employeeData.firstName = _controllerFirstName.text;
-    employeeData.lastName = _controllerLastName.text;
-    employeeData.detail = _controllerDetail.text;
-    employeeData.image = _controllerImage.text;
-    setState(() {});
+  void validate() {
+    if (_formKey.currentState!.validate()) {
+      _convertBase64();
+      employeeData.companyName = _controllerCompany.text;
+      employeeData.headName = _controllerHeadName.text;
+      employeeData.firstName = _controllerFirstName.text;
+      employeeData.lastName = _controllerLastName.text;
+      employeeData.detail = _controllerDetail.text;
+      employeeData.image = _controllerImage.text;
+
+      context.read<EmployeeBloc>().add(EmployeeCreate(employee: employeeData));
+      Navigator.pop(
+          context, MaterialPageRoute(builder: (context) => EmployeePage()));
+    } else {
+      BotToast.showText(text: Constants.TEXT_FORM_FIELD);
+    }
   }
 }

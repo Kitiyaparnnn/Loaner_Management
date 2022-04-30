@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
 import 'package:loaner/src/pages/confirm_appointment/detail_appointment_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
+import 'package:loaner/src/utils/Constants.dart';
 
 Card appointmentCard_cssd(
     {required List<Color> color,
@@ -43,7 +46,8 @@ Card appointmentCard_cssd(
                             child: Padding(
                               padding:
                                   const EdgeInsets.only(left: 8.0, right: 8.0),
-                              child: Text("• " + object.status!,
+                              child: Text(
+                                  "• " + Constants.status[object.status!]!,
                                   style:
                                       TextStyle(fontSize: 12, color: color[0])),
                             ))
@@ -70,12 +74,17 @@ Card appointmentCard_cssd(
             ),
           ),
         ),
-        onTap: () => isCompleted
-            ? null
-            : Navigator.push(
+        onTap: () {
+          if (!isCompleted) {
+            context
+                .read<AppointmentBloc>()
+                .add(AppointmentGetDetail(app: object));
+            Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => DetailAppointmentPage(),
-                ))),
+                ));
+          }
+        }),
   );
 }

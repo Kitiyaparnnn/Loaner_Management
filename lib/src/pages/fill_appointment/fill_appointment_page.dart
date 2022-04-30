@@ -21,14 +21,9 @@ import 'package:loaner/src/utils/MyAppBar.dart';
 import 'package:loaner/src/utils/SelectDecoration.dart';
 
 class FillAppointmentPage extends StatefulWidget {
-  FillAppointmentPage({
-    required this.isSupplier,
-    this.appointNo = "",
-    this.appointStatus = "สร้างเอกสาร",
-  });
+  FillAppointmentPage({required this.isSupplier, required this.appointStatus});
 
   bool isSupplier;
-  String appointNo;
   String appointStatus;
   @override
   State<FillAppointmentPage> createState() => _FillAppointmentPageState();
@@ -54,8 +49,8 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
       isTrained: true);
 
-  final AppointmentDataModel appointment =
-      AppointmentDataModel(status: Constants.status[0], loaners: []);
+  AppointmentDataModel appointment =
+      AppointmentDataModel(status: "0", loaners: []);
   var _formKey = GlobalKey<FormState>();
   var _formKey2 = GlobalKey<FormState>();
 
@@ -139,20 +134,17 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
 
   @override
   void initState() {
+    isDocument = widget.appointStatus == "0" ? false : true;
     getCompanyName();
-
-    isDocument = widget.appointNo == "" ? false : true;
-
-    // getDocumentDetail();
+    getDocumentDetail();
     super.initState();
   }
 
-  // getDocumentDetail() {
-  //   if (isDocument) {
-  //     BlocProvider.of<AppointmentBloc>(context)
-  //         .add(AppointmentGetDetail(app: ));
-  //   }
-  // }
+  getDocumentDetail() {
+    if (isDocument) {
+      context.read<AppointmentBloc>().add(AppointmentGetToEdit());
+    }
+  }
 
   Future<void> getCompanyName() async {
     final _sharedPreferencesService = SharedPreferencesService();
@@ -163,7 +155,11 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: myAppBar(title: Constants.FILL_APPOINT_TITLE, context: context),
+        appBar: myAppBar(
+            title: isDocument
+                ? Constants.EDIT_APPOINT_TITLE
+                : Constants.FILL_APPOINT_TITLE,
+            context: context),
         body: SafeArea(
           child: SizedBox(
             height: MediaQuery.of(context).size.height,
@@ -195,20 +191,39 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.only(left: 20, right: 20),
-      child: Column(
-        children: [
-          const SizedBox(height: 10),
-          _buildInput(),
-          Divider(
-            color: AppColors.COLOR_GREY,
-            thickness: 2.0,
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: _buildInputForm2(),
-            ),
-          ),
-        ],
+      child: BlocBuilder<AppointmentBloc, AppointmentState>(
+        builder: (context, state) {
+          if (state is AppointmentStateGetDetail) {
+            appointment = state.data;
+            _controllerCompanyName.text = appointment.companyName!;
+            _controllerEmpName.text = appointment.empName!;
+            _controllerHospitalName.text = appointment.hospitalName!;
+            _controllerOrganizeName.text = appointment.organizeName!;
+            _controllerCssdName.text = appointment.cssdName!;
+            _controllerDoctorName.text = appointment.docName!;
+            _controllerDepName.text = appointment.depName!;
+            _controllerPatientName.text = appointment.patientName!;
+            _controllerUseDate.text = appointment.useDate!;
+            _controllerUseTime.text = appointment.useTime!;
+            _controllerAppDate.text = appointment.appDate!;
+            _controllerAppTime.text = appointment.appTime!;
+          }
+          return Column(
+            children: [
+              const SizedBox(height: 10),
+              _buildInput(),
+              Divider(
+                color: AppColors.COLOR_GREY,
+                thickness: 2.0,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: _buildInputForm2(),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -413,6 +428,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   TextFormField _buildTextFormField(
       TextEditingController text, String hintText) {
     return TextFormField(
+        onChanged: (value) => text.text = value,
         validator: (value) => value == "" ? "โปรดกรอกข้อมูล" : null,
         controller: text,
         decoration: inputDecoration(hintText: hintText));
@@ -421,8 +437,10 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   DropdownButtonFormField _buildDropdown(
       TextEditingController form, Map<String, String> items, String hintText) {
     return DropdownButtonFormField(
+      value: form.text,
       validator: (value) => value == null ? "โปรดเลือก" : null,
-      decoration: selectDecoration(hintText: hintText),
+      decoration:
+          selectDecoration(hintText: widget.isSupplier ? hintText : form.text),
       icon: Icon(Icons.expand_more_rounded),
       items: items.keys.map<DropdownMenuItem<String>>((value) {
         return DropdownMenuItem(
@@ -452,7 +470,6 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       appointment.useDate = _controllerUseDate.text;
       appointment.appDate = _controllerAppDate.text;
       appointment.useTime = _controllerUseTime.text;
-      appointment.appTime = _controllerAppTime.text;
 
       if (button == 1) {
         Navigator.push(
@@ -467,9 +484,8 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
         logger.d(appointment.toJson());
         askForConfirmToSave(context: context, isSupplier: widget.isSupplier);
       }
-      context
-          .read<AppointmentBloc>()
-          .add(AppointmentButtonOnPress(appointment: appointment));
+      context.read<AppointmentBloc>().add(AppointmentButtonOnPress(
+          appointment: appointment, isEdit: widget.isSupplier ? false : true));
     } else {
       BotToast.showText(text: Constants.TEXT_FORM_FIELD);
     }

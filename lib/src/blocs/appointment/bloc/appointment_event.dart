@@ -26,8 +26,9 @@ class AppointmentGetDetail extends AppointmentEvent {
 
 class AppointmentButtonOnPress extends AppointmentEvent {
   final AppointmentDataModel appointment;
+  final bool isEdit;
 
-  AppointmentButtonOnPress({required this.appointment});
+  AppointmentButtonOnPress({required this.appointment,required this.isEdit});
 
   @override
   List<Object> get props => [appointment];
@@ -78,9 +79,21 @@ class AppointmentGetAll extends AppointmentEvent {}
 class AppointmentGetBySearch extends AppointmentEvent {
   final AppointmentSearchModel search;
 
-  AppointmentGetBySearch(
-      {required this.search});
+  AppointmentGetBySearch({required this.search});
 
   @override
   List<Object> get props => [search];
 }
+
+class AppointmentGetConfirmStatus extends AppointmentEvent {}
+
+class AppointmentGetByStatus extends AppointmentEvent {
+  final String status;
+
+  AppointmentGetByStatus({required this.status});
+
+  @override
+  List<Object> get props => [status];
+}
+
+class AppointmentGetToEdit extends AppointmentEvent {}
