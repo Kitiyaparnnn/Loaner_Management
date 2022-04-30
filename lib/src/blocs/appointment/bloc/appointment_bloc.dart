@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/models/appointment/AppointmentSearchModel.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/services/AppointmentService.dart';
@@ -24,15 +25,20 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     on<AppointmentGetLoaner>(_mapAppointmentGetLoanerToState);
     on<AppointmentMinusLoaner>(_mapAppointmentMinusLoanerToState);
     on<AppointmentPlusLoaner>(_mapAppointmentPlusLoanerToState);
+    on<AppointmentGetAll>(_mapAppointmentGetAllToState);
+    on<AppointmentGetBySearch>(_mapAppointmentGetBySearch);
   }
 
   _mapAppointmentGetDetailToState(
       AppointmentGetDetail event, Emitter emit) async {
     emit(AppointmentStateLoading());
 
-    final _result =
-        await _appointmentService.getAppointmentDetail(appNo: event.appNo);
-    emit(AppointmentStateGetDetail(data: _result));
+    appointment = event.app;
+    appointment.loaners = event.app.loaners;
+
+    // final _result =
+    //     await _appointmentService.getAppointmentDetail(appNo: event.appNo);
+    // emit(AppointmentStateGetDetail(data: event.app));
   }
 
   _mapAppointmentButtonOnPressToState(
@@ -54,15 +60,17 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
 
   _mapAppointmentButtonOnPress2ToState(
       AppointmentButtonOnPress2 event, Emitter emit) async {
-    // final _result =
-    //     await _appointmentService.createAppointment(app: appointment);
+    if (event.isEdit) {
+      //update appointment loaner data to database
 
-    // emit(AppointmentStateButtonOnPressed(result: _result, isLoading: false));
-
-    // add(AppointmentGetDetail(appNo: _result.appNo!));
+    } else {
+      //create new appointment to database
+      // final _result =
+      //     await _appointmentService.createAppointment(app: appointment);
+      appointment.loaners = [];
+    }
 
     logger.d(appointment.toJson());
-    appointment.loaners = [];
   }
 
   _mapAppointmentAddLoanerToState(
@@ -87,11 +95,15 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   _mapAppointmentCountLoanerToState(
       AppointmentCountLoaner event, Emitter emit) {
     logger.d("loanerCount : ${appointment.loaners!.length}");
-    emit(AppointmentStateCountLoaner(loanerCount: appointment.loaners!.length));
+    emit(AppointmentStateCountLoaner(
+        loanerCount:
+            appointment.loaners == null ? 0 : appointment.loaners!.length));
   }
 
   _mapAppointmentGetLoanerToState(AppointmentGetLoaner event, Emitter emit) {
-    emit(AppointmentStateGetLoaner(loaners: appointment.loaners!));
+    // logger.d(appointment.status);
+    emit(AppointmentStateGetLoaner(
+        loaners: appointment.loaners!, status: appointment.status!));
   }
 
   _mapAppointmentMinusLoanerToState(
@@ -115,5 +127,22 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     logger.d(appointment.loaners![event.index].toJson());
 
     add(AppointmentGetLoaner());
+  }
+
+  _mapAppointmentGetAllToState(AppointmentGetAll event, Emitter emit) {
+    final List<AppointmentDataModel> _result = [];
+
+    //  final _result =
+    //     await _appointmentService.getAppointments();
+    emit(AppointmentStateGetAll(data: _result));
+  }
+
+  _mapAppointmentGetBySearch(AppointmentGetBySearch event, Emitter emit) async {
+    emit(AppointmentStateLoading());
+    logger.d(event.search.toJson());
+    final List<AppointmentDataModel> _result = [];
+    //  final _result = await _appointmentService.getAppointmentsBySearch(status: event.search.status,hospital: event.search.hospital,date: event.search.date);
+
+    emit(AppointmentStateGetAll(data: _result));
   }
 }

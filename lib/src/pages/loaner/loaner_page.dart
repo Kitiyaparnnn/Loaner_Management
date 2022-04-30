@@ -11,9 +11,13 @@ import 'package:loaner/src/utils/Constants.dart';
 import 'package:loaner/src/utils/MyAppBar.dart';
 
 class LoanerPage extends StatefulWidget {
-  LoanerPage({required this.isFillForm, required this.selectedLoaner});
+  LoanerPage(
+      {required this.isFillForm,
+      required this.selectedLoaner,
+      required this.isEdit});
   bool isFillForm;
   List<LoanerModel> selectedLoaner;
+  bool isEdit;
   @override
   State<LoanerPage> createState() => _LoanerPageState();
 }
@@ -54,6 +58,7 @@ class _LoanerPageState extends State<LoanerPage> {
 
   @override
   void initState() {
+    context.read<AppointmentBloc>().add(AppointmentCountLoaner());
     items.clear();
     super.initState();
   }
@@ -130,7 +135,7 @@ class _LoanerPageState extends State<LoanerPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => LoanerSumPage(
-                                  selectedLoaner: widget.selectedLoaner,
+                                  isEdit: widget.isEdit,
                                 ))),
                     child: loanerCount != 0
                         ? Image.asset(

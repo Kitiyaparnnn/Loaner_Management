@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:loaner/src/utils/SelectDecoration.dart';
 
 DropdownButtonFormField buildDropdown(
-      TextEditingController form, List<String> items, String hintText) {
+      TextEditingController form, Map<String, String> items, String hintText) {
     return DropdownButtonFormField(
       validator: (value) => value == null ? "โปรดเลือก" : null,
       decoration: selectDecoration(hintText: hintText),
       icon: Icon(Icons.expand_more_rounded),
-      items: items.map<DropdownMenuItem<String>>((value) {
+      items: items.keys.map<DropdownMenuItem<String>>((value) {
         return DropdownMenuItem(
           value: value,
-          child: Text(value),
+          child: Text(items[value]!),
         );
       }).toList(),
       onChanged: (value) {

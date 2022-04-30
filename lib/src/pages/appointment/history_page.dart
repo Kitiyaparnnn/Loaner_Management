@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentSearchModel.dart';
 import 'package:loaner/src/my_app.dart';
@@ -28,13 +30,13 @@ class _HistoryPageState extends State<HistoryPage> {
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
-        status: Constants.status[3]),
+        status: "3"),
     AppointmentDataModel(
         hospitalName: "โรงพยาบาล ก",
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
-        status: Constants.status[4])
+        status: "4")
   ];
 
   TextEditingController _controllerStatus = new TextEditingController(text: "");
@@ -63,8 +65,6 @@ class _HistoryPageState extends State<HistoryPage> {
       currentDateSelect = chooseDate;
       date.text = ConvertDateFormat.convertDateFormat(date: chooseDate);
       validate();
-      setState(() {});
-      logger.d(search.toJson());
     }
   }
 
@@ -137,20 +137,28 @@ class _HistoryPageState extends State<HistoryPage> {
 
   _appointmentList() {
     // print(items.length);
-    return Expanded(
-      child: appointments.length == 0
-          ? Center(
-              child: Text(Constants.TEXT_DATA_NOT_FOUND),
-            )
-          : ListView.builder(
-              itemCount: appointments.length,
-              itemBuilder: ((context, index) => _mapList(appointments, index)),
-            ),
+    return BlocBuilder<AppointmentBloc, AppointmentState>(
+      builder: (context, state) {
+        if (state is AppointmentStateGetAll) {
+          appointments = state.data;
+        }
+        return Expanded(
+          child: appointments.length == 0
+              ? Center(
+                  child: Text(Constants.TEXT_DATA_NOT_FOUND),
+                )
+              : ListView.builder(
+                  itemCount: appointments.length,
+                  itemBuilder: ((context, index) =>
+                      _mapList(appointments, index)),
+                ),
+        );
+      },
     );
   }
 
   _mapList(List<AppointmentDataModel> object, int index) {
-    List<Color> _color = object[index].status! == Constants.status[3]
+    List<Color> _color = object[index].status! == "3"
         ? [AppColors.COLOR_GREEN2, AppColors.COLOR_GREEN]
         : [AppColors.COLOR_YELLOW2, AppColors.COLOR_YELLOW];
 
@@ -162,24 +170,24 @@ class _HistoryPageState extends State<HistoryPage> {
     search.status = _controllerStatus.text;
     search.hospital = _controllerHospitalName.text;
     search.date = _controllerAppDate.text;
+
+    context.read<AppointmentBloc>().add(AppointmentGetBySearch(search: search));
   }
 
   DropdownButtonFormField _buildDropdown(
-      TextEditingController form, List<String> items, String hintText) {
+      TextEditingController form, Map<String, String> items, String hintText) {
     return DropdownButtonFormField(
       decoration: selectDecoration(hintText: hintText),
       icon: Icon(Icons.expand_more_rounded),
-      items: items.map<DropdownMenuItem<String>>((value) {
+      items: items.keys.map<DropdownMenuItem<String>>((value) {
         return DropdownMenuItem(
           value: value,
-          child: Text(value),
+          child: Text(items[value]!),
         );
       }).toList(),
       onChanged: (value) {
         form.text = value;
         validate();
-        setState(() {});
-        logger.d(search.toJson());
       },
     );
   }

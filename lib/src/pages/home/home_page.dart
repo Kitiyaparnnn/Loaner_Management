@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
             ),
             MenuModel(
               name: "${Constants.LOANER_TITLE}",
-              route: LoanerPage(isFillForm: false, selectedLoaner: []),
+              route: LoanerPage(isFillForm: false, selectedLoaner: [],isEdit:false),
               color: AppColors.COLOR_WHITE,
               subName: "จัดการข้อมูล Loaner",
               image: "${Constants.IMAGE_DIR}/menu-loaner.png",

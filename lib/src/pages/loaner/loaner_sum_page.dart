@@ -12,14 +12,15 @@ import 'package:loaner/src/utils/LabelFormat.dart';
 import 'package:loaner/src/utils/MyAppBar.dart';
 
 class LoanerSumPage extends StatefulWidget {
-  LoanerSumPage({this.selectedLoaner});
-  List<LoanerModel>? selectedLoaner;
+  LoanerSumPage({required this.isEdit});
+  bool isEdit;
   @override
   State<LoanerSumPage> createState() => _LoanerSumPageState();
 }
 
 class _LoanerSumPageState extends State<LoanerSumPage> {
   List<LoanerModel> loaners = [];
+  String appStatus = "0";
 
   @override
   void initState() {
@@ -36,7 +37,7 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
           if (state is AppointmentStateGetLoaner) {
             loaners = state.loaners;
           }
-
+          print(appStatus);
           return loaners.length != 0
               ? ListView.builder(
                   itemCount: loaners.length,
@@ -45,7 +46,14 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
               : Center(child: Text(Constants.TEXT_DATA_NOT_FOUND));
         },
       ),
-      bottomNavigationBar: _bottomButton(),
+      bottomNavigationBar: BlocBuilder<AppointmentBloc, AppointmentState>(
+        builder: (context, state) {
+          if (state is AppointmentStateGetLoaner) {
+            appStatus = state.status;
+          }
+          return appStatus == "0" ? _bottomButton() : SizedBox(height: 10);
+        },
+      ),
     );
   }
 
@@ -58,14 +66,17 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
               primary: AppColors.COLOR_PRIMARY),
           onPressed: () {
             try {
-              context.read<AppointmentBloc>().add(AppointmentButtonOnPress2());
               askForConfirmToSave(context: context, isSupplier: true);
+              context
+                  .read<AppointmentBloc>()
+                  .add(AppointmentButtonOnPress2(isEdit: widget.isEdit));
             } catch (e) {
               logger.e(e);
               BotToast.showText(text: Constants.TEXT_FORM_FIELD);
             }
           },
-          child: Text("บันทึก", style: TextStyle(fontSize: 16))),
+          child: Text(widget.isEdit ? "แก้ไขข้อมูล" : "บันทึก",
+              style: TextStyle(fontSize: 16))),
     );
   }
 
@@ -112,27 +123,32 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      InkWell(
-                          onTap: () {
-                            context
-                                .read<AppointmentBloc>()
-                                .add(AppointmentMinusLoaner(index: index));
-                          },
-                          child:
-                              Image.asset("${Constants.IMAGE_DIR}/minus.png")),
+                      appStatus == "0"
+                          ? InkWell(
+                              onTap: () {
+                                context
+                                    .read<AppointmentBloc>()
+                                    .add(AppointmentMinusLoaner(index: index));
+                              },
+                              child: Image.asset(
+                                  "${Constants.IMAGE_DIR}/minus.png"))
+                          : SizedBox(height: 10),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                         child: Text("${object[index].rent}",
                             style: TextStyle(fontSize: 21)),
                       ),
-                      InkWell(
-                        onTap: () {
-                          context
-                              .read<AppointmentBloc>()
-                              .add(AppointmentPlusLoaner(index: index));
-                        },
-                        child: Image.asset("${Constants.IMAGE_DIR}/plus.png"),
-                      )
+                      appStatus == "0"
+                          ? InkWell(
+                              onTap: () {
+                                context
+                                    .read<AppointmentBloc>()
+                                    .add(AppointmentPlusLoaner(index: index));
+                              },
+                              child: Image.asset(
+                                  "${Constants.IMAGE_DIR}/plus.png"),
+                            )
+                          : SizedBox(height: 10)
                     ],
                   )
                 ],

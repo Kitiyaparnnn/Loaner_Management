@@ -36,41 +36,52 @@ class Constants {
   static const List<String> role = ["supplier", "cssd"];
 
   //fill appointment
-  static const List<String> emp = ["นาย ก", "นาย ข", "นาย ค", "นาย ง"];
-  static const List<String> hos = [
-    "โรงพยาบาล ก",
-    "โรงพยาบาล ข",
-    "โรงพยาบาล ค",
-    "โรงพยาบาล ง"
-  ];
-  static const List<String> org = [
-    "บริษัท ก",
-    "บริษัท ข",
-    "บริษัท ค",
-    "บริษัท ง"
-  ];
-  static const List<String> doc = ["แพทย์ ก", "แพทย์ ข", "แพทย์ ค", "แพทย์ ง"];
-  static const List<String> dep = [
-    "หน่วยงาน ก",
-    "หน่วยงาน ข",
-    "หน่วยงาน ค",
-    "หน่วยงาน ง"
-  ];
-  static const List<String> status = [
-    "สร้างเอกสาร",
-    "รอ cssd ยืนยัน",
-    "cssd ยืนยันแล้ว",
-    "Completed",
-    "รอยืนยัน"
-  ];
-  static const List<String> group = [
-    "หมวดหมู่ ก",
-    "หมวดหมู่ ข",
-    "หมวดหมู่ ค",
-    "หมวดหมู่ ง"
-  ];
+  static const Map<String, String> emp = {
+    "0": "นาย ก",
+    "1": "นาย ข",
+    "2": "นาย ค",
+    "3": "นาย ง"
+  };
+  static const Map<String, String> hos = {
+    "0": "โรงพยาบาล ก",
+    "1": "โรงพยาบาล ข",
+    "2": "โรงพยาบาล ค",
+    "3": "โรงพยาบาล ง"
+  };
 
-  static const List<String> head = ["นาย", "นางสาว", "นาง"];
+  static const Map<String, String> org = {
+    "0": "บริษัท ก",
+    "1": "บริษัท ข",
+    "2": "บริษัท ค",
+    "3": "บริษัท ง"
+  };
+  static const Map<String, String> doc = {
+    "0": "แพทย์ ก",
+    "1": "แพทย์ ข",
+    "2": "แพทย์ ค",
+    "3": "แพทย์ ง"
+  };
+  static const Map<String, String> dep = {
+    "0": "หน่วยงาน ก",
+    "1": "หน่วยงาน ข",
+    "2": "หน่วยงาน ค",
+    "3": "หน่วยงาน ง"
+  };
+  static const Map<String, String> status = {
+    "0": "สร้างเอกสาร",
+    "1": "รอ cssd ยืนยัน",
+    "2": "cssd ยืนยันแล้ว",
+    "3": "Completed",
+    "4": "รอยืนยัน"
+  };
+  static const Map<String, String> group = {
+    "0": "หมวดหมู่ ก",
+    "1": "หมวดหมู่ ข",
+    "2": "หมวดหมู่ ค",
+    "3": "หมวดหมู่ ง"
+  };
+
+  static const Map<String, String> head = {"0": "นาย", "1": "นางสาว", "2": "นาง"};
 
 //status
   static const String APP_CREATE = "สร้างเอกสาร";

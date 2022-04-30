@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/my_app.dart';
@@ -27,7 +29,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
-        status: Constants.status[2],
+        status: "0",
         loaners: [
           LoanerModel(
               name: 'LoanerA',
@@ -48,7 +50,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
-        status: Constants.status[1], loaners: [
+        status: "2",
+        loaners: [
           LoanerModel(
               name: 'LoanerA',
               detail:
@@ -68,8 +71,27 @@ class _AppointmentPageState extends State<AppointmentPage> {
         organizeName: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
-        status: Constants.status[0])
+        status: "1",
+        loaners: [
+          LoanerModel(
+              name: 'LoanerD',
+              detail:
+                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+              rent: 1,
+              note: ''),
+          LoanerModel(
+              name: 'LoanerE',
+              detail:
+                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+              rent: 7,
+              note: ''),
+        ])
   ];
+  @override
+  void initState() {
+    context.read<AppointmentBloc>().add(AppointmentGetAll());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,22 +154,31 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
   _appointmentList() {
     // print(items.length);
-    return Expanded(
-      child: appointments.length == 0
-          ? Center(
-              child: Text(Constants.TEXT_DATA_NOT_FOUND),
-            )
-          : ListView.builder(
-              itemCount: appointments.length,
-              itemBuilder: ((context, index) => _mapList(appointments, index)),
-            ),
+    return BlocBuilder<AppointmentBloc, AppointmentState>(
+      builder: (context, state) {
+        if (state is AppointmentStateGetAll) {
+          appointments = state.data;
+        }
+
+        return Expanded(
+          child: appointments.length == 0
+              ? Center(
+                  child: Text(Constants.TEXT_DATA_NOT_FOUND),
+                )
+              : ListView.builder(
+                  itemCount: appointments.length,
+                  itemBuilder: ((context, index) =>
+                      _mapList(appointments, index)),
+                ),
+        );
+      },
     );
   }
 
   _mapList(List<AppointmentDataModel> object, int index) {
-    List<Color> _color = object[index].status! == Constants.status[0]
+    List<Color> _color = object[index].status == "0"
         ? [AppColors.COLOR_PRIMARY, AppColors.COLOR_BLUE]
-        : object[index].status! == Constants.status[1]
+        : object[index].status == "1"
             ? [AppColors.COLOR_YELLOW2, AppColors.COLOR_YELLOW]
             : [AppColors.COLOR_GREEN2, AppColors.COLOR_GREEN];
 

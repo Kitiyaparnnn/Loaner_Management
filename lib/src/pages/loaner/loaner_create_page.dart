@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loaner/src/blocs/loaner/bloc/loaner_bloc.dart';
 import 'package:loaner/src/models/loaner/LoanerDataModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
@@ -57,26 +59,7 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
           style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(8.0),
               primary: AppColors.COLOR_PRIMARY),
-          onPressed: () {
-            try {
-              if (_formKey.currentState!.validate()) {
-                validate();
-                logger.d(loaner.toJson());
-                Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LoanerPage(
-                              isFillForm: false,
-                              selectedLoaner: [],
-                            )));
-              } else {
-                BotToast.showText(text: Constants.TEXT_FORM_FIELD);
-              }
-            } catch (e) {
-              // print(e);
-              BotToast.showText(text: Constants.TEXT_FORM_FIELD);
-            }
-          },
+          onPressed: () => validate(),
           child: Text("บันทึก", style: TextStyle(fontSize: 16))),
     );
   }
@@ -288,12 +271,25 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
   }
 
   void validate() {
-    _convertBase64();
-    loaner.group = _controllerGroup.text;
-    loaner.image = _controllerImage.text;
-    loaner.name = _controllerName.text;
-    loaner.detail = _controllerDetail.text;
-    loaner.stock = _controllerStock.text;
-    setState(() {});
+    if (_formKey.currentState!.validate()) {
+      _convertBase64();
+      loaner.group = _controllerGroup.text;
+      loaner.image = _controllerImage.text;
+      loaner.name = _controllerName.text;
+      loaner.detail = _controllerDetail.text;
+      loaner.stock = _controllerStock.text;
+
+      context.read<LoanerBloc>().add(LoanerCreate(loaner: loaner));
+      Navigator.pop(
+          context,
+          MaterialPageRoute(
+              builder: (context) => LoanerPage(
+                    isFillForm: false,
+                    selectedLoaner: [],
+                    isEdit: false,
+                  )));
+    } else {
+      BotToast.showText(text: Constants.TEXT_FORM_FIELD);
+    }
   }
 }

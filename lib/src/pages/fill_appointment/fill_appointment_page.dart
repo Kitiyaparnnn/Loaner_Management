@@ -143,16 +143,16 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
 
     isDocument = widget.appointNo == "" ? false : true;
 
-    getDocumentDetail();
+    // getDocumentDetail();
     super.initState();
   }
 
-  getDocumentDetail() {
-    if (isDocument) {
-      BlocProvider.of<AppointmentBloc>(context)
-          .add(AppointmentGetDetail(appNo: widget.appointNo));
-    }
-  }
+  // getDocumentDetail() {
+  //   if (isDocument) {
+  //     BlocProvider.of<AppointmentBloc>(context)
+  //         .add(AppointmentGetDetail(app: ));
+  //   }
+  // }
 
   Future<void> getCompanyName() async {
     final _sharedPreferencesService = SharedPreferencesService();
@@ -419,15 +419,15 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   }
 
   DropdownButtonFormField _buildDropdown(
-      TextEditingController form, List<String> items, String hintText) {
+      TextEditingController form, Map<String, String> items, String hintText) {
     return DropdownButtonFormField(
       validator: (value) => value == null ? "โปรดเลือก" : null,
       decoration: selectDecoration(hintText: hintText),
       icon: Icon(Icons.expand_more_rounded),
-      items: items.map<DropdownMenuItem<String>>((value) {
+      items: items.keys.map<DropdownMenuItem<String>>((value) {
         return DropdownMenuItem(
           value: value,
-          child: Text(value),
+          child: Text(items[value]!),
         );
       }).toList(),
       onChanged: (value) {
@@ -453,9 +453,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       appointment.appDate = _controllerAppDate.text;
       appointment.useTime = _controllerUseTime.text;
       appointment.appTime = _controllerAppTime.text;
-      context
-          .read<AppointmentBloc>()
-          .add(AppointmentButtonOnPress(appointment: appointment));
+
       if (button == 1) {
         Navigator.push(
             context,
@@ -463,11 +461,15 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                 builder: (context) => LoanerPage(
                       isFillForm: true,
                       selectedLoaner: [],
+                      isEdit: false,
                     )));
       } else {
         logger.d(appointment.toJson());
         askForConfirmToSave(context: context, isSupplier: widget.isSupplier);
       }
+      context
+          .read<AppointmentBloc>()
+          .add(AppointmentButtonOnPress(appointment: appointment));
     } else {
       BotToast.showText(text: Constants.TEXT_FORM_FIELD);
     }

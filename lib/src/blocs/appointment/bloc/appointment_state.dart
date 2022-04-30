@@ -40,19 +40,19 @@ class AppointmentStateCountLoaner extends AppointmentState {
 
 class AppointmentStateGetLoaner extends AppointmentState {
   final List<LoanerModel> loaners;
+  final String status;
 
-  AppointmentStateGetLoaner({required this.loaners});
-
-  @override
-  List<Object?> get props => [loaners];
-}
-
-class AppointmentStateCreateStatus extends AppointmentState {
-  final bool isCompleted;
-
-  AppointmentStateCreateStatus({required this.isCompleted});
+  AppointmentStateGetLoaner({required this.loaners, required this.status});
 
   @override
-  List<Object> get props => [isCompleted];
+  List<Object?> get props => [loaners, status];
 }
 
+class AppointmentStateGetAll extends AppointmentState {
+  final List<AppointmentDataModel> data;
+
+  AppointmentStateGetAll({required this.data});
+
+  @override
+  List<Object?> get props => [data];
+}
