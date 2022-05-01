@@ -54,7 +54,7 @@ List<AppointmentDataModel> appointmentsData = [
 ];
 
 class _HomePageState extends State<HomePage> {
-  String role = "cssd";
+  String role = "supplier";
   bool isSupplier = true;
   void _select(MenuChoice choice) {
     switch (choice.key) {
@@ -117,8 +117,8 @@ class _HomePageState extends State<HomePage> {
   List<MenuModel> menuList = [];
 
   Future<void> generateMenu() async {
-    menuList.clear();
-    var _menu = role == Constants.role[0]
+    // menuList.clear();
+    var _menu = isSupplier
         ? <MenuModel>[
             MenuModel(
               name: "${Constants.FILL_APPOINT_TITLE}",
@@ -174,6 +174,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print(isSupplier);
     return Scaffold(
       body: SafeArea(
         child: Container(

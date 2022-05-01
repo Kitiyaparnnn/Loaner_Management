@@ -135,6 +135,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   @override
   void initState() {
     isDocument = widget.appointStatus == "0" ? false : true;
+    print(isDocument);
     getCompanyName();
     getDocumentDetail();
     super.initState();
@@ -437,7 +438,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   DropdownButtonFormField _buildDropdown(
       TextEditingController form, Map<String, String> items, String hintText) {
     return DropdownButtonFormField(
-      value: form.text,
+      value: widget.isSupplier ? null : form.text,
       validator: (value) => value == null ? "โปรดเลือก" : null,
       decoration:
           selectDecoration(hintText: widget.isSupplier ? hintText : form.text),
@@ -470,7 +471,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       appointment.useDate = _controllerUseDate.text;
       appointment.appDate = _controllerAppDate.text;
       appointment.useTime = _controllerUseTime.text;
-
+      appointment.appTime = _controllerAppTime.text;
       if (button == 1) {
         Navigator.push(
             context,
@@ -480,12 +481,13 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                       selectedLoaner: [],
                       isEdit: false,
                     )));
-      } else {
+      } else if (appointment.loaners!.length != 0) {
         logger.d(appointment.toJson());
         askForConfirmToSave(context: context, isSupplier: widget.isSupplier);
+        context.read<AppointmentBloc>().add(AppointmentButtonOnPress(
+            appointment: appointment,
+            isEdit: widget.isSupplier ? false : true));
       }
-      context.read<AppointmentBloc>().add(AppointmentButtonOnPress(
-          appointment: appointment, isEdit: widget.isSupplier ? false : true));
     } else {
       BotToast.showText(text: Constants.TEXT_FORM_FIELD);
     }

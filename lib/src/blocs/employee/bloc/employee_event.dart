@@ -16,3 +16,17 @@ class EmployeeCreate extends EmployeeEvent {
   List<Object?> get props => [employee];
 
 }
+
+class EmployeeGetAll extends EmployeeEvent {
+
+}
+
+class EmployeeSearch extends EmployeeEvent {
+  final String textSearch;
+
+  EmployeeSearch({required this.textSearch});
+
+    @override
+  List<Object?> get props => [textSearch];
+
+}

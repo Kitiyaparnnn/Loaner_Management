@@ -62,6 +62,8 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       }
     }
 
+    logger.w("loaner is empty");
+
     logger.d(appointment.toJson());
   }
 

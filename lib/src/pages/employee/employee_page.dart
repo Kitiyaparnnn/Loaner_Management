@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loaner/src/blocs/employee/bloc/employee_bloc.dart';
 import 'package:loaner/src/models/employee/EmployeeModel.dart';
 import 'package:loaner/src/pages/employee/add_employee_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
@@ -12,7 +14,7 @@ class EmployeePage extends StatefulWidget {
 }
 
 class _EmployeePageState extends State<EmployeePage> {
-  TextEditingController editingController = TextEditingController();
+  TextEditingController searchController = TextEditingController();
   EmployeeModel _emp = EmployeeModel();
 
   List<EmployeeModel> employees = [
@@ -32,6 +34,7 @@ class _EmployeePageState extends State<EmployeePage> {
   @override
   void initState() {
     items.clear();
+    context.read<EmployeeBloc>().add(EmployeeGetAll());
     super.initState();
   }
 
@@ -64,7 +67,10 @@ class _EmployeePageState extends State<EmployeePage> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_outlined, color: AppColors.COLOR_BLACK),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+           
+            Navigator.of(context).pop();
+          },
         ),
         title: Column(
           children: [
@@ -110,46 +116,55 @@ class _EmployeePageState extends State<EmployeePage> {
   }
 
   _searchBar() {
-    return TextField(
-      onChanged: (value) {
-        filterSearchResults(value);
+    return BlocBuilder<EmployeeBloc, EmployeeState>(
+      builder: (context, state) {
+        return TextField(
+          onChanged: (value) {
+            // filterSearchResults(value);
+            context.read<EmployeeBloc>().add(EmployeeSearch(textSearch: value));
+          },
+          controller: searchController,
+          decoration: InputDecoration(
+              contentPadding:
+                  const EdgeInsets.only(left: 10, top: 8, bottom: 8, right: 10),
+              hintText: Constants.TEXT_SEARCH,
+              hintStyle: TextStyle(fontSize: 16),
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              suffixIcon: searchController.text.isNotEmpty
+                  ? GestureDetector(
+                      child: Icon(Icons.cancel_outlined),
+                      onTap: () {
+                        setState(() {
+                          searchController.text = "";
+                          items.clear();
+                        });
+                      })
+                  : null),
+        );
       },
-      controller: editingController,
-      decoration: InputDecoration(
-          contentPadding:
-              const EdgeInsets.only(left: 10, top: 8, bottom: 8, right: 10),
-          hintText: "Search",
-          hintStyle: TextStyle(fontSize: 16),
-          prefixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          suffixIcon: editingController.text.isNotEmpty
-              ? GestureDetector(
-                  child: Icon(Icons.cancel_outlined),
-                  onTap: () {
-                    setState(() {
-                      editingController.text = "";
-                      items.clear();
-                      items.addAll(employees);
-                    });
-                  })
-              : null),
     );
   }
 
   _employeeList() {
-    // print(items.length);
-    return Expanded(
-      child: employees.isEmpty
-          ? Center(
-              child: Text(Constants.TEXT_DATA_NOT_FOUND),
-            )
-          : ListView.builder(
-              itemCount: items.isNotEmpty ? items.length : employees.length,
-              itemBuilder: ((context, index) => items.isNotEmpty
-                  ? _mapList(items, index)
-                  : _mapList(employees, index)),
-            ),
+    return BlocBuilder<EmployeeBloc, EmployeeState>(
+      builder: (context, state) {
+        if (state is EmployeeStateGetAll) {
+          employees = state.data;
+        }
+
+        return Expanded(
+          child: employees.isEmpty
+              ? Center(
+                  child: Text(Constants.TEXT_DATA_NOT_FOUND),
+                )
+              : ListView.builder(
+                  itemCount: employees.length,
+                  itemBuilder: ((context, index) => _mapList(employees, index)),
+                ),
+        );
+      },
     );
   }
 

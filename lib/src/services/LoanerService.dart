@@ -6,17 +6,17 @@ import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/services/Urls.dart';
 
 class LoanerService {
-   Future<LoanerDataModel> createAppointment(
-      {required LoanerDataModel app}) async {
+  Future<LoanerDataModel> createLoaner(
+      {required LoanerDataModel loaner}) async {
     LoanerDataModel _result = LoanerDataModel();
 
     try {
-      final _url = Uri.parse(Urls.appointmentUrl);
+      final _url = Uri.parse(Urls.loanerUrl);
       var _response;
 
       Map<String, dynamic> _body = {
-        'function': "CREATE_APPOINTMENTS",
-        "data": app
+        'function': "CREATE_LOANER",
+        "data": loaner
       };
 
       logger.i(_body);

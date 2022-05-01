@@ -174,7 +174,7 @@ class _LoanerPageState extends State<LoanerPage> {
       decoration: InputDecoration(
           contentPadding:
               const EdgeInsets.only(left: 10, top: 8, bottom: 8, right: 10),
-          hintText: "Search",
+          hintText: Constants.TEXT_SEARCH,
           hintStyle: TextStyle(fontSize: 16),
           prefixIcon: Icon(Icons.search),
           border: OutlineInputBorder(

@@ -1,7 +1,8 @@
 import 'package:loaner/src/services/SharedPreferencesService.dart';
 
-class Urls{
-  final SharedPreferencesService _sharedPreferencesService = SharedPreferencesService();
+class Urls {
+  final SharedPreferencesService _sharedPreferencesService =
+      SharedPreferencesService();
 
   // static String devUrl = "http://poseintelligence.dyndns.biz:8088/temperature_api/api";
   // static String productionUrl = "http://poseintelligence.dyndns.biz:8088/temperature_api/api";
@@ -12,17 +13,8 @@ class Urls{
     baseUrl = await _sharedPreferencesService.preferenceGetBaseApiUrl();
   }
 
-
   //login
   static String loginUrl = "$baseUrl/login.php";
-
-
-  //event
-  static String eventEventsTypeUrl = "$baseUrl/event/events_type.php";
-  static String eventEventDocumentUrl = "$baseUrl/event/event_document.php";
-
-  //water
-  static String waterUrl = "$baseUrl/water/water.php";
 
   // image
   static String eventImageUrl = "$baseUrl/images/";
@@ -33,4 +25,9 @@ class Urls{
   //appointment
   static String appointmentUrl = "$baseUrl/appointment/appointment.php";
 
+  //loaner
+  static String loanerUrl = "$baseUrl/loaner/loaner.php";
+
+  //employee
+  static String employeeUrl = "$baseUrl/employee/employee.php";
 }

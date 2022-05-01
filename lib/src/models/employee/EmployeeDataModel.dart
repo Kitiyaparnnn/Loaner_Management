@@ -1,13 +1,14 @@
 class EmployeeDataModel {
   EmployeeDataModel(
-      {this.companyName,
+      {this.empId,
+      this.companyName,
       this.headName,
       this.firstName,
       this.lastName,
       this.detail,
       this.isTrained,
       this.image});
-
+  String? empId;
   String? companyName;
   String? headName;
   String? firstName;
@@ -17,6 +18,7 @@ class EmployeeDataModel {
   String? image;
 
   EmployeeDataModel.fromJson(dynamic json) {
+    empId = json['empId'];
     companyName = json['company_name'];
     headName = json['head_name'];
     firstName = json['first_name'];
@@ -28,6 +30,7 @@ class EmployeeDataModel {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
+    map['empId'] = empId;
     map['company_name'] = companyName;
     map['head_name'] = headName;
     map['first_name'] = firstName;

@@ -1,5 +1,6 @@
 class LoanerDataModel {
   LoanerDataModel({
+    this.id,
     this.group,
     this.image,
     this.name,
@@ -8,12 +9,14 @@ class LoanerDataModel {
   });
 
   LoanerDataModel.fromJson(dynamic json) {
+    id = json['id'];
     group = json['group'];
     image = json['image'];
     name = json['name'];
     detail = json['detail'];
     stock = json['stock'];
   }
+  String? id;
 
   String? group;
   String? image;
@@ -23,6 +26,7 @@ class LoanerDataModel {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
+    map['id'] = id;
     map['group'] = group;
     map['image'] = image;
     map['name'] = name;

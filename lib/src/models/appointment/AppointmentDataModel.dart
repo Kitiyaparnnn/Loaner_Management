@@ -38,7 +38,7 @@ class AppointmentDataModel {
 
   String? appNo;
   String? companyName;
-  String? empName;
+  String? empName; //empid
   String? hospitalName;
   String? organizeName;
   String? cssdName;
