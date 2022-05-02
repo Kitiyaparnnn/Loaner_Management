@@ -22,3 +22,13 @@ class LoanerCreate extends LoanerEvent {
 class LoanerGetAll extends LoanerEvent {
   
 }
+
+class LoanerSearch extends LoanerEvent {
+  final String textSearch;
+
+  LoanerSearch({required this.textSearch});
+
+
+    @override
+  List<Object?> get props => [textSearch];
+}

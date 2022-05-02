@@ -10,11 +10,11 @@ abstract class LoanerState extends Equatable {
 class LoanerStateLoading extends LoanerState {}
 
 class LoanerStateGetAll extends LoanerState {
-  final List<LoanerDataModel> loaners;
+  final List<LoanerModel> data;
 
-  LoanerStateGetAll({required this.loaners});
+  LoanerStateGetAll({required this.data});
 
 
     @override
-  List<Object?> get props => [loaners];
+  List<Object?> get props => [data];
 }

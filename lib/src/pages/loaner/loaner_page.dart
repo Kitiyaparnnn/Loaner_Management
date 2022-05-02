@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
+import 'package:loaner/src/blocs/loaner/bloc/loaner_bloc.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/loaner/loaner_create_page.dart';
@@ -23,9 +24,7 @@ class LoanerPage extends StatefulWidget {
 }
 
 class _LoanerPageState extends State<LoanerPage> {
-  TextEditingController editingController = TextEditingController(text: "");
-  LoanerModel _loaner = LoanerModel();
-  bool isSearch = false;
+  TextEditingController searchController = TextEditingController(text: "");
 
   List<LoanerModel> loaners = [
     LoanerModel(
@@ -58,6 +57,7 @@ class _LoanerPageState extends State<LoanerPage> {
 
   @override
   void initState() {
+    context.read<LoanerBloc>().add(LoanerGetAll());
     context.read<AppointmentBloc>().add(AppointmentCountLoaner());
     items.clear();
     super.initState();
@@ -167,10 +167,10 @@ class _LoanerPageState extends State<LoanerPage> {
   _searchBar() {
     return TextField(
       onChanged: (value) {
-        isSearch = !isSearch;
-        filterSearchResults(value);
+        // filterSearchResults(value);
+        context.read<LoanerBloc>().add(LoanerSearch(textSearch: value));
       },
-      controller: editingController,
+      controller: searchController,
       decoration: InputDecoration(
           contentPadding:
               const EdgeInsets.only(left: 10, top: 8, bottom: 8, right: 10),
@@ -179,14 +179,13 @@ class _LoanerPageState extends State<LoanerPage> {
           prefixIcon: Icon(Icons.search),
           border: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          suffixIcon: editingController.text.isNotEmpty
+          suffixIcon: searchController.text.isNotEmpty
               ? GestureDetector(
                   child: Icon(Icons.cancel_outlined),
                   onTap: () {
                     setState(() {
-                      editingController.text = "";
+                      searchController.text = "";
                       items.clear();
-                      items.addAll(loaners);
                     });
                   })
               : null),
@@ -194,17 +193,22 @@ class _LoanerPageState extends State<LoanerPage> {
   }
 
   _loanerList() {
-    return Expanded(
-      child: loaners.isEmpty
-          ? Center(
-              child: Text(Constants.TEXT_DATA_NOT_FOUND),
-            )
-          : ListView.builder(
-              itemCount: items.isNotEmpty ? items.length : loaners.length,
-              itemBuilder: ((context, index) => items.isNotEmpty
-                  ? _mapList(items, index)
-                  : _mapList(loaners, index)),
-            ),
+    return BlocBuilder<LoanerBloc, LoanerState>(
+      builder: (context, state) {
+        if (state is LoanerStateGetAll) {
+          // loaners = state.data;
+        }
+        return Expanded(
+          child: loaners.isEmpty
+              ? Center(
+                  child: Text(Constants.TEXT_DATA_NOT_FOUND),
+                )
+              : ListView.builder(
+                  itemCount: loaners.length,
+                  itemBuilder: ((context, index) => _mapList(loaners, index)),
+                ),
+        );
+      },
     );
   }
 

@@ -68,7 +68,6 @@ class _EmployeePageState extends State<EmployeePage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_outlined, color: AppColors.COLOR_BLACK),
           onPressed: () {
-           
             Navigator.of(context).pop();
           },
         ),
@@ -121,6 +120,7 @@ class _EmployeePageState extends State<EmployeePage> {
         return TextField(
           onChanged: (value) {
             // filterSearchResults(value);
+
             context.read<EmployeeBloc>().add(EmployeeSearch(textSearch: value));
           },
           controller: searchController,

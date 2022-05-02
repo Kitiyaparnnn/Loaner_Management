@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
   List<MenuModel> menuList = [];
 
   Future<void> generateMenu() async {
-    // menuList.clear();
+    menuList.clear();
     var _menu = isSupplier
         ? <MenuModel>[
             MenuModel(
