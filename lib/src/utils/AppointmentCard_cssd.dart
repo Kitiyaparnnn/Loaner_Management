@@ -78,7 +78,7 @@ Card appointmentCard_cssd(
           if (!isCompleted) {
             context
                 .read<AppointmentBloc>()
-                .add(AppointmentGetDetail(app: object));
+                .add(AppointmentGetEmpId(app: object));
             Navigator.push(
                 context,
                 MaterialPageRoute(

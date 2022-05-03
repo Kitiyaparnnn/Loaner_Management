@@ -11,11 +11,11 @@ class AppointmentStateLoading extends AppointmentState {}
 
 class AppointmentStateGetDetail extends AppointmentState {
   final AppointmentDataModel data;
-
-  AppointmentStateGetDetail({required this.data});
+  final EmployeeModel employee;
+  AppointmentStateGetDetail({required this.data, required this.employee});
 
   @override
-  List<Object?> get props => [data];
+  List<Object?> get props => [data,employee];
 }
 
 class AppointmentStateButtonOnPressed extends AppointmentState {

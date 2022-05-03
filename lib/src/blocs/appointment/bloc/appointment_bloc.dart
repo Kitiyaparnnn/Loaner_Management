@@ -4,19 +4,26 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentSearchModel.dart';
+import 'package:loaner/src/models/employee/EmployeeModel.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/services/AppointmentService.dart';
+import 'package:loaner/src/services/EmployeeService.dart';
 import 'package:loaner/src/utils/Constants.dart';
 
 part 'appointment_event.dart';
 part 'appointment_state.dart';
 
 class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
-  AppointmentDataModel appointment = AppointmentDataModel(loaners: []);
+  AppointmentDataModel appointment =
+      AppointmentDataModel(status: "0", loaners: []);
+  EmployeeModel employee = EmployeeModel();
   final _appointmentService = AppointmentService();
+  final _employeeService = EmployeeService();
 
   AppointmentBloc() : super(AppointmentStateLoading()) {
+    on<AppointmentClear>(_mapAppointmentClearToState);
+    on<AppointmentGetEmpId>(_mapAppointmentGetEmpIdToState);
     on<AppointmentGetDetail>(_mapAppointmentGetDetailToState);
     on<AppointmentButtonOnPress>(_mapAppointmentButtonOnPressToState);
     on<AppointmentButtonOnPress2>(_mapAppointmentButtonOnPress2ToState);
@@ -31,21 +38,39 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     on<AppointmentGetToEdit>(_mapAppointmentGetToEditToState);
   }
 
+  _mapAppointmentClearToState(AppointmentClear event, Emitter emit) {
+    emit(AppointmentStateLoading());
+    appointment.loaners!.clear();
+  }
+
+  _mapAppointmentGetEmpIdToState(AppointmentGetEmpId event, Emitter emit) {
+    //  final _result =
+    // await _employeeService.getEmployeeDetail(status: appointment.empid)
+    employee = EmployeeModel(
+        empId: "1",
+        username: "นาย ข",
+        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+        isTrained: false);
+
+    add(AppointmentGetDetail(app: event.app));
+  }
+
   _mapAppointmentGetDetailToState(
       AppointmentGetDetail event, Emitter emit) async {
     emit(AppointmentStateLoading());
-
-    appointment = event.app;
-    appointment.loaners = event.app.loaners;
-
     // final _result =
     //     await _appointmentService.getAppointmentDetail(appNo: event.appNo);
-    emit(AppointmentStateGetDetail(data: event.app));
+
+    appointment = event.app;
+
+    emit(AppointmentStateGetDetail(data: event.app, employee: employee));
   }
 
+//fill appointment form
   _mapAppointmentButtonOnPressToState(
       AppointmentButtonOnPress event, Emitter emit) async {
     appointment = event.appointment;
+    employee = event.employee;
 
     if (appointment.loaners!.length != 0) {
       // final _result =
@@ -55,23 +80,24 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
 
       // add(AppointmentGetDetail(appNo: _result.appNo!));
       if (!event.isEdit) {
-        logger.d(appointment.toJson());
         appointment.loaners = [];
       } else {
+        logger.d(employee.toJson());
         add(AppointmentGetDetail(app: appointment));
+        //update employee data
       }
+    } else {
+      logger.w("loaner is empty");
     }
-
-    logger.w("loaner is empty");
 
     logger.d(appointment.toJson());
   }
 
+  //loaner_sum_page
   _mapAppointmentButtonOnPress2ToState(
       AppointmentButtonOnPress2 event, Emitter emit) async {
     if (!event.isEdit) {
       //update appointment loaner data to database
-      logger.d(appointment.toJson());
       appointment.loaners = [];
     }
 
@@ -110,7 +136,6 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   }
 
   _mapAppointmentGetLoanerToState(AppointmentGetLoaner event, Emitter emit) {
-    // logger.d(appointment.status);
     emit(AppointmentStateGetLoaner(
         loaners: appointment.loaners!, status: appointment.status!));
   }
@@ -169,6 +194,10 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
 
   _mapAppointmentGetToEditToState(AppointmentGetToEdit event, Emitter emit) {
     emit(AppointmentStateLoading());
-    emit(AppointmentStateGetDetail(data: appointment));
+
+    emit(AppointmentStateGetDetail(
+      data: appointment,
+      employee: employee,
+    ));
   }
 }

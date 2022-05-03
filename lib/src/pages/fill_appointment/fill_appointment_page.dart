@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
 import 'package:loaner/src/models/employee/EmployeeDataModel.dart';
+import 'package:loaner/src/models/employee/EmployeeModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/appointment/appointment_page.dart';
 import 'package:loaner/src/pages/home/home_page.dart';
@@ -43,11 +44,7 @@ class NewTime {
 }
 
 class _FillAppointmentPageState extends State<FillAppointmentPage> {
-  final EmployeeDataModel employee = EmployeeDataModel(
-      firstName: 'abcd',
-      lastName: 'efgh',
-      detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-      isTrained: true);
+  EmployeeModel employee = EmployeeModel();
 
   AppointmentDataModel appointment =
       AppointmentDataModel(status: "0", loaners: []);
@@ -63,8 +60,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
 
   TextEditingController _controllerCompanyName =
       new TextEditingController(text: "");
-  TextEditingController _controllerEmpName =
-      new TextEditingController(text: "");
+  TextEditingController _controllerEmpId = new TextEditingController(text: "");
   TextEditingController _controllerHospitalName =
       new TextEditingController(text: "");
   TextEditingController _controllerOrganizeName =
@@ -135,7 +131,6 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   @override
   void initState() {
     isDocument = widget.appointStatus == "0" ? false : true;
-    print(isDocument);
     getCompanyName();
     getDocumentDetail();
     super.initState();
@@ -144,6 +139,8 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   getDocumentDetail() {
     if (isDocument) {
       context.read<AppointmentBloc>().add(AppointmentGetToEdit());
+    } else {
+      context.read<AppointmentBloc>().add(AppointmentClear());
     }
   }
 
@@ -197,7 +194,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
           if (state is AppointmentStateGetDetail) {
             appointment = state.data;
             _controllerCompanyName.text = appointment.companyName!;
-            _controllerEmpName.text = appointment.empName!;
+            _controllerEmpId.text = appointment.empId!;
             _controllerHospitalName.text = appointment.hospitalName!;
             _controllerOrganizeName.text = appointment.organizeName!;
             _controllerCssdName.text = appointment.cssdName!;
@@ -248,20 +245,27 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildDropdown(
-                      _controllerEmpName, Constants.emp, "เจ้าหน้าที่บริษัท"),
+                      _controllerEmpId, Constants.emp, "เจ้าหน้าที่บริษัท"),
                 ],
               ),
               const SizedBox(height: 10),
               Visibility(
                   visible: widget.isSupplier ? false : true,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("ผ่านการอบรม",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
-                      _buildCheckBox(),
-                    ],
+                  child: BlocBuilder<AppointmentBloc, AppointmentState>(
+                    builder: (context, state) {
+                      if (state is AppointmentStateGetDetail) {
+                        employee = state.employee;
+                      }
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("ผ่านการอบรม",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          _buildCheckBox(),
+                        ],
+                      );
+                    },
                   ))
             ],
           ),
@@ -461,7 +465,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
         _controllerUseDate.text != "" &&
         _controllerAppDate.text != "") {
       appointment.companyName = _controllerCompanyName.text;
-      appointment.empName = _controllerEmpName.text;
+      appointment.empId = _controllerEmpId.text;
       appointment.hospitalName = _controllerHospitalName.text;
       appointment.organizeName = _controllerOrganizeName.text;
       appointment.cssdName = _controllerCssdName.text;
@@ -481,12 +485,13 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                       selectedLoaner: [],
                       isEdit: false,
                     )));
-      } else if (appointment.loaners!.length != 0) {
+      } else {
         logger.d(appointment.toJson());
         askForConfirmToSave(context: context, isSupplier: widget.isSupplier);
         context.read<AppointmentBloc>().add(AppointmentButtonOnPress(
             appointment: appointment,
-            isEdit: widget.isSupplier ? false : true));
+            isEdit: widget.isSupplier ? false : true,
+            employee: employee));
       }
     } else {
       BotToast.showText(text: Constants.TEXT_FORM_FIELD);

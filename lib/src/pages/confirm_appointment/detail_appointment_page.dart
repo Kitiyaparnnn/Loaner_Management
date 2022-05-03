@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
 import 'package:loaner/src/models/employee/EmployeeDataModel.dart';
+import 'package:loaner/src/models/employee/EmployeeModel.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/appointment/appointment_page.dart';
@@ -21,11 +24,12 @@ class DetailAppointmentPage extends StatefulWidget {
 class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
   AppointmentDataModel appointment = AppointmentDataModel();
 
-  final EmployeeDataModel employee = EmployeeDataModel(
-      firstName: 'abcd',
-      lastName: 'efgh',
-      detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-      isTrained: true);
+  EmployeeModel employee = EmployeeModel();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +55,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
               builder: (context, state) {
                 if (state is AppointmentStateGetDetail) {
                   appointment = state.data;
-                  logger.w(state.data.toJson());
+                  employee = state.employee;
                 }
                 return Column(
                   children: [
@@ -107,7 +111,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                   fontSize: 21,
                   color: AppColors.COLOR_BLACK,
                   fontWeight: FontWeight.bold)),
-          Text("เจ้าหน้าที่ : ${Constants.emp[appointment.empName]}",
+          Text("เจ้าหน้าที่ : ${employee.username}",
               style: TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT)),
           Container(
               decoration: BoxDecoration(
@@ -328,9 +332,8 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
   validate() {
     appointment.status = "2";
 
-    context
-        .read<AppointmentBloc>()
-        .add(AppointmentButtonOnPress(appointment: appointment, isEdit: false));
+    context.read<AppointmentBloc>().add(AppointmentButtonOnPress(
+        appointment: appointment, isEdit: false, employee: employee));
 
     Navigator.push(
         context,

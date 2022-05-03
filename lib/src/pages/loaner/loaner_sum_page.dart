@@ -37,7 +37,6 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
           if (state is AppointmentStateGetLoaner) {
             loaners = state.loaners;
           }
-          print(appStatus);
           return loaners.length != 0
               ? ListView.builder(
                   itemCount: loaners.length,

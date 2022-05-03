@@ -19,7 +19,7 @@ class _ConfirmAppointmentPageState extends State<ConfirmAppointmentPage> {
   List<AppointmentDataModel> appointments = [
     AppointmentDataModel(
         companyName: "บริษัท ก",
-        empName: "0",
+        empId: "0",
         cssdName: "สายสาคร นครยานพ",
         organizeName: "0",
         docName: "0",
@@ -71,7 +71,7 @@ class _ConfirmAppointmentPageState extends State<ConfirmAppointmentPage> {
         ]),
     AppointmentDataModel(
         companyName: "บริษัท 123",
-        empName: "1",
+        empId: "1",
         cssdName: "สายสาคร นครยานพ",
         organizeName: "1",
         docName: "1",

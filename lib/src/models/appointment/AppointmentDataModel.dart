@@ -4,7 +4,7 @@ class AppointmentDataModel {
   AppointmentDataModel(
       {this.appNo,
       this.companyName,
-      this.empName,
+      this.empId,
       this.hospitalName,
       this.organizeName,
       this.cssdName,
@@ -21,7 +21,7 @@ class AppointmentDataModel {
   AppointmentDataModel.fromJson(dynamic json) {
     appNo = json['appNo'];
     companyName = json['company_name'];
-    empName = json['emp_name'];
+    empId = json['empId'];
     hospitalName = json['hospital_name'];
     organizeName = json['organize_name'];
     cssdName = json['cssd_name'];
@@ -38,7 +38,7 @@ class AppointmentDataModel {
 
   String? appNo;
   String? companyName;
-  String? empName; //empid
+  String? empId; 
   String? hospitalName;
   String? organizeName;
   String? cssdName;
@@ -56,7 +56,7 @@ class AppointmentDataModel {
     final map = <String, dynamic>{};
     map['appNo'] = appNo;
     map['company_name'] = companyName;
-    map['emp_name'] = empName;
+    map['empId'] = empId;
     map['hospital_name'] = hospitalName;
     map['organize_name'] = organizeName;
     map['cssd_name'] = cssdName;

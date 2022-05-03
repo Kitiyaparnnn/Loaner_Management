@@ -54,7 +54,7 @@ List<AppointmentDataModel> appointmentsData = [
 ];
 
 class _HomePageState extends State<HomePage> {
-  String role = "supplier";
+  String role = "cssd";
   bool isSupplier = true;
   void _select(MenuChoice choice) {
     switch (choice.key) {
@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> getFullName() async {
     final _sharedPreferencesService = SharedPreferencesService();
     fullName = await _sharedPreferencesService.preferenceGetFullName();
-    role = await _sharedPreferencesService.preferenceGetRole();
+    // role = await _sharedPreferencesService.preferenceGetRole();
     // isSupplier = role == "supplier" ? true : false;
   }
 
@@ -174,6 +174,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print(role);
     print(isSupplier);
     return Scaffold(
       body: SafeArea(
