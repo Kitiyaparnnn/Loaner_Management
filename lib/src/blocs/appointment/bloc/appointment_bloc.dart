@@ -64,6 +64,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     appointment = event.app;
 
     emit(AppointmentStateGetDetail(data: event.app, employee: employee));
+    // emit(AppointmentStateLoading());
   }
 
 //fill appointment form
@@ -82,6 +83,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       if (!event.isEdit) {
         appointment.loaners = [];
       } else {
+        emit(AppointmentStateLoading());
         logger.d(employee.toJson());
         add(AppointmentGetDetail(app: appointment));
         //update employee data

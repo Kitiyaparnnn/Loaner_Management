@@ -8,8 +8,10 @@ import 'package:loaner/src/pages/login/login_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
 
-void askForConfirmToSave(
-    {required BuildContext context, required bool isSupplier,required AppointmentDataModel appointment,required EmployeeModel employee}) {
+void askForConfirmToSaveAtLoaner(
+    {required BuildContext context,
+    required bool isSupplier,
+    required bool isEdit}) {
   showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -41,10 +43,9 @@ void askForConfirmToSave(
                           builder: (context) =>
                               AppointmentPage(isSupplier: true)))
                   : Navigator.pop(context);
-              context.read<AppointmentBloc>().add(AppointmentButtonOnPress(
-            appointment: appointment,
-            isEdit: isSupplier ? false : true,
-            employee: employee));
+              context
+                  .read<AppointmentBloc>()
+                  .add(AppointmentButtonOnPress2(isEdit: isEdit));
             },
           ),
         ],

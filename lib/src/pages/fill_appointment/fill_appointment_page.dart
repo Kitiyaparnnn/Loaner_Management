@@ -127,18 +127,20 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
 
   bool isLoading = true;
   bool isDocument = false;
+  bool isFillAppoint = false;
 
   @override
   void initState() {
     isDocument = widget.appointStatus == "0" ? false : true;
-    getCompanyName();
+    // getCompanyName();
     getDocumentDetail();
     super.initState();
   }
 
   getDocumentDetail() {
     if (isDocument) {
-      context.read<AppointmentBloc>().add(AppointmentGetToEdit());
+      setState(() {});
+      // context.read<AppointmentBloc>().add(AppointmentGetToEdit());
     } else {
       context.read<AppointmentBloc>().add(AppointmentClear());
     }
@@ -191,20 +193,29 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: BlocBuilder<AppointmentBloc, AppointmentState>(
         builder: (context, state) {
+          if (state is AppointmentStateLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
           if (state is AppointmentStateGetDetail) {
-            appointment = state.data;
-            _controllerCompanyName.text = appointment.companyName!;
-            _controllerEmpId.text = appointment.empId!;
-            _controllerHospitalName.text = appointment.hospitalName!;
-            _controllerOrganizeName.text = appointment.organizeName!;
-            _controllerCssdName.text = appointment.cssdName!;
-            _controllerDoctorName.text = appointment.docName!;
-            _controllerDepName.text = appointment.depName!;
-            _controllerPatientName.text = appointment.patientName!;
-            _controllerUseDate.text = appointment.useDate!;
-            _controllerUseTime.text = appointment.useTime!;
-            _controllerAppDate.text = appointment.appDate!;
-            _controllerAppTime.text = appointment.appTime!;
+            if (!isFillAppoint) {
+              logger.w("123");
+              appointment = state.data;
+              isFillAppoint = true;
+              _controllerCompanyName.text = appointment.companyName!;
+              _controllerEmpId.text = appointment.empId!;
+              _controllerHospitalName.text = appointment.hospitalName!;
+              _controllerOrganizeName.text = appointment.organizeName!;
+              _controllerCssdName.text = appointment.cssdName!;
+              _controllerDoctorName.text = appointment.docName!;
+              _controllerDepName.text = appointment.depName!;
+              _controllerPatientName.text = appointment.patientName!;
+              _controllerUseDate.text = appointment.useDate!;
+              _controllerUseTime.text = appointment.useTime!;
+              _controllerAppDate.text = appointment.appDate!;
+              _controllerAppTime.text = appointment.appTime!;
+            }
           }
           return Column(
             children: [
@@ -433,7 +444,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   TextFormField _buildTextFormField(
       TextEditingController text, String hintText) {
     return TextFormField(
-        onChanged: (value) => text.text = value,
+        // onChanged: (value) => text.text = value,
         validator: (value) => value == "" ? "โปรดกรอกข้อมูล" : null,
         controller: text,
         decoration: inputDecoration(hintText: hintText));
@@ -469,13 +480,14 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       appointment.hospitalName = _controllerHospitalName.text;
       appointment.organizeName = _controllerOrganizeName.text;
       appointment.cssdName = _controllerCssdName.text;
-      appointment.docName = _controllerDepName.text;
+      appointment.docName = _controllerDoctorName.text;
       appointment.depName = _controllerDepName.text;
       appointment.patientName = _controllerPatientName.text;
       appointment.useDate = _controllerUseDate.text;
       appointment.appDate = _controllerAppDate.text;
       appointment.useTime = _controllerUseTime.text;
       appointment.appTime = _controllerAppTime.text;
+      logger.d(appointment.toJson());
       if (button == 1) {
         Navigator.push(
             context,
@@ -486,12 +498,12 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                       isEdit: false,
                     )));
       } else {
-        logger.d(appointment.toJson());
-        askForConfirmToSave(context: context, isSupplier: widget.isSupplier);
-        context.read<AppointmentBloc>().add(AppointmentButtonOnPress(
+        // logger.d(appointment.toJson());
+        askForConfirmToSave(
+            context: context,
+            isSupplier: widget.isSupplier,
             appointment: appointment,
-            isEdit: widget.isSupplier ? false : true,
-            employee: employee));
+            employee: employee);
       }
     } else {
       BotToast.showText(text: Constants.TEXT_FORM_FIELD);

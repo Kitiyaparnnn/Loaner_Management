@@ -55,7 +55,7 @@ List<AppointmentDataModel> appointmentsData = [
 
 class _HomePageState extends State<HomePage> {
   String role = "cssd";
-  bool isSupplier = true;
+  bool isSupplier = false;
   void _select(MenuChoice choice) {
     switch (choice.key) {
       case "SETTING":
@@ -174,8 +174,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print(role);
-    print(isSupplier);
+    // print(role);
+    // print(isSupplier);
     return Scaffold(
       body: SafeArea(
         child: Container(

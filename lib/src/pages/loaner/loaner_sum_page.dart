@@ -7,6 +7,7 @@ import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/appointment/appointment_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/AskForConfirmToSave.dart';
+import 'package:loaner/src/utils/AskForConfirmToSaveAtLoaner.dart';
 import 'package:loaner/src/utils/Constants.dart';
 import 'package:loaner/src/utils/LabelFormat.dart';
 import 'package:loaner/src/utils/MyAppBar.dart';
@@ -65,10 +66,8 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
               primary: AppColors.COLOR_PRIMARY),
           onPressed: () {
             try {
-              askForConfirmToSave(context: context, isSupplier: true);
-              context
-                  .read<AppointmentBloc>()
-                  .add(AppointmentButtonOnPress2(isEdit: widget.isEdit));
+              askForConfirmToSaveAtLoaner(context: context, isSupplier: true,isEdit:widget.isEdit);
+              
             } catch (e) {
               logger.e(e);
               BotToast.showText(text: Constants.TEXT_FORM_FIELD);
