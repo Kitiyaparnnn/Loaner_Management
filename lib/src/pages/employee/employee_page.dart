@@ -34,7 +34,7 @@ class _EmployeePageState extends State<EmployeePage> {
   @override
   void initState() {
     items.clear();
-    context.read<EmployeeBloc>().add(EmployeeGetAll());
+    context.read<EmployeeBloc>().add(EmployeeGetSearchType(textSearch: ""));
     super.initState();
   }
 
@@ -117,11 +117,19 @@ class _EmployeePageState extends State<EmployeePage> {
   _searchBar() {
     return BlocBuilder<EmployeeBloc, EmployeeState>(
       builder: (context, state) {
+        bool isShow = false;
+        if (state is EmployeeStateSearchType) {
+          if (state.textSearch != "") {
+            isShow = true;
+          }
+        }
         return TextField(
           onChanged: (value) {
             // filterSearchResults(value);
 
-            context.read<EmployeeBloc>().add(EmployeeSearch(textSearch: value));
+            context
+                .read<EmployeeBloc>()
+                .add(EmployeeSearchType(textSearch: value));
           },
           controller: searchController,
           decoration: InputDecoration(
@@ -132,14 +140,14 @@ class _EmployeePageState extends State<EmployeePage> {
               prefixIcon: Icon(Icons.search),
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              suffixIcon: searchController.text.isNotEmpty
+              suffixIcon: isShow
                   ? GestureDetector(
                       child: Icon(Icons.cancel_outlined),
                       onTap: () {
-                        setState(() {
-                          searchController.text = "";
-                          items.clear();
-                        });
+                        searchController.text = "";
+                        context
+                            .read<EmployeeBloc>()
+                            .add(EmployeeSearchType(textSearch: ""));
                       })
                   : null),
         );
@@ -151,7 +159,7 @@ class _EmployeePageState extends State<EmployeePage> {
     return BlocBuilder<EmployeeBloc, EmployeeState>(
       builder: (context, state) {
         if (state is EmployeeStateGetAll) {
-          employees = state.data;
+          // employees = state.data;
         }
 
         return Expanded(

@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
     final _sharedPreferencesService = SharedPreferencesService();
     fullName = await _sharedPreferencesService.preferenceGetFullName();
     role = await _sharedPreferencesService.preferenceGetRole();
-    isSupplier = role == "supplier" ? true : false;
+    // isSupplier = role == "supplier" ? true : false;
   }
 
   List<MenuModel> menuList = [];

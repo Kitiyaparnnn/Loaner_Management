@@ -16,7 +16,8 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
   EmployeeBloc() : super(EmployeeStateLoading()) {
     on<EmployeeCreate>(_mapEmployeeCreateToState);
     on<EmployeeGetAll>(_mapEmployeeGatAllToState);
-    on<EmployeeSearch>(_mapEmployeeSearchToSate);
+    on<EmployeeSearchType>(_mapEmployeeSearchToSate);
+    on<EmployeeGetSearchType>(_mapEmployeeGetSearchTypeToState);
   }
 
   _mapEmployeeCreateToState(EmployeeCreate event, Emitter emit) {
@@ -33,10 +34,16 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     emit(EmployeeStateGetAll(data: _result));
   }
 
-  _mapEmployeeSearchToSate(EmployeeSearch event, Emitter emit) {
-    List<EmployeeModel> _result = [];
-        // final _result =
-    //     await _employeeService.getEmployeeBySearch(textSearch : event.textSearch);
+  _mapEmployeeSearchToSate(EmployeeSearchType event, Emitter emit) {
+  
+
+    emit(EmployeeStateSearchType(textSearch: event.textSearch));
+  }
+
+   _mapEmployeeGetSearchTypeToState(EmployeeGetSearchType event, Emitter emit) {
+  List<EmployeeModel> _result = [];
+    //     // final _result =
+    // //     await _employeeService.getEmployeeBySearch(textSearch : event.textSearch);
     logger.d(event.textSearch);
 
     emit(EmployeeStateGetAll(data: _result));

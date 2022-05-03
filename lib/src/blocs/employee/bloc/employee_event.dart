@@ -21,10 +21,20 @@ class EmployeeGetAll extends EmployeeEvent {
 
 }
 
-class EmployeeSearch extends EmployeeEvent {
+class EmployeeGetSearchType extends EmployeeEvent {
   final String textSearch;
 
-  EmployeeSearch({required this.textSearch});
+  EmployeeGetSearchType({required this.textSearch});
+
+    @override
+  List<Object?> get props => [textSearch];
+
+}
+
+class EmployeeSearchType extends EmployeeEvent {
+  final String textSearch;
+
+  EmployeeSearchType({required this.textSearch});
 
     @override
   List<Object?> get props => [textSearch];
