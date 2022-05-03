@@ -18,3 +18,13 @@ class LoanerStateGetAll extends LoanerState {
     @override
   List<Object?> get props => [data];
 }
+
+class LoanerStateSearchTpye extends LoanerState {
+  final String textSearch;
+
+  LoanerStateSearchTpye({required this.textSearch});
+
+
+    @override
+  List<Object?> get props => [textSearch];
+}

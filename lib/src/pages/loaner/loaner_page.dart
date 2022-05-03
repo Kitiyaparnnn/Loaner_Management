@@ -57,7 +57,7 @@ class _LoanerPageState extends State<LoanerPage> {
 
   @override
   void initState() {
-    context.read<LoanerBloc>().add(LoanerGetAll());
+    context.read<LoanerBloc>().add(LoanerGetSearchType(textSearch: ""));
     context.read<AppointmentBloc>().add(AppointmentCountLoaner());
     items.clear();
     super.initState();
@@ -165,30 +165,40 @@ class _LoanerPageState extends State<LoanerPage> {
   }
 
   _searchBar() {
-    return TextField(
-      onChanged: (value) {
-        // filterSearchResults(value);
-        context.read<LoanerBloc>().add(LoanerSearch(textSearch: value));
+    return BlocBuilder<LoanerBloc, LoanerState>(
+      builder: (context, state) {
+        bool isShow = false;
+        if (state is LoanerStateSearchTpye) {
+          if (state.textSearch != "") {
+            isShow = true;
+          }
+        }
+        return TextField(
+          onChanged: (value) {
+            // filterSearchResults(value);
+            context.read<LoanerBloc>().add(LoanerSearchType(textSearch: value));
+          },
+          controller: searchController,
+          decoration: InputDecoration(
+              contentPadding:
+                  const EdgeInsets.only(left: 10, top: 8, bottom: 8, right: 10),
+              hintText: Constants.TEXT_SEARCH,
+              hintStyle: TextStyle(fontSize: 16),
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              suffixIcon: isShow
+                  ? GestureDetector(
+                      child: Icon(Icons.cancel_outlined),
+                      onTap: () {
+                        searchController.text = "";
+                        context
+                            .read<LoanerBloc>()
+                            .add(LoanerSearchType(textSearch: ""));
+                      })
+                  : null),
+        );
       },
-      controller: searchController,
-      decoration: InputDecoration(
-          contentPadding:
-              const EdgeInsets.only(left: 10, top: 8, bottom: 8, right: 10),
-          hintText: Constants.TEXT_SEARCH,
-          hintStyle: TextStyle(fontSize: 16),
-          prefixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          suffixIcon: searchController.text.isNotEmpty
-              ? GestureDetector(
-                  child: Icon(Icons.cancel_outlined),
-                  onTap: () {
-                    setState(() {
-                      searchController.text = "";
-                      items.clear();
-                    });
-                  })
-              : null),
     );
   }
 

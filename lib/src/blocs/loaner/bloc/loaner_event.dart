@@ -23,10 +23,20 @@ class LoanerGetAll extends LoanerEvent {
   
 }
 
-class LoanerSearch extends LoanerEvent {
+class LoanerSearchType extends LoanerEvent {
   final String textSearch;
 
-  LoanerSearch({required this.textSearch});
+  LoanerSearchType({required this.textSearch});
+
+
+    @override
+  List<Object?> get props => [textSearch];
+}
+
+class LoanerGetSearchType extends LoanerEvent {
+  final String textSearch;
+
+  LoanerGetSearchType({required this.textSearch});
 
 
     @override

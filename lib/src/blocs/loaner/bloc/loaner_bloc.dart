@@ -13,7 +13,8 @@ class LoanerBloc extends Bloc<LoanerEvent, LoanerState> {
   LoanerBloc() : super(LoanerStateLoading()) {
     on<LoanerCreate>(_mapLoanerCreateToState);
     on<LoanerGetAll>(_mapLoanerGetAllToState);
-    on<LoanerSearch>(_maploanerSearchToState);
+    on<LoanerGetSearchType>(_maploanerGetSearchTypeToState);
+    on<LoanerSearchType>(_maploanerSearchTypeToState);
   }
 
   _mapLoanerCreateToState(LoanerCreate event, Emitter emit) {
@@ -34,7 +35,7 @@ class LoanerBloc extends Bloc<LoanerEvent, LoanerState> {
     emit(LoanerStateGetAll(data: _result));
   }
 
-  _maploanerSearchToState(LoanerSearch event, Emitter emit) {
+  _maploanerGetSearchTypeToState(LoanerGetSearchType event, Emitter emit) {
     emit(LoanerStateLoading());
 
     // final _result =
@@ -43,5 +44,9 @@ class LoanerBloc extends Bloc<LoanerEvent, LoanerState> {
     logger.d(event.textSearch);
 
     emit(LoanerStateGetAll(data: _result));
+  }
+
+    _maploanerSearchTypeToState(LoanerSearchType event, Emitter emit) {
+    emit(LoanerStateSearchTpye(textSearch:event.textSearch));
   }
 }
