@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     getFullName();
-    loading();
+    // loading();
     getMachine();
     super.initState();
   }

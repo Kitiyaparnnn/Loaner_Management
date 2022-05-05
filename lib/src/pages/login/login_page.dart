@@ -8,6 +8,7 @@ import 'package:loaner/src/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:loaner/src/blocs/login/bloc/login_bloc.dart';
 import 'package:loaner/src/models/login/LoginModel.dart';
 import 'package:loaner/src/pages/home/home_page.dart';
+import 'package:loaner/src/pages/splash/splash_page.dart';
 import 'package:loaner/src/services/SharedPreferencesService.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
@@ -339,7 +340,7 @@ class _LoginPageState extends State<LoginPage>
                       isSupplier = false;
                     }
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomePage()));
+                        MaterialPageRoute(builder: (context) => SplashPage()));
                   }
                 : null,
             child: Container(
