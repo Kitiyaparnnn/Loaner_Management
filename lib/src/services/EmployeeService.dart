@@ -87,7 +87,7 @@ class EmployeeService {
       var _response;
 
       Map<String, dynamic> _body = {
-        'function': "GET_SEARCH_EMPLOYEES",
+        'function': "GET_EMPLOYEE_BY_SEARCH",
         "textSearch": textSearch
       };
 

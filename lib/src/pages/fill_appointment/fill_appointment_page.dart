@@ -138,10 +138,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   }
 
   getDocumentDetail() {
-    if (isDocument) {
-      setState(() {});
-      // context.read<AppointmentBloc>().add(AppointmentGetToEdit());
-    } else {
+    if (!isDocument) {
       context.read<AppointmentBloc>().add(AppointmentClear());
     }
   }
@@ -193,14 +190,15 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: BlocBuilder<AppointmentBloc, AppointmentState>(
         builder: (context, state) {
-          if (state is AppointmentStateLoading) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+          // if (state is AppointmentStateLoading) {
+          //   return Center(
+          //     child: CircularProgressIndicator(),
+          //   );
+          // }
           if (state is AppointmentStateGetDetail) {
+            logger.w("123");
             if (!isFillAppoint) {
-              logger.w("123");
+              // logger.w("123");
               appointment = state.data;
               isFillAppoint = true;
               _controllerCompanyName.text = appointment.companyName!;
@@ -445,6 +443,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       TextEditingController text, String hintText) {
     return TextFormField(
         // onChanged: (value) => text.text = value,
+        enabled: hintText == "บริษัท" ? false : true,
         validator: (value) => value == "" ? "โปรดกรอกข้อมูล" : null,
         controller: text,
         decoration: inputDecoration(hintText: hintText));

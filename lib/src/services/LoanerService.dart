@@ -76,7 +76,7 @@ class LoanerService {
     }
   }
 
-  Future<List<LoanerModel>> getEmployeeBySearch({
+  Future<List<LoanerModel>> getLoanerBySearch({
     required  String textSearch
   }
       ) async {
@@ -87,7 +87,7 @@ class LoanerService {
       var _response;
 
       Map<String, dynamic> _body = {
-        'function': "GET_SEARCH_LOANERS",
+        'function': "GET_LOANER_BY_SEARCH",
         "textSearch": textSearch
       };
 

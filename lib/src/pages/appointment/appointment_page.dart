@@ -87,6 +87,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
               note: ''),
         ])
   ];
+  
   @override
   void initState() {
     widget.isSupplier

@@ -10,6 +10,7 @@ import 'package:loaner/src/pages/confirm_appointment/detail_appointment_page.dar
 import 'package:loaner/src/pages/employee/employee_page.dart';
 import 'package:loaner/src/pages/fill_appointment/fill_appointment_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
+import 'package:loaner/src/pages/splash/splash_page.dart';
 import 'package:loaner/src/services/AppointmentService.dart';
 import 'package:loaner/src/services/SharedPreferencesService.dart';
 import 'package:loaner/src/utils/AppColors.dart';
@@ -55,7 +56,7 @@ List<AppointmentDataModel> appointmentsData = [
 
 class _HomePageState extends State<HomePage> {
   String role = "cssd";
-  bool isSupplier = false;
+  bool isSupplier = true;
   void _select(MenuChoice choice) {
     switch (choice.key) {
       case "SETTING":
@@ -373,11 +374,10 @@ class _HomePageState extends State<HomePage> {
       required Color color,
       required String image,
       required Widget page}) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: color,
-      ),
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 0.2,
+      color: AppColors.COLOR_WHITE,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () => _menuRoute(page: page),

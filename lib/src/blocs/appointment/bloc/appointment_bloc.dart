@@ -39,7 +39,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   }
 
   _mapAppointmentClearToState(AppointmentClear event, Emitter emit) {
-    emit(AppointmentStateLoading());
+    // emit(AppointmentStateLoading());
     appointment.loaners!.clear();
   }
 
@@ -85,7 +85,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       } else {
         emit(AppointmentStateLoading());
         logger.d(employee.toJson());
-        add(AppointmentGetDetail(app: appointment));
+        // add(AppointmentGetDetail(app: appointment));
         //update employee data
       }
     } else {

@@ -16,8 +16,6 @@ class Urls {
   //login
   static String loginUrl = "$baseUrl/login.php";
 
-  // image
-  static String eventImageUrl = "$baseUrl/images/";
 
   //setting
   static String settingUrl = "$baseUrl/setting/setting.php";

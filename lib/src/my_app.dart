@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:loaner/src/pages/home/home_page.dart';
 import 'package:loaner/src/pages/login/login_page.dart';
+import 'package:loaner/src/pages/splash/splash_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
 import 'package:loaner/src/utils/DialogCustom.dart';
@@ -75,11 +76,12 @@ class _MyApp extends State<MyApp> {
                 if (state is AuthenticationUnauthenticated) {
                   if (state.showAlert) {
                     state.showAlert = false;
-                    WidgetsBinding.instance?.addPostFrameCallback((_) => dialogCustom(
-                          context: context,
-                          title: Constants.TEXT_FAILED,
-                          content: state.message,
-                        ));
+                    WidgetsBinding.instance
+                        ?.addPostFrameCallback((_) => dialogCustom(
+                              context: context,
+                              title: Constants.TEXT_FAILED,
+                              content: state.message,
+                            ));
                   }
                   return LoginPage();
                 }
@@ -88,7 +90,7 @@ class _MyApp extends State<MyApp> {
                   return HomePage();
                 }
 
-                  return LoginPage();
+                return LoginPage();
               },
             ),
           );
