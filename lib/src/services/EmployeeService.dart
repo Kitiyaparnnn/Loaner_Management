@@ -7,7 +7,7 @@ import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/services/Urls.dart';
 
 class EmployeeService {
-  Future<EmployeeDataModel> createEmployee(
+  Future<EmployeeDataModel>   manageEmployee(
       {required EmployeeDataModel employee}) async {
     EmployeeDataModel _result = EmployeeDataModel();
 
@@ -16,8 +16,8 @@ class EmployeeService {
       var _response;
 
       Map<String, dynamic> _body = {
-        'function': "CREATE_EMPLOYEE",
-        "data": employee
+        'function': "MANAGE_EMPLOYEE",
+        "employee": employee
       };
 
       logger.i(_body);
@@ -103,6 +103,43 @@ class EmployeeService {
 
         List<EmployeeModel> _resultData =
             _jsonResponse.map((i) => EmployeeModel.fromJson(i)).toList();
+        _result = _resultData;
+      }
+
+      return _result;
+    } catch (e) {
+      logger.e(e);
+      return _result;
+    }
+  }
+
+  Future<EmployeeModel> getEmployeeDetail({
+    required  String empId
+  }
+      ) async {
+    EmployeeModel _result = EmployeeModel();
+
+    try {
+      final _url = Uri.parse(Urls.employeeUrl);
+      var _response;
+
+      Map<String, dynamic> _body = {
+        'function': "GET_EMPLOYEE_DETAIL",
+        "empId": empId
+      };
+
+      logger.i(_body);
+
+      _response = await http.post(
+        _url,
+        body: jsonEncode(_body),
+      );
+
+      if (_response.statusCode == 200) {
+        final List _jsonResponse = json.decode(_response.body);
+
+         final EmployeeModel _resultData =
+            EmployeeModel.fromJson(_jsonResponse);
         _result = _resultData;
       }
 

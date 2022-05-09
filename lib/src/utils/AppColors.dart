@@ -24,6 +24,7 @@ class AppColors {
   static const Color COLOR_RED = Color.fromRGBO(251, 78, 78, 1.0);
   static const Color COLOR_GREEN = Color.fromRGBO(222, 247, 232, 1.0);
   static const Color COLOR_GREEN2 = Color.fromRGBO(42, 199, 105, 1.0);
+  static const Color COLOR_GREEN_LIGHT = Color.fromRGBO(20, 221, 172, 1.0);
   static const Color COLOR_YELLOW = Color.fromRGBO(246, 166, 9, 0.2);
   static const Color COLOR_YELLOW2 = Color.fromRGBO(246, 166, 9, 1.0);
   static const Color COLOR_BLUE = Color.fromRGBO(51, 119, 255, 0.2);

@@ -45,7 +45,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
 
   _mapAppointmentGetEmpIdToState(AppointmentGetEmpId event, Emitter emit) {
     //  final _result =
-    // await _employeeService.getEmployeeDetail(status: appointment.empid)
+    // await _employeeService.getEmployeeDetail(empId: appointment.empid)
     employee = EmployeeModel(
         empId: "1",
         username: "นาย ข",
@@ -99,13 +99,11 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   _mapAppointmentButtonOnPress2ToState(
       AppointmentButtonOnPress2 event, Emitter emit) async {
     if (!event.isEdit) {
-      //update appointment loaner data to database
       appointment.loaners = [];
     }
 
-    //create new appointment to database
     // final _result =
-    //     await _appointmentService.createAppointment(app: appointment);
+    //     await _appointmentService.manageAppointment(app: appointment);
 
     logger.d(appointment.toJson());
   }
@@ -169,7 +167,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     final List<AppointmentDataModel> _result = [];
 
     //  final _result =
-    //     await _appointmentService.getAppointments();
+    //     await _appointmentService.getAllAppointments();
     emit(AppointmentStateGetAll(data: _result));
   }
 

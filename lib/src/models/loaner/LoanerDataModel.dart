@@ -16,8 +16,8 @@ class LoanerDataModel {
     detail = json['detail'];
     stock = json['stock'];
   }
+  
   String? id;
-
   String? group;
   String? image;
   String? name;

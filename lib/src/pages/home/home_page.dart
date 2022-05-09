@@ -495,7 +495,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Icon(Icons.calendar_month_outlined,
                           color: AppColors.COLOR_PRIMARY, size: 14),
-                      Text("วันที่นัดหมาย: ${appointmentsData[index].appDate}",
+                      Text(" วันที่นัดหมาย: ${appointmentsData[index].appDate}",
                           style: TextStyle(
                               fontSize: 12, color: AppColors.COLOR_PRIMARY)),
                       SizedBox(width: 10),

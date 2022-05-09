@@ -196,7 +196,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
           //   );
           // }
           if (state is AppointmentStateGetDetail) {
-            logger.w("123");
+            // logger.w("123");
             if (!isFillAppoint) {
               // logger.w("123");
               appointment = state.data;

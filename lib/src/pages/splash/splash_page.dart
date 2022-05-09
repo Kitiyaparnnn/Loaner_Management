@@ -41,7 +41,7 @@ class _SplashPageState extends State<SplashPage> {
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: index.isEven
-                            ? AppColors.COLOR_GREEN
+                            ? AppColors.COLOR_GREEN_LIGHT
                             : AppColors.COLOR_WHITE));
               }),
               duration: Duration(seconds: 2),

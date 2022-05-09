@@ -16,10 +16,6 @@ class Urls {
   //login
   static String loginUrl = "$baseUrl/login.php";
 
-
-  //setting
-  static String settingUrl = "$baseUrl/setting/setting.php";
-
   //appointment
   static String appointmentUrl = "$baseUrl/appointment/appointment.php";
 

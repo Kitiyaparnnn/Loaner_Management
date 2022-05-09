@@ -108,7 +108,7 @@ class _LoginPageState extends State<LoginPage>
                     child: Column(
                       children: [
                         const SizedBox(height: 30),
-                        // _buildLogo(),
+                        _buildLogo(),
                         const SizedBox(height: 40),
                         _buildTitle(),
                         const SizedBox(height: 30),
@@ -129,6 +129,7 @@ class _LoginPageState extends State<LoginPage>
         child: Image.asset(
           '${Constants.IMAGE_DIR}/logo.png',
           width: 210,
+          color: AppColors.COLOR_PRIMARY,
         ),
       );
 
@@ -373,6 +374,8 @@ class _LoginPageState extends State<LoginPage>
                 Transform.scale(
                   scale: 1,
                   child: Checkbox(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4.0)),
                     activeColor: AppColors.COLOR_PRIMARY,
                     value: isRemember,
                     onChanged: (value) {

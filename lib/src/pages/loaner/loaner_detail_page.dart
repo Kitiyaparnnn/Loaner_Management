@@ -33,7 +33,6 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
         rent: 0,
         note: ''),
     LoanerModel(
-        group: "หมวดหมู่ ก",
         name: 'LoanerB',
         detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
         image: '',
@@ -102,16 +101,19 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: AppColors.COLOR_BLACK),
-          ),
+          // decoration: BoxDecoration(
+          //   border: Border.all(color: AppColors.COLOR_BLACK),
+          // ),
           child: widget.loaner.image == null
               ? SizedBox(
                   height: 200,
                   width: 200,
                   child: Icon(Icons.image),
                 )
-              : SizedBox(height: 200, width: 200, child: Icon(Icons.image))),
+              : SizedBox(
+                  height: 200,
+                  width: 200,
+                  child: Image.asset("${Constants.IMAGE_DIR}/sample.png"))),
     );
   }
 

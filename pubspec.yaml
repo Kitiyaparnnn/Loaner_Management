@@ -77,3 +77,10 @@ flutter:
         - asset: lib/src/assets/fonts/sans_thai_medium.ttf
         - asset: lib/src/assets/fonts/sans_thai_regular.ttf
 
+    - family: mitr
+      fonts:
+        - asset: lib/src/assets/fonts/Mitr-Bold.ttf
+        - asset: lib/src/assets/fonts/Mitr-Medium.ttf
+        - asset: lib/src/assets/fonts/Mitr-Regular.ttf
+        - asset: lib/src/assets/fonts/Mitr-SemiBold.ttf
+
