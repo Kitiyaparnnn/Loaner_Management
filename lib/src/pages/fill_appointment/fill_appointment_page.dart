@@ -146,7 +146,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   Future<void> getCompanyName() async {
     final _sharedPreferencesService = SharedPreferencesService();
     _controllerCompanyName.text =
-        await _sharedPreferencesService.preferenceGetCompany();
+        await _sharedPreferencesService.preferenceGetDepId();
   }
 
   @override

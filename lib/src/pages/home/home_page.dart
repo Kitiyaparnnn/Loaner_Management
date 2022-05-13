@@ -74,7 +74,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     getFullName();
-    // loading();
     getMachine();
     super.initState();
   }
@@ -109,11 +108,11 @@ class _HomePageState extends State<HomePage> {
   String fullName = "";
 
   Future<void> getFullName() async {
-    isSupplier = widget.isSupplier;
     final _sharedPreferencesService = SharedPreferencesService();
     fullName = await _sharedPreferencesService.preferenceGetFullName();
-    // role = await _sharedPreferencesService.preferenceGetRole();
-    // isSupplier = role == "supplier" ? true : false;
+    // isSupplier =
+    //     await _sharedPreferencesService.preferenceGetType() == 2 ? true : false;
+    isSupplier = widget.isSupplier;
   }
 
   List<MenuModel> menuList = [];
@@ -128,6 +127,7 @@ class _HomePageState extends State<HomePage> {
               color: AppColors.COLOR_WHITE,
               subName: "กรอกการนัดหมาย",
               image: "${Constants.IMAGE_DIR}/menu-fill.png",
+              isShow: true,
             ),
             MenuModel(
               name: "${Constants.APPOINTMENT_TITLE}",
@@ -135,6 +135,7 @@ class _HomePageState extends State<HomePage> {
               color: AppColors.COLOR_WHITE,
               subName: "การนัดหมายทั้งหมด",
               image: "${Constants.IMAGE_DIR}/menu-app.png",
+              isShow: true,
             ),
             MenuModel(
               name: "${Constants.LOANER_TITLE}",
@@ -143,6 +144,7 @@ class _HomePageState extends State<HomePage> {
               color: AppColors.COLOR_WHITE,
               subName: "จัดการข้อมูล Loaner",
               image: "${Constants.IMAGE_DIR}/menu-loaner.png",
+              isShow: true,
             ),
             MenuModel(
               name: "${Constants.EMPLOYEE_TITLE}",
@@ -150,6 +152,7 @@ class _HomePageState extends State<HomePage> {
               color: AppColors.COLOR_WHITE,
               subName: "จัดการเจ้าหน้าที่บริษัท",
               image: "${Constants.IMAGE_DIR}/menu-person.png",
+              isShow: true,
             ),
           ]
         : <MenuModel>[
@@ -159,6 +162,7 @@ class _HomePageState extends State<HomePage> {
               color: AppColors.COLOR_WHITE,
               subName: "ยืนยันกับเจ้าหน้าที่บริษัท",
               image: "${Constants.IMAGE_DIR}/menu-fill.png",
+              isShow: true,
             ),
             MenuModel(
               name: "${Constants.APPOINTMENT_TITLE}",
@@ -166,6 +170,7 @@ class _HomePageState extends State<HomePage> {
               color: AppColors.COLOR_WHITE,
               subName: "การนัดหมายทั้งหมด",
               image: "${Constants.IMAGE_DIR}/menu-app.png",
+              isShow: true,
             ),
           ];
 

@@ -1,43 +1,35 @@
 class LoginDataUserModel {
   LoginDataUserModel(
       {this.userId,
-      this.empCode,
       this.firstName,
       this.lastName,
       this.depId,
-      this.depName,
-      this.companyName,
-      this.role});
+      this.typeId,
+      this.image});
 
   LoginDataUserModel.fromJson(dynamic json) {
     userId = json['user_id'];
-    empCode = json['emp_code'];
     firstName = json['first_name'];
     lastName = json['last_name'];
+    typeId = json['type_id'];
     depId = json['dep_id'];
-    depName = json['dep_name'];
-    companyName = json['company_name'];
-    role = json['role'];
+    image = json['image'];
   }
   String? userId;
-  String? empCode;
   String? firstName;
   String? lastName;
+  String? typeId;
   String? depId;
-  String? depName;
-  String? companyName;
-  String? role;
+  String? image;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['user_id'] = userId;
-    map['emp_code'] = empCode;
     map['first_name'] = firstName;
     map['last_name'] = lastName;
+    map['type_id'] = typeId;
     map['dep_id'] = depId;
-    map['dep_name'] = depName;
-    map['company_name'] = companyName;
-    map['role'] = role;
+    map['image'] = image;
     return map;
   }
 }

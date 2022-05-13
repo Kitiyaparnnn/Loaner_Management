@@ -10,7 +10,7 @@ class Urls {
   static String? baseUrl;
 
   init() async {
-    baseUrl = await _sharedPreferencesService.preferenceGetBaseApiUrl();
+    // baseUrl = await _sharedPreferencesService.preferenceGetBaseApiUrl();
   }
 
   //login
