@@ -87,12 +87,14 @@ class _AppointmentPageState extends State<AppointmentPage> {
               note: ''),
         ])
   ];
-  
+
   @override
   void initState() {
     widget.isSupplier
         ? context.read<AppointmentBloc>().add(AppointmentGetAll())
-        : context.read<AppointmentBloc>().add(AppointmentGetByStatus(status: "2"));
+        : context
+            .read<AppointmentBloc>()
+            .add(AppointmentGetByStatus(status: "2"));
     super.initState();
   }
 
@@ -107,7 +109,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
           onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage(),
+                builder: (context) => HomePage(isSupplier: widget.isSupplier),
               )),
         ),
         title: Column(

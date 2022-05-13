@@ -43,7 +43,7 @@ class _MyApp extends State<MyApp> {
     }
 
     var _route = <String, WidgetBuilder>{
-      Constants.HOME_ROUTE: (context) => HomePage(),
+      Constants.HOME_ROUTE: (context) => HomePage(isSupplier: true),
       Constants.LOGIN_ROUTE: (context) => LoginPage(),
     };
     return FutureBuilder(
@@ -87,7 +87,7 @@ class _MyApp extends State<MyApp> {
                 }
 
                 if (state is AuthenticationAuthenticated) {
-                  return SplashPage();
+                  return SplashPage(isSupplier: true);
                 }
 
                 return LoginPage();

@@ -341,7 +341,7 @@ class _LoginPageState extends State<LoginPage>
                       isSupplier = false;
                     }
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SplashPage()));
+                        MaterialPageRoute(builder: (context) => SplashPage(isSupplier: isSupplier,)));
                   }
                 : null,
             child: Container(

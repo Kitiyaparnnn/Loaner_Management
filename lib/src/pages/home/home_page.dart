@@ -18,8 +18,8 @@ import 'package:loaner/src/utils/AskForConfirmToLogout.dart';
 import 'package:loaner/src/utils/Constants.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
-
+  HomePage({required this.isSupplier});
+  bool isSupplier;
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -55,8 +55,8 @@ List<AppointmentDataModel> appointmentsData = [
 ];
 
 class _HomePageState extends State<HomePage> {
-  String role = "cssd";
-  bool isSupplier = true;
+  // String role = "cssd";
+  bool isSupplier = false;
   void _select(MenuChoice choice) {
     switch (choice.key) {
       case "SETTING":
@@ -109,6 +109,7 @@ class _HomePageState extends State<HomePage> {
   String fullName = "";
 
   Future<void> getFullName() async {
+    isSupplier = widget.isSupplier;
     final _sharedPreferencesService = SharedPreferencesService();
     fullName = await _sharedPreferencesService.preferenceGetFullName();
     // role = await _sharedPreferencesService.preferenceGetRole();

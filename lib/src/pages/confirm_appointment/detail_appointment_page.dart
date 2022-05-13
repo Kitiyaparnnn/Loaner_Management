@@ -320,6 +320,8 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
   }
 
   validateToEdit() {
+    context.read<AppointmentBloc>().add(AppointmentGetDetail(app: appointment));
+
     Navigator.push(
         context,
         MaterialPageRoute(

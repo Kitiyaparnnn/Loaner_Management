@@ -59,7 +59,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   TimeOfDay currentTimeSelect = TimeOfDay.now();
 
   TextEditingController _controllerCompanyName =
-      new TextEditingController(text: "");
+      new TextEditingController(text: "POSE");
   TextEditingController _controllerEmpId = new TextEditingController(text: "");
   TextEditingController _controllerHospitalName =
       new TextEditingController(text: "");

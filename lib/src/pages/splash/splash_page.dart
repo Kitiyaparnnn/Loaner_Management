@@ -7,8 +7,8 @@ import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
 
 class SplashPage extends StatefulWidget {
-  SplashPage({Key? key}) : super(key: key);
-
+  SplashPage({required this.isSupplier});
+  bool isSupplier;
   @override
   State<SplashPage> createState() => _SplashPageState();
 }
@@ -19,7 +19,10 @@ class _SplashPageState extends State<SplashPage> {
     Timer(
         Duration(seconds: 2),
         () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomePage())));
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    HomePage(isSupplier: widget.isSupplier))));
     super.initState();
   }
 
