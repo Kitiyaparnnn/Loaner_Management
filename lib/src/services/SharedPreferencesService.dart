@@ -15,7 +15,7 @@ class SharedPreferencesService {
     _prefs.remove(PreferenceKey.userId);
     _prefs.remove(PreferenceKey.fName);
     _prefs.remove(PreferenceKey.lName);
-    _prefs.remove(PreferenceKey.depId);
+    _prefs.remove(PreferenceKey.depName);
     _prefs.remove(PreferenceKey.typeId);
     _prefs.remove(PreferenceKey.image);
   }
@@ -26,7 +26,7 @@ class SharedPreferencesService {
     _prefs.setString(PreferenceKey.userId, user.userId.toString());
     _prefs.setString(PreferenceKey.fName, user.firstName.toString());
     _prefs.setString(PreferenceKey.lName, user.lastName.toString());
-    _prefs.setString(PreferenceKey.depId, user.depId.toString());
+    _prefs.setString(PreferenceKey.depName, user.depName.toString());
     _prefs.setString(PreferenceKey.typeId, user.typeId.toString());
     _prefs.setString(PreferenceKey.image, user.image.toString());
   }
@@ -48,9 +48,9 @@ class SharedPreferencesService {
     return _prefs.getString(PreferenceKey.userId) ?? '';
   }
 
-  Future<String> preferenceGetDepId() async {
+  Future<String> preferenceGetDepName() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    return _prefs.getString(PreferenceKey.depId) ?? '';
+    return _prefs.getString(PreferenceKey.depName) ?? '';
   }
 
   Future<String> preferenceGetImage() async {
@@ -81,6 +81,16 @@ class SharedPreferencesService {
   Future<bool> preferenceGetRememberUsername() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     return _prefs.getBool(PreferenceKey.isRemember) ?? false;
+  }
+
+    Future<void> preferenceSetBaseApiUrl({required String url}) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    _prefs.setString(PreferenceKey.baseApiUrl, url);
+  }
+
+  Future<String> preferenceGetBaseApiUrl() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    return _prefs.getString(PreferenceKey.baseApiUrl) ?? "";
   }
 
 }

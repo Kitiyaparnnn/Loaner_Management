@@ -3,7 +3,7 @@ class LoginDataUserModel {
       {this.userId,
       this.firstName,
       this.lastName,
-      this.depId,
+      this.depName,
       this.typeId,
       this.image});
 
@@ -12,14 +12,14 @@ class LoginDataUserModel {
     firstName = json['first_name'];
     lastName = json['last_name'];
     typeId = json['type_id'];
-    depId = json['dep_id'];
+    depName = json['dep_name'];
     image = json['image'];
   }
   String? userId;
   String? firstName;
   String? lastName;
   String? typeId;
-  String? depId;
+  String? depName;
   String? image;
 
   Map<String, dynamic> toJson() {
@@ -28,7 +28,7 @@ class LoginDataUserModel {
     map['first_name'] = firstName;
     map['last_name'] = lastName;
     map['type_id'] = typeId;
-    map['dep_id'] = depId;
+    map['dep_name'] = depName;
     map['image'] = image;
     return map;
   }

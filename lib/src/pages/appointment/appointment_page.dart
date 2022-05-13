@@ -109,7 +109,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
           onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage(isSupplier: widget.isSupplier),
+                builder: (context) => HomePage(),
               )),
         ),
         title: Column(

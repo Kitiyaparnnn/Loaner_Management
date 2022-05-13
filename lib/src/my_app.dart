@@ -43,7 +43,7 @@ class _MyApp extends State<MyApp> {
     }
 
     var _route = <String, WidgetBuilder>{
-      Constants.HOME_ROUTE: (context) => HomePage(isSupplier: true),
+      Constants.HOME_ROUTE: (context) => HomePage(),
       Constants.LOGIN_ROUTE: (context) => LoginPage(),
     };
     return FutureBuilder(

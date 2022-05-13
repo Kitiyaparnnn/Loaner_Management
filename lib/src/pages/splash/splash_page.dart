@@ -22,7 +22,7 @@ class _SplashPageState extends State<SplashPage> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    HomePage(isSupplier: widget.isSupplier))));
+                    HomePage())));
     super.initState();
   }
 
