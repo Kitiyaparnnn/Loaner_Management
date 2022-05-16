@@ -70,8 +70,10 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
 //fill appointment form
   _mapAppointmentButtonOnPressToState(
       AppointmentButtonOnPress event, Emitter emit) async {
-    appointment = event.appointment;
-    employee = event.employee;
+    if (event.isEdit) {
+      appointment = event.appointment;
+      employee = event.employee;
+    }
 
     if (appointment.loaners!.length != 0) {
       // final _result =
@@ -81,7 +83,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
 
       // add(AppointmentGetDetail(appNo: _result.appNo!));
       if (!event.isEdit) {
-        appointment.loaners = [];
+        // appointment.loaners = [];
       } else {
         emit(AppointmentStateLoading());
         logger.d(employee.toJson());
@@ -99,7 +101,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   _mapAppointmentButtonOnPress2ToState(
       AppointmentButtonOnPress2 event, Emitter emit) async {
     if (!event.isEdit) {
-      appointment.loaners = [];
+      // appointment.loaners = [];
     }
 
     // final _result =

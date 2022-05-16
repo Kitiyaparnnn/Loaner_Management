@@ -486,7 +486,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       appointment.appDate = _controllerAppDate.text;
       appointment.useTime = _controllerUseTime.text;
       appointment.appTime = _controllerAppTime.text;
-      logger.d(appointment.toJson());
+      // logger.d(appointment.toJson());
       if (button == 1) {
         Navigator.push(
             context,

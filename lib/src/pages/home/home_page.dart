@@ -55,8 +55,7 @@ List<AppointmentDataModel> appointmentsData = [
 ];
 
 class _HomePageState extends State<HomePage> {
-  // String role = "cssd";
-  bool isSupplier = true;
+  bool isSupplier = false;
   void _select(MenuChoice choice) {
     switch (choice.key) {
       case "SETTING":
@@ -110,8 +109,9 @@ class _HomePageState extends State<HomePage> {
   Future<void> getFullName() async {
     final _sharedPreferencesService = SharedPreferencesService();
     fullName = await _sharedPreferencesService.preferenceGetFullName();
-    isSupplier =
-        await _sharedPreferencesService.preferenceGetType() == 2 ? true : false;
+    isSupplier = await _sharedPreferencesService.preferenceGetType() == "2"
+        ? true
+        : false;
   }
 
   List<MenuModel> menuList = [];
