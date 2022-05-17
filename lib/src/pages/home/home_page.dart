@@ -1,6 +1,7 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:loaner/src/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:loaner/src/models/MenuChoice.dart';
@@ -59,6 +60,7 @@ List<AppointmentDataModel> appointmentsData = [
 
 class _HomePageState extends State<HomePage> {
   final _sharedPreferencesService = SharedPreferencesService();
+
   String isSupplier = "";
   void _select(MenuChoice choice) {
     switch (choice.key) {
@@ -76,7 +78,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    loading();
     getUserTypeId();
     getFullName();
     super.initState();
@@ -108,6 +109,33 @@ class _HomePageState extends State<HomePage> {
     BotToast.showLoading();
     await Future<void>.delayed(Duration(seconds: 1));
     BotToast.closeAllLoading();
+  }
+
+  Widget loading2(BuildContext context) {
+    return Container(
+        color: AppColors.COLOR_PRIMARY,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset("${Constants.IMAGE_DIR}/logo.png"),
+            SizedBox(
+              height: 10,
+            ),
+            SpinKitThreeBounce(
+              itemBuilder: ((context, index) {
+                return DecoratedBox(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: index.isEven
+                            ? AppColors.COLOR_GREEN_LIGHT
+                            : AppColors.COLOR_WHITE));
+              }),
+              duration: Duration(seconds: 2),
+              size: 25.0,
+            )
+          ],
+        ));
   }
 
   String fullName = "";
@@ -191,75 +219,75 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // print(role);
-    // print(isSupplier);
-      return Scaffold(
-        body: SafeArea(
-          child: Container(
-            height: double.infinity,
-            child: SingleChildScrollView(
+    return isSupplier == ""
+        ? loading2(context)
+        : Scaffold(
+            body: SafeArea(
               child: Container(
-                  height: double.maxFinite,
-                  child: Column(
-                    children: [
-                      _buildAppBar(),
-                      SizedBox(height: 15),
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 10, bottom: 30),
-                          padding: EdgeInsets.only(left: 20, right: 20),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildDescribe(),
-                                SizedBox(height: 20),
-                                Text(
-                                  "หมวดหมู่",
-                                  style: TextStyle(
-                                      color: AppColors.COLOR_BLACK,
-                                      fontSize: 21,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                _buildMenu(),
-                                SizedBox(height: 20),
-                                Row(
+                height: double.infinity,
+                child: SingleChildScrollView(
+                  child: Container(
+                      height: double.maxFinite,
+                      child: Column(
+                        children: [
+                          _buildAppBar(),
+                          SizedBox(height: 15),
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.only(top: 10, bottom: 30),
+                              padding: EdgeInsets.only(left: 20, right: 20),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    _buildDescribe(),
+                                    SizedBox(height: 20),
                                     Text(
-                                      "นัดหมายเร็วๆ นี้",
+                                      "หมวดหมู่",
                                       style: TextStyle(
                                           color: AppColors.COLOR_BLACK,
                                           fontSize: 21,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    Spacer(),
-                                    TextButton(
-                                      child: Text("ดูทั้งหมด",
+                                    _buildMenu(),
+                                    SizedBox(height: 20),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "นัดหมายเร็วๆ นี้",
                                           style: TextStyle(
-                                            color: AppColors.COLOR_PRIMARY,
-                                            fontSize: 12,
-                                          )),
-                                      onPressed: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                isSupplier == "2"
-                                                    ? AppointmentPage(
-                                                        isSupplier: true)
-                                                    : ConfirmAppointmentPage(),
-                                          )),
+                                              color: AppColors.COLOR_BLACK,
+                                              fontSize: 21,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Spacer(),
+                                        TextButton(
+                                          child: Text("ดูทั้งหมด",
+                                              style: TextStyle(
+                                                color: AppColors.COLOR_PRIMARY,
+                                                fontSize: 12,
+                                              )),
+                                          onPressed: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    isSupplier == "2"
+                                                        ? AppointmentPage(
+                                                            isSupplier: true)
+                                                        : ConfirmAppointmentPage(),
+                                              )),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                _buildList()
-                              ]),
-                        ),
-                      ),
-                    ],
-                  )),
+                                    _buildList()
+                                  ]),
+                            ),
+                          ),
+                        ],
+                      )),
+                ),
+              ),
             ),
-          ),
-        ),
-      );
+          );
   }
 
   Widget _buildAppBar() {
