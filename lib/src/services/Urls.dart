@@ -10,7 +10,7 @@ class Urls {
   static String? baseUrl;
 
   init() async {
-    // baseUrl = await _sharedPreferencesService.preferenceGetBaseApiUrl();
+    baseUrl = "http://192.168.1.104/Loaner_Management_api/api";
   }
 
   //login

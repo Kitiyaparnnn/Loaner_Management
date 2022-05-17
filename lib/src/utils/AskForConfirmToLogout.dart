@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loaner/src/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:loaner/src/pages/login/login_page.dart';
 import 'package:loaner/src/utils/Constants.dart';
 
@@ -27,9 +29,11 @@ void askForConfirmToLogout(BuildContext context) {
             ),
             onPressed: () {
               Navigator.of(dialogContext).pop();
+
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => LoginPage()));
-              // BlocProvider.of<AuthenticationBloc>(context).add(AuthEventLoggedOut());
+              BlocProvider.of<AuthenticationBloc>(context)
+                  .add(AuthEventLoggedOut());
             },
           ),
         ],

@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:loaner/src/pages/home/home_page.dart';
+import 'package:loaner/src/services/SharedPreferencesService.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
 
 class SplashPage extends StatefulWidget {
-  SplashPage({required this.isSupplier});
-  bool isSupplier;
+  SplashPage();
   @override
   State<SplashPage> createState() => _SplashPageState();
 }
@@ -18,12 +18,8 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     Timer(
         Duration(seconds: 2),
-        () => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    HomePage())));
-    super.initState();
+        () => Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomePage())));
   }
 
   @override

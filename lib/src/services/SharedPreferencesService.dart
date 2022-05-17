@@ -63,6 +63,11 @@ class SharedPreferencesService {
     return _prefs.getString(PreferenceKey.typeId) ?? '';
   }
 
+    Future<void> preferenceSetType({required String typeId}) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+     _prefs.setString(PreferenceKey.typeId,typeId);
+  }
+
   Future<String> preferenceGetUsername() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     return _prefs.getString(PreferenceKey.username) ?? '';

@@ -36,7 +36,6 @@ class _LoginPageState extends State<LoginPage>
   FocusNode passwordFocusNode = FocusNode();
 
   bool isRemember = false;
-  bool isSupplier = true;
 
   @override
   void initState() {
@@ -80,7 +79,7 @@ class _LoginPageState extends State<LoginPage>
                           BotToast.closeAllLoading();
 
                           if (state is LoginStateLoading) {
-                            BotToast.showLoading();
+                            // BotToast.showLoading();
                           }
 
                           if (state is LoginStateFailure ||
@@ -332,16 +331,11 @@ class _LoginPageState extends State<LoginPage>
                 ? () async {
                     _formKey.currentState!.save();
                     loginData.isRemember = isRemember;
-                    // BlocProvider.of<LoginBloc>(context)
-                    //     .add(LoginEventOnPress(loginData: loginData));
+                    BlocProvider.of<LoginBloc>(context)
+                        .add(LoginEventOnPress(loginData: loginData));
 
-                    if (loginData.username == 'supplier') {
-                      isSupplier = true;
-                    } else {
-                      isSupplier = false;
-                    }
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SplashPage(isSupplier: isSupplier,)));
+                        MaterialPageRoute(builder: (context) => HomePage()));
                   }
                 : null,
             child: Container(

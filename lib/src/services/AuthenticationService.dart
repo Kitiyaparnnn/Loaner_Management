@@ -7,18 +7,16 @@ import 'package:loaner/src/models/login/LoginDataUserModel.dart';
 import 'package:loaner/src/models/login/LoginModel.dart';
 import 'package:loaner/src/services/Urls.dart';
 
-
 import '../my_app.dart';
 import 'SharedPreferencesService.dart';
-
 
 class AuthenticationService {
   final _sharedPreferencesService = SharedPreferencesService();
 
   Future<bool> login({LoginModel? dataLogin}) async {
     try {
-      
-      final _url = Uri.parse(Urls.loginUrl);
+      final _url =
+          Uri.parse("http://192.168.1.104/Loaner_Management_api/api/login.php");
       var _response;
 
       if (dataLogin == null) {
@@ -31,24 +29,30 @@ class AuthenticationService {
       };
 
       _response = await http
-          .post(_url,
+          .post(
+        _url,
         body: jsonEncode(_body),
       )
           .timeout(Duration(seconds: 3), onTimeout: () {
-        throw AuthenticationException(message: 'You are not connected to internet');
+        throw AuthenticationException(
+            message: 'You are not connected to internet');
       });
 
       if (_response.statusCode == 200) {
         final List _jsonResponse = json.decode(_response.body);
-        List<LoginDataUserModel> _userLogin = _jsonResponse.map((i) => LoginDataUserModel.fromJson(i)).toList();
+        List<LoginDataUserModel> _userLogin =
+            _jsonResponse.map((i) => LoginDataUserModel.fromJson(i)).toList();
 
         if (_userLogin.length > 0) {
           await _sharedPreferencesService.preferenceSetIsLogin(isLogin: true);
-          await _sharedPreferencesService.preferenceSetDataUser(user: _userLogin[0]);
+          await _sharedPreferencesService.preferenceSetDataUser(
+              user: _userLogin[0]);
 
           if (dataLogin.isRemember) {
-            await _sharedPreferencesService.preferenceSetRememberUsername(isRemember: true);
-            await _sharedPreferencesService.preferenceSetUsername(username: dataLogin.username.toString());
+            await _sharedPreferencesService.preferenceSetRememberUsername(
+                isRemember: true);
+            await _sharedPreferencesService.preferenceSetUsername(
+                username: dataLogin.username.toString());
           }
 
           loggerNoStack.w("logged in successfully");
@@ -59,12 +63,13 @@ class AuthenticationService {
       loggerNoStack.e("logged in failed");
       return false;
     } on SocketException {
-      throw AuthenticationException(message: 'You are not connected to internet');
+      throw AuthenticationException(
+          message: 'You are not connected to internet');
     } on TimeoutException {
-      throw AuthenticationException(message: 'You are not connected to internet');
+      throw AuthenticationException(
+          message: 'You are not connected to internet');
     }
   }
-
 
   Future<void> logout() async {
     await _sharedPreferencesService.preferenceSetIsLogin(isLogin: false);

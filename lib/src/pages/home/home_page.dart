@@ -1,9 +1,12 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:loaner/src/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:loaner/src/models/MenuChoice.dart';
 import 'package:loaner/src/models/MenuModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/appointment/appointment_page.dart';
 import 'package:loaner/src/pages/confirm_appointment/confirm_appointment_page.dart';
 import 'package:loaner/src/pages/confirm_appointment/detail_appointment_page.dart';
@@ -55,7 +58,8 @@ List<AppointmentDataModel> appointmentsData = [
 ];
 
 class _HomePageState extends State<HomePage> {
-  bool isSupplier = false;
+  final _sharedPreferencesService = SharedPreferencesService();
+  String isSupplier = "";
   void _select(MenuChoice choice) {
     switch (choice.key) {
       case "SETTING":
@@ -72,8 +76,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    loading();
+    getUserTypeId();
     getFullName();
-    getMachine();
     super.initState();
   }
 
@@ -88,6 +93,7 @@ class _HomePageState extends State<HomePage> {
   List<AppointmentDataModel> appointList = [];
 
   Future<void> getMachine() async {
+    // logger.w("setMenuList");
     // final _appointmentService = AppointmentService();
 
     // appointList =
@@ -107,18 +113,21 @@ class _HomePageState extends State<HomePage> {
   String fullName = "";
 
   Future<void> getFullName() async {
-    final _sharedPreferencesService = SharedPreferencesService();
     fullName = await _sharedPreferencesService.preferenceGetFullName();
-    isSupplier = await _sharedPreferencesService.preferenceGetType() == "2"
-        ? true
-        : false;
+  }
+
+  Future<void> getUserTypeId() async {
+    // logger.w("set Menu");
+    isSupplier = await _sharedPreferencesService.preferenceGetType();
+
+    getMachine();
   }
 
   List<MenuModel> menuList = [];
 
   Future<void> generateMenu() async {
     menuList.clear();
-    var _menu = isSupplier
+    var _menu = isSupplier == "2"
         ? <MenuModel>[
             MenuModel(
               name: "${Constants.FILL_APPOINT_TITLE}",
@@ -154,24 +163,26 @@ class _HomePageState extends State<HomePage> {
               isShow: true,
             ),
           ]
-        : <MenuModel>[
-            MenuModel(
-              name: "${Constants.CONFIRM_APPOINT_TITLE}",
-              route: ConfirmAppointmentPage(),
-              color: AppColors.COLOR_WHITE,
-              subName: "ยืนยันกับเจ้าหน้าที่บริษัท",
-              image: "${Constants.IMAGE_DIR}/menu-fill.png",
-              isShow: true,
-            ),
-            MenuModel(
-              name: "${Constants.APPOINTMENT_TITLE}",
-              route: AppointmentPage(isSupplier: false),
-              color: AppColors.COLOR_WHITE,
-              subName: "การนัดหมายทั้งหมด",
-              image: "${Constants.IMAGE_DIR}/menu-app.png",
-              isShow: true,
-            ),
-          ];
+        : isSupplier == "1"
+            ? <MenuModel>[
+                MenuModel(
+                  name: "${Constants.CONFIRM_APPOINT_TITLE}",
+                  route: ConfirmAppointmentPage(),
+                  color: AppColors.COLOR_WHITE,
+                  subName: "ยืนยันกับเจ้าหน้าที่บริษัท",
+                  image: "${Constants.IMAGE_DIR}/menu-fill.png",
+                  isShow: true,
+                ),
+                MenuModel(
+                  name: "${Constants.APPOINTMENT_TITLE}",
+                  route: AppointmentPage(isSupplier: false),
+                  color: AppColors.COLOR_WHITE,
+                  subName: "การนัดหมายทั้งหมด",
+                  image: "${Constants.IMAGE_DIR}/menu-app.png",
+                  isShow: true,
+                ),
+              ]
+            : [];
 
     _menu.map((menu) {
       menuList.add(menu);
@@ -182,72 +193,73 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // print(role);
     // print(isSupplier);
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
-          height: double.infinity,
-          child: SingleChildScrollView(
-            child: Container(
-              height: double.maxFinite,
-              child: Column(
-                children: [
-                  _buildAppBar(),
-                  SizedBox(height: 15),
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 10, bottom: 30),
-                      padding: EdgeInsets.only(left: 20, right: 20),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildDescribe(),
-                            SizedBox(height: 20),
-                            Text(
-                              "หมวดหมู่",
-                              style: TextStyle(
-                                  color: AppColors.COLOR_BLACK,
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            _buildMenu(),
-                            SizedBox(height: 20),
-                            Row(
+      return Scaffold(
+        body: SafeArea(
+          child: Container(
+            height: double.infinity,
+            child: SingleChildScrollView(
+              child: Container(
+                  height: double.maxFinite,
+                  child: Column(
+                    children: [
+                      _buildAppBar(),
+                      SizedBox(height: 15),
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.only(top: 10, bottom: 30),
+                          padding: EdgeInsets.only(left: 20, right: 20),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                _buildDescribe(),
+                                SizedBox(height: 20),
                                 Text(
-                                  "นัดหมายเร็วๆ นี้",
+                                  "หมวดหมู่",
                                   style: TextStyle(
                                       color: AppColors.COLOR_BLACK,
                                       fontSize: 21,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                Spacer(),
-                                TextButton(
-                                  child: Text("ดูทั้งหมด",
+                                _buildMenu(),
+                                SizedBox(height: 20),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "นัดหมายเร็วๆ นี้",
                                       style: TextStyle(
-                                        color: AppColors.COLOR_PRIMARY,
-                                        fontSize: 12,
-                                      )),
-                                  onPressed: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => isSupplier
-                                            ? AppointmentPage(isSupplier: true)
-                                            : ConfirmAppointmentPage(),
-                                      )),
+                                          color: AppColors.COLOR_BLACK,
+                                          fontSize: 21,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Spacer(),
+                                    TextButton(
+                                      child: Text("ดูทั้งหมด",
+                                          style: TextStyle(
+                                            color: AppColors.COLOR_PRIMARY,
+                                            fontSize: 12,
+                                          )),
+                                      onPressed: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                isSupplier == "2"
+                                                    ? AppointmentPage(
+                                                        isSupplier: true)
+                                                    : ConfirmAppointmentPage(),
+                                          )),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            _buildList()
-                          ]),
-                    ),
-                  ),
-                ],
-              ),
+                                _buildList()
+                              ]),
+                        ),
+                      ),
+                    ],
+                  )),
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildAppBar() {
