@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +14,7 @@ import 'package:loaner/src/pages/loaner/loaner_sum_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
 import 'package:loaner/src/utils/MyAppBar.dart';
+import 'package:path_provider/path_provider.dart';
 
 class LoanerPage extends StatefulWidget {
   LoanerPage(
@@ -203,13 +205,11 @@ class _LoanerPageState extends State<LoanerPage> {
     );
   }
 
-  File? imageFile;
+  late File imageFile;
   _mapList(List<LoanerModel> object, int index) {
     if (object[index].image != "") {
-      final decodedBytes = base64Decode(object[index].image!);
-      var file = File("${Constants.IMAGE_DIR}/decode.png");
-      file.writeAsBytesSync(decodedBytes);
-      // decodeImage(object[index].image!);
+      decodeImage(object[index].image!);
+      // print(imageFile.path);
     }
 
     return Card(
@@ -229,8 +229,8 @@ class _LoanerPageState extends State<LoanerPage> {
                   border: Border.all(color: AppColors.COLOR_GREY, width: 2.0)),
               child: object[index].image != ""
                   ?
-                  // Image.memory(base64.decode(object[index].image!))
-                  null
+                  //  Image.memory(base64.decode(object[index].image!))
+                  Image.file(File(imageFile.path))
                   : Icon(Icons.image),
             ),
           ),
@@ -250,15 +250,23 @@ class _LoanerPageState extends State<LoanerPage> {
                           ))).then((value) => context
                   .read<AppointmentBloc>()
                   .add(AppointmentCountLoaner())) //bloc count selectedLoaners
-              : null),
+              : Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LoanerCreatePage(
+                            
+                          ))).then((value) => context
+                  .read<LoanerBloc>()
+                  .add(LoanerGetDetail(id: object[index].id!)))),
     );
   }
 
-  // decodeImage(String img64) async {
-  //   final _byteImage = base64Decode(img64);
-  //   final directory = await getApplicationDocumentsDirectory();
-  //   File imageFile = File('${directory.path}testImage.png');
-  //   imageFile.writeAsBytesSync(_byteImage);
-  //   setState(() {});
-  // }
+  decodeImage(String img64) async {
+    Uint8List byte = base64Decode(img64);
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    imageFile = File('$dir/testImage.png');
+    imageFile.writeAsBytesSync(byte);
+    setState(() {});
+    // print(imageFile.path);
+  }
 }

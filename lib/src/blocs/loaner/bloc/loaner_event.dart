@@ -16,7 +16,7 @@ class LoanerCreate extends LoanerEvent {
   LoanerCreate({required this.loaner, required this.isEdit});
 
   @override
-  List<Object?> get props => [loaner,isEdit];
+  List<Object?> get props => [loaner, isEdit];
 }
 
 class LoanerGetAll extends LoanerEvent {}
@@ -40,3 +40,13 @@ class LoanerGetSearchType extends LoanerEvent {
 }
 
 class LoanerGetType extends LoanerEvent {}
+
+class LoanerGetDetail extends LoanerEvent {
+  final String id;
+
+  LoanerGetDetail({required this.id});
+
+
+  @override
+  List<Object?> get props => [id];
+}

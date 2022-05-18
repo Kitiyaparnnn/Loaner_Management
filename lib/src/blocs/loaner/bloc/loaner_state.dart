@@ -35,3 +35,12 @@ class LoanerStateGetType extends LoanerState {
     @override
   List<Object?> get props => [data];
 }
+
+class LoanerStateGetDetail extends LoanerState {
+  final LoanerDataModel data;
+
+  LoanerStateGetDetail({required this.data});
+
+  @override
+  List<Object?> get props => [data];
+}

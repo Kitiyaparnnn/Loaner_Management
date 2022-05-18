@@ -19,6 +19,7 @@ class LoanerBloc extends Bloc<LoanerEvent, LoanerState> {
     on<LoanerGetSearchType>(_maploanerGetSearchTypeToState);
     on<LoanerSearchType>(_maploanerSearchTypeToState);
     on<LoanerGetType>(_mapLoanerGetTypeToState);
+    on<LoanerGetDetail>(_mapLoanerGetDetailToState);
   }
 
   _mapLoanerCreateToState(LoanerCreate event, Emitter emit) async {
@@ -34,6 +35,7 @@ class LoanerBloc extends Bloc<LoanerEvent, LoanerState> {
     final _result = await _loanerService.getAllLoaners();
 
     emit(LoanerStateGetAll(data: _result));
+    emit(LoanerStateLoading());
   }
 
   _maploanerGetSearchTypeToState(
@@ -56,5 +58,14 @@ class LoanerBloc extends Bloc<LoanerEvent, LoanerState> {
     final List<DropdownModel> _result = await _loanerService.getLoanerType();
 
     emit(LoanerStateGetType(data: _result));
+  }
+
+  _mapLoanerGetDetailToState(LoanerGetDetail event, Emitter emit) async {
+    emit(LoanerStateLoading());
+
+    final LoanerDataModel _result =
+        await _loanerService.getLoanerDetail(id: event.id);
+
+    emit(LoanerStateGetDetail(data: _result));
   }
 }

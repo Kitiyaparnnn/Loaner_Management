@@ -146,4 +146,39 @@ class LoanerService {
       return _result;
     }
   }
+
+  Future<LoanerDataModel> getLoanerDetail(
+      {required String id}) async {
+    LoanerDataModel _result = LoanerDataModel();
+
+    try {
+      final _url = Uri.parse("http://192.168.1.104/Loaner_Management_api/api/loaner/loaner.php");
+      var _response;
+
+      Map<String, dynamic> _body = {
+        'function': "GET_LOANER_DETAIL",
+        "id": id
+      };
+
+      logger.i(_body);
+
+      _response = await http.post(
+        _url,
+        body: jsonEncode(_body),
+      );
+
+      if (_response.statusCode == 200) {
+        final List _jsonResponse = json.decode(_response.body);
+
+       LoanerDataModel _resultData =
+            LoanerDataModel.fromJson(_jsonResponse);
+        _result = _resultData;
+      }
+
+      return _result;
+    } catch (e) {
+      logger.e(e);
+      return _result;
+    }
+  }
 }
