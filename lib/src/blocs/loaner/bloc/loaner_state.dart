@@ -2,7 +2,7 @@ part of 'loaner_bloc.dart';
 
 abstract class LoanerState extends Equatable {
   const LoanerState();
-  
+
   @override
   List<Object?> get props => [];
 }
@@ -14,8 +14,7 @@ class LoanerStateGetAll extends LoanerState {
 
   LoanerStateGetAll({required this.data});
 
-
-    @override
+  @override
   List<Object?> get props => [data];
 }
 
@@ -24,7 +23,15 @@ class LoanerStateSearchTpye extends LoanerState {
 
   LoanerStateSearchTpye({required this.textSearch});
 
+  @override
+  List<Object?> get props => [textSearch];
+}
+
+class LoanerStateGetType extends LoanerState {
+  final List<DropdownModel> data;
+
+  LoanerStateGetType({required this.data});
 
     @override
-  List<Object?> get props => [textSearch];
+  List<Object?> get props => [data];
 }

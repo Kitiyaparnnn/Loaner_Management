@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:loaner/src/models/DropdownModel.dart';
+import 'package:loaner/src/models/MenuChoice.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/services/SharedPreferencesService.dart';
@@ -175,6 +177,75 @@ class AppointmentService {
 
         List<AppointmentDataModel> _resultData =
             _jsonResponse.map((i) => AppointmentDataModel.fromJson(i)).toList();
+        _result = _resultData;
+      }
+
+      return _result;
+    } catch (e) {
+      logger.e(e);
+      return _result;
+    }
+  }
+
+   Future<List<DropdownModel>> getHospitalList(
+      ) async {
+    List<DropdownModel> _result = [];
+
+    try {
+      final _url = Uri.parse(Urls.appointmentUrl);
+      var _response;
+
+      Map<String, dynamic> _body = {
+        'function': "GET_HOSPITAL_LIST",
+      };
+
+      logger.i(_body);
+
+      _response = await http.post(
+        _url,
+        body: jsonEncode(_body),
+      );
+
+      if (_response.statusCode == 200) {
+        final List _jsonResponse = json.decode(_response.body);
+
+        List<DropdownModel> _resultData =
+            _jsonResponse.map((i) => DropdownModel.fromJson(i)).toList();
+        _result = _resultData;
+      }
+
+      return _result;
+    } catch (e) {
+      logger.e(e);
+      return _result;
+    }
+  }
+
+   Future<List<DropdownModel>> getEmployeeByDepId({required String depId}
+      ) async {
+    List<DropdownModel> _result = [];
+
+    try {
+      final _url = Uri.parse(Urls.employeeUrl);
+      var _response;
+
+      Map<String, dynamic> _body = {
+        'function': "GET_EMPLOYEE_BY_DEPID",
+        'depId' : depId
+      };
+
+      logger.i(_body);
+
+      _response = await http.post(
+        _url,
+        body: jsonEncode(_body),
+      );
+
+      if (_response.statusCode == 200) {
+        final List _jsonResponse = json.decode(_response.body);
+
+        List<DropdownModel> _resultData =
+            _jsonResponse.map((i) => DropdownModel.fromJson(i)).toList();
         _result = _resultData;
       }
 

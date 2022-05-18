@@ -9,6 +9,7 @@ import 'package:loaner/src/blocs/employee/bloc/employee_bloc.dart';
 import 'package:loaner/src/models/employee/EmployeeDataModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/employee/employee_page.dart';
+import 'package:loaner/src/services/SharedPreferencesService.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
 import 'package:loaner/src/utils/DropdownInput.dart';
@@ -39,6 +40,18 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   TextEditingController _controllerImage = new TextEditingController(text: "");
 
   File? imageFile;
+
+  Future<void> getCompanyName() async {
+    final _sharedPreferencesService = SharedPreferencesService();
+    _controllerCompany.text =
+        await _sharedPreferencesService.preferenceGetDepName();
+  }
+
+  @override
+  void initState() {
+    getCompanyName();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -341,7 +354,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       employeeData.detail = _controllerDetail.text;
       employeeData.image = _controllerImage.text;
 
-      context.read<EmployeeBloc>().add(EmployeeCreate(employee: employeeData));
+      context.read<EmployeeBloc>().add(EmployeeManage(employee: employeeData));
       Navigator.pop(
           context, MaterialPageRoute(builder: (context) => EmployeePage()));
     } else {

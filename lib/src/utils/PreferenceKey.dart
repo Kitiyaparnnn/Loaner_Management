@@ -7,6 +7,7 @@ class PreferenceKey {
   static final String fName = "fName";
   static final String lName = "lName";
   static final String depName = "depName";
+  static final String depId = "depId";
   static final String typeId = "typeId";
   static final String image = "image";
   static final String baseApiUrl = "baseApiUrl";

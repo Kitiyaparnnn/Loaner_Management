@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loaner/src/blocs/loaner/bloc/loaner_bloc.dart';
+import 'package:loaner/src/models/DropdownModel.dart';
 import 'package:loaner/src/models/loaner/LoanerDataModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
@@ -23,21 +24,56 @@ class LoanerCreatePage extends StatefulWidget {
 }
 
 class _LoanerCreatePageState extends State<LoanerCreatePage> {
-  final loaner = LoanerDataModel();
+  final loaner = LoanerDataModel(id: "");
   var _formKey = GlobalKey<FormState>();
+  bool isEdit = false;
 
-  TextEditingController _controllerGroup = new TextEditingController(text: "");
+  TextEditingController _controllerType = new TextEditingController(text: "");
   TextEditingController _controllerImage = new TextEditingController(text: "");
   TextEditingController _controllerName = new TextEditingController(text: "");
   TextEditingController _controllerDetail = new TextEditingController(text: "");
-  TextEditingController _controllerStock = new TextEditingController(text: "");
+  TextEditingController _controllerQty = new TextEditingController(text: "");
+  TextEditingController _controllerSize = new TextEditingController(text: "");
 
   File? imageFile;
 
   @override
+  void initState() {
+    context.read<LoanerBloc>().add(LoanerGetType());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: myAppBar(title: Constants.LOANER_SUM_TITLE, context: context),
+        appBar: AppBar(
+          backgroundColor: AppColors.COLOR_SWATCH,
+          elevation: 0,
+          leading: IconButton(
+              splashRadius: 18,
+              icon:
+                  Icon(Icons.arrow_back_outlined, color: AppColors.COLOR_BLACK),
+              onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => LoanerPage(
+                              isEdit: false,
+                              isFillForm: false,
+                              selectedLoaner: [],
+                            )),
+                  )),
+          title: Column(
+            children: [
+              Text(
+                Constants.LOANER_SUM_TITLE,
+                style: TextStyle(
+                  color: AppColors.COLOR_BLACK,
+                ),
+              )
+            ],
+          ),
+          centerTitle: true,
+        ),
         body: GestureDetector(
           onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
           child: SingleChildScrollView(
@@ -81,112 +117,134 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
   Widget _buildInput() {
     return Form(
         key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
+        child: BlocBuilder<LoanerBloc, LoanerState>(
+          builder: (context, state) {
+            List<DropdownModel> type = [];
+
+            if (state is LoanerStateGetType) {
+              type = state.data;
+            }
+
+            return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                buildDropdown(_controllerGroup, Constants.group, "หมวดหมู่"),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [buildTextFormField(_controllerName, "ชื่อรายการ")],
-            ),
-            const SizedBox(height: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                buildLongTextFormField(_controllerDetail, "รายละเอียด (ถ้ามี)")
-              ],
-            ),
-            const SizedBox(height: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [buildStockTextFormField(_controllerStock)],
-            ),
-            const SizedBox(height: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("อัปโหลดรูปถ่าย Loaner",
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildDropdownInput(_controllerType, type, "หมวดหมู่"),
+                  ],
+                ),
                 const SizedBox(height: 10),
-                imageFile == null
-                    ? InkWell(
-                        onTap: () => _showImageDialog(),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: AppColors.COLOR_WHITE,
-                              borderRadius: BorderRadius.circular(8.0),
-                              border: Border.all(color: AppColors.COLOR_GREY)),
-                          height: 150,
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                    onPressed: () => _showImageDialog(),
-                                    icon: Icon(Icons.file_download_outlined,
-                                        color: AppColors.COLOR_PRIMARY)),
-                                Text("ลากรูปภาพไปที่โซนหรือคลิกอัปโหลด",
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: AppColors.COLOR_LIGHT))
-                              ],
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [buildTextFormField(_controllerName, "ชื่อรายการ")],
+                ),
+                const SizedBox(height: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildTextFormField(_controllerSize, "ขนาด (w x h x l)")
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildLongTextFormField(
+                        _controllerDetail, "รายละเอียด (ถ้ามี)")
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [buildStockTextFormField(_controllerQty)],
+                ),
+                const SizedBox(height: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("อัปโหลดรูปถ่าย Loaner",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 10),
+                    imageFile == null
+                        ? InkWell(
+                            onTap: () => _showImageDialog(),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: AppColors.COLOR_WHITE,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  border:
+                                      Border.all(color: AppColors.COLOR_GREY)),
+                              height: 150,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () => _showImageDialog(),
+                                        icon: Icon(Icons.file_download_outlined,
+                                            color: AppColors.COLOR_PRIMARY)),
+                                    Text("ลากรูปภาพไปที่โซนหรือคลิกอัปโหลด",
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: AppColors.COLOR_LIGHT))
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      )
-                    : Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        color: AppColors.COLOR_WHITE,
-                        elevation: 0.0,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.all(10.0),
-                          leading: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: AppColors.COLOR_GREY,
-                                border: Border.all(
-                                    color: AppColors.COLOR_GREY, width: 2.0)),
-                            height: 60,
-                            width: 60,
-                            child: Image.file(
-                              imageFile!,
-                              fit: BoxFit.cover,
+                          )
+                        : Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          ),
-                          title: Text(
-                            imageFile!.path.split("/").last,
-                            style: TextStyle(
-                                fontSize: 16, color: AppColors.COLOR_PRIMARY),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          subtitle: Text(
-                              (imageFile!.readAsBytesSync().lengthInBytes /
-                                          (1024 * 1024))
-                                      .toStringAsFixed(2) +
-                                  " Mb",
-                              style: TextStyle(
-                                  fontSize: 12, color: AppColors.COLOR_LIGHT)),
-                          trailing: IconButton(
-                              icon: Icon(Icons.delete_outline_outlined,
-                                  color: AppColors.COLOR_RED),
-                              onPressed: () {
-                                imageFile = null;
-                                setState(() {});
-                              }),
-                        ),
-                      )
+                            color: AppColors.COLOR_WHITE,
+                            elevation: 0.0,
+                            child: ListTile(
+                              contentPadding: EdgeInsets.all(10.0),
+                              leading: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: AppColors.COLOR_GREY,
+                                    border: Border.all(
+                                        color: AppColors.COLOR_GREY,
+                                        width: 2.0)),
+                                height: 60,
+                                width: 60,
+                                child: Image.file(
+                                  imageFile!,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              title: Text(
+                                imageFile!.path.split("/").last,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: AppColors.COLOR_PRIMARY),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              subtitle: Text(
+                                  (imageFile!.readAsBytesSync().lengthInBytes /
+                                              (1024 * 1024))
+                                          .toStringAsFixed(2) +
+                                      " Mb",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.COLOR_LIGHT)),
+                              trailing: IconButton(
+                                  icon: Icon(Icons.delete_outline_outlined,
+                                      color: AppColors.COLOR_RED),
+                                  onPressed: () {
+                                    imageFile = null;
+                                    setState(() {});
+                                  }),
+                            ),
+                          )
+                  ],
+                )
               ],
-            )
-          ],
+            );
+          },
         ));
   }
 
@@ -273,13 +331,16 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
   void validate() {
     if (_formKey.currentState!.validate()) {
       _convertBase64();
-      loaner.group = _controllerGroup.text;
+      loaner.type = _controllerType.text;
       loaner.image = _controllerImage.text;
       loaner.name = _controllerName.text;
       loaner.detail = _controllerDetail.text;
-      loaner.stock = _controllerStock.text;
+      loaner.qty = _controllerQty.text;
+      loaner.size = _controllerSize.text;
 
-      context.read<LoanerBloc>().add(LoanerCreate(loaner: loaner));
+      context
+          .read<LoanerBloc>()
+          .add(LoanerCreate(loaner: loaner, isEdit: isEdit));
       Navigator.pop(
           context,
           MaterialPageRoute(

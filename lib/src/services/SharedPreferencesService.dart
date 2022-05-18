@@ -16,6 +16,7 @@ class SharedPreferencesService {
     _prefs.remove(PreferenceKey.fName);
     _prefs.remove(PreferenceKey.lName);
     _prefs.remove(PreferenceKey.depName);
+    _prefs.remove(PreferenceKey.depId);
     _prefs.remove(PreferenceKey.typeId);
     _prefs.remove(PreferenceKey.image);
   }
@@ -27,6 +28,7 @@ class SharedPreferencesService {
     _prefs.setString(PreferenceKey.fName, user.firstName.toString());
     _prefs.setString(PreferenceKey.lName, user.lastName.toString());
     _prefs.setString(PreferenceKey.depName, user.depName.toString());
+    _prefs.setString(PreferenceKey.depId, user.depId.toString());
     _prefs.setString(PreferenceKey.typeId, user.typeId.toString());
     _prefs.setString(PreferenceKey.image, user.image.toString());
   }
@@ -53,6 +55,11 @@ class SharedPreferencesService {
     return _prefs.getString(PreferenceKey.depName) ?? '';
   }
 
+  Future<String> preferenceGetDepId() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    return _prefs.getString(PreferenceKey.depId) ?? '';
+  }
+
   Future<String> preferenceGetImage() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     return _prefs.getString(PreferenceKey.image) ?? '';
@@ -63,9 +70,9 @@ class SharedPreferencesService {
     return _prefs.getString(PreferenceKey.typeId) ?? '';
   }
 
-    Future<void> preferenceSetType({required String typeId}) async {
+  Future<void> preferenceSetType({required String typeId}) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-     _prefs.setString(PreferenceKey.typeId,typeId);
+    _prefs.setString(PreferenceKey.typeId, typeId);
   }
 
   Future<String> preferenceGetUsername() async {
@@ -88,7 +95,7 @@ class SharedPreferencesService {
     return _prefs.getBool(PreferenceKey.isRemember) ?? false;
   }
 
-    Future<void> preferenceSetBaseApiUrl({required String url}) async {
+  Future<void> preferenceSetBaseApiUrl({required String url}) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.setString(PreferenceKey.baseApiUrl, url);
   }
@@ -97,5 +104,4 @@ class SharedPreferencesService {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     return _prefs.getString(PreferenceKey.baseApiUrl) ?? "";
   }
-
 }

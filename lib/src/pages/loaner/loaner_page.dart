@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
@@ -31,25 +34,7 @@ class _LoanerPageState extends State<LoanerPage> {
         name: 'LoanerA',
         detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
         rent: 0,
-        note: ''),
-    LoanerModel(
-        name: 'LoanerB',
-        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-        image: '',
-        rent: 0,
-        note: ''),
-    LoanerModel(
-        name: 'LoanerC',
-        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-        image: '',
-        rent: 0,
-        note: ''),
-    LoanerModel(
-        name: 'LoanerD',
-        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-        image: '',
-        rent: 0,
-        note: ''),
+        note: '')
   ];
 
   List<LoanerModel> items = [];
@@ -57,7 +42,7 @@ class _LoanerPageState extends State<LoanerPage> {
 
   @override
   void initState() {
-    context.read<LoanerBloc>().add(LoanerGetSearchType(textSearch: ""));
+    context.read<LoanerBloc>().add(LoanerGetAll());
     context.read<AppointmentBloc>().add(AppointmentCountLoaner());
     items.clear();
     super.initState();
@@ -82,6 +67,7 @@ class _LoanerPageState extends State<LoanerPage> {
         items.addAll(loaners);
       });
     }
+    print(items.toList());
   }
 
   @override
@@ -167,12 +153,6 @@ class _LoanerPageState extends State<LoanerPage> {
   _searchBar() {
     return BlocBuilder<LoanerBloc, LoanerState>(
       builder: (context, state) {
-        bool isShow = false;
-        if (state is LoanerStateSearchTpye) {
-          if (state.textSearch != "") {
-            isShow = true;
-          }
-        }
         return TextField(
           onChanged: (value) {
             // filterSearchResults(value);
@@ -187,7 +167,7 @@ class _LoanerPageState extends State<LoanerPage> {
               prefixIcon: Icon(Icons.search),
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              suffixIcon: isShow
+              suffixIcon: searchController.text != ""
                   ? GestureDetector(
                       child: Icon(Icons.cancel_outlined),
                       onTap: () {
@@ -205,8 +185,9 @@ class _LoanerPageState extends State<LoanerPage> {
   _loanerList() {
     return BlocBuilder<LoanerBloc, LoanerState>(
       builder: (context, state) {
+        List<LoanerModel> loaner = [];
         if (state is LoanerStateGetAll) {
-          // loaners = state.data;
+          loaner = state.data;
         }
         return Expanded(
           child: loaners.isEmpty
@@ -214,15 +195,23 @@ class _LoanerPageState extends State<LoanerPage> {
                   child: Text(Constants.TEXT_DATA_NOT_FOUND),
                 )
               : ListView.builder(
-                  itemCount: loaners.length,
-                  itemBuilder: ((context, index) => _mapList(loaners, index)),
+                  itemCount: loaner.length,
+                  itemBuilder: ((context, index) => _mapList(loaner, index)),
                 ),
         );
       },
     );
   }
 
+  File? imageFile;
   _mapList(List<LoanerModel> object, int index) {
+    if (object[index].image != "") {
+      final decodedBytes = base64Decode(object[index].image!);
+      var file = File("${Constants.IMAGE_DIR}/decode.png");
+      file.writeAsBytesSync(decodedBytes);
+      // decodeImage(object[index].image!);
+    }
+
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -238,7 +227,11 @@ class _LoanerPageState extends State<LoanerPage> {
                   borderRadius: BorderRadius.circular(10),
                   color: AppColors.COLOR_GREY,
                   border: Border.all(color: AppColors.COLOR_GREY, width: 2.0)),
-              child: object[index].image != null ? null : Icon(Icons.image),
+              child: object[index].image != ""
+                  ?
+                  // Image.memory(base64.decode(object[index].image!))
+                  null
+                  : Icon(Icons.image),
             ),
           ),
           title: Text(object[index].name!, style: TextStyle(fontSize: 16)),
@@ -260,4 +253,12 @@ class _LoanerPageState extends State<LoanerPage> {
               : null),
     );
   }
+
+  // decodeImage(String img64) async {
+  //   final _byteImage = base64Decode(img64);
+  //   final directory = await getApplicationDocumentsDirectory();
+  //   File imageFile = File('${directory.path}testImage.png');
+  //   imageFile.writeAsBytesSync(_byteImage);
+  //   setState(() {});
+  // }
 }

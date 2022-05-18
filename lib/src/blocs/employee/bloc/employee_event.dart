@@ -7,10 +7,10 @@ abstract class EmployeeEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class EmployeeCreate extends EmployeeEvent {
+class EmployeeManage extends EmployeeEvent {
   final EmployeeDataModel employee;
 
-  EmployeeCreate({required this.employee});
+  EmployeeManage({required this.employee});
 
     @override
   List<Object?> get props => [employee];

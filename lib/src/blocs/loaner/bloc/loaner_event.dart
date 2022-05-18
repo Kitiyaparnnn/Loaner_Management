@@ -11,25 +11,22 @@ class LoanerLoading extends LoanerEvent {}
 
 class LoanerCreate extends LoanerEvent {
   final LoanerDataModel loaner;
+  final bool isEdit;
 
-  LoanerCreate({required this.loaner});
+  LoanerCreate({required this.loaner, required this.isEdit});
 
-
-    @override
-  List<Object?> get props => [loaner];
+  @override
+  List<Object?> get props => [loaner,isEdit];
 }
 
-class LoanerGetAll extends LoanerEvent {
-  
-}
+class LoanerGetAll extends LoanerEvent {}
 
 class LoanerSearchType extends LoanerEvent {
   final String textSearch;
 
   LoanerSearchType({required this.textSearch});
 
-
-    @override
+  @override
   List<Object?> get props => [textSearch];
 }
 
@@ -38,7 +35,8 @@ class LoanerGetSearchType extends LoanerEvent {
 
   LoanerGetSearchType({required this.textSearch});
 
-
-    @override
+  @override
   List<Object?> get props => [textSearch];
 }
+
+class LoanerGetType extends LoanerEvent {}

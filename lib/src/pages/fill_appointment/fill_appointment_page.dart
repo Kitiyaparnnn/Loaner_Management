@@ -59,7 +59,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   TimeOfDay currentTimeSelect = TimeOfDay.now();
 
   TextEditingController _controllerCompanyName =
-      new TextEditingController(text: "POSE");
+      new TextEditingController(text: "");
   TextEditingController _controllerEmpId = new TextEditingController(text: "");
   TextEditingController _controllerHospitalName =
       new TextEditingController(text: "");
@@ -132,7 +132,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   @override
   void initState() {
     isDocument = widget.appointStatus == "0" ? false : true;
-    // getCompanyName();
+    getCompanyName();
     getDocumentDetail();
     super.initState();
   }

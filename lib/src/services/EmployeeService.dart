@@ -7,7 +7,7 @@ import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/services/Urls.dart';
 
 class EmployeeService {
-  Future<EmployeeDataModel>   manageEmployee(
+  Future<EmployeeDataModel> manageEmployee(
       {required EmployeeDataModel employee}) async {
     EmployeeDataModel _result = EmployeeDataModel();
 
@@ -42,7 +42,7 @@ class EmployeeService {
     }
   }
 
-  Future<List<EmployeeModel>> getAllEmployees(
+  Future<List<EmployeeModel>> getAllEmployees({required String depId}
       ) async {
     List<EmployeeModel> _result = [];
 
@@ -52,6 +52,7 @@ class EmployeeService {
 
       Map<String, dynamic> _body = {
         'function': "GET_ALL_EMPLOYEES",
+        'depId' : depId
       };
 
       logger.i(_body);
