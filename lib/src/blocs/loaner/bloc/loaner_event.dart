@@ -11,12 +11,11 @@ class LoanerLoading extends LoanerEvent {}
 
 class LoanerCreate extends LoanerEvent {
   final LoanerDataModel loaner;
-  final bool isEdit;
 
-  LoanerCreate({required this.loaner, required this.isEdit});
+  LoanerCreate({required this.loaner});
 
   @override
-  List<Object?> get props => [loaner, isEdit];
+  List<Object?> get props => [loaner];
 }
 
 class LoanerGetAll extends LoanerEvent {}

@@ -11,11 +11,15 @@ import 'package:loaner/src/models/loaner/LoanerDataModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
 import 'package:loaner/src/services/LoanerService.dart';
+import 'package:loaner/src/services/Urls.dart';
 import 'package:loaner/src/utils/AppColors.dart';
+import 'package:loaner/src/utils/AskForConfirmToSaveLoaner.dart';
 import 'package:loaner/src/utils/Constants.dart';
+import 'package:loaner/src/utils/DefaultImage.dart';
 import 'package:loaner/src/utils/DropdownInput.dart';
 import 'package:loaner/src/utils/MyAppBar.dart';
 import 'package:loaner/src/utils/TextFormFieldInput.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class LoanerCreatePage extends StatefulWidget {
   LoanerCreatePage({required this.isEdit, required this.loanerId});
@@ -30,6 +34,7 @@ class LoanerCreatePage extends StatefulWidget {
 class _LoanerCreatePageState extends State<LoanerCreatePage> {
   LoanerDataModel loaner = LoanerDataModel(id: "");
   var _formKey = GlobalKey<FormState>();
+  bool isDelete = false;
 
   TextEditingController _controllerType = TextEditingController(text: "");
   TextEditingController _controllerImage = TextEditingController(text: "");
@@ -51,7 +56,9 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
     final _loanerService = LoanerService();
     type = await _loanerService.getLoanerType();
     setState(() {
-      context.read<LoanerBloc>().add(LoanerGetDetail(id: widget.loanerId));
+      if (widget.loanerId != "") {
+        context.read<LoanerBloc>().add(LoanerGetDetail(id: widget.loanerId));
+      }
     });
   }
 
@@ -89,7 +96,7 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
             ),
           ),
         ),
-        bottomNavigationBar: imageFile != null ? _bottomButton() : null);
+        bottomNavigationBar: _bottomButton());
   }
 
   Widget _bottomButton() {
@@ -142,9 +149,11 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
           _controllerSize.text = loaner.size ?? '';
           _controllerDetail.text = loaner.detail ?? '';
           _controllerQty.text = loaner.qty ?? '';
-          _controllerImage.text = loaner.image ?? '';
+          if (_controllerImage.text == "" && !isDelete) {
+            _controllerImage.text = loaner.image ?? '';
+          }
         }
-
+        // print(_controllerImage.text);
         return Form(
           key: _formKey,
           child: Column(
@@ -183,7 +192,7 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 10),
-                  imageFile == null
+                  imageFile == null && _controllerImage.text == ""
                       ? InkWell(
                           onTap: () => _showImageDialog(),
                           child: Container(
@@ -219,38 +228,55 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
                           child: ListTile(
                             contentPadding: EdgeInsets.all(10.0),
                             leading: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: AppColors.COLOR_GREY,
-                                  border: Border.all(
-                                      color: AppColors.COLOR_GREY, width: 2.0)),
-                              height: 60,
-                              width: 60,
-                              child: Image.file(
-                                imageFile!,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: AppColors.COLOR_GREY,
+                                    border: Border.all(
+                                        color: AppColors.COLOR_GREY,
+                                        width: 2.0)),
+                                height: 60,
+                                width: 60,
+                                child: _controllerImage.text != "" &&
+                                        imageFile != null
+                                    ? Image.file(
+                                        imageFile!,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : FadeInImage.memoryNetwork(
+                                        imageErrorBuilder:
+                                            ((context, error, stackTrace) =>
+                                                defaultImage()),
+                                        placeholder: kTransparentImage,
+                                        image:
+                                            '${Urls.imageLoanerUrl}/${_controllerImage.text}')),
                             title: Text(
-                              imageFile!.path.split("/").last,
+                              _controllerImage.text != "" && imageFile != null
+                                  ? imageFile!.path.split("/").last
+                                  : _controllerImage.text,
                               style: TextStyle(
                                   fontSize: 16, color: AppColors.COLOR_PRIMARY),
                               overflow: TextOverflow.ellipsis,
                             ),
-                            subtitle: Text(
-                                (imageFile!.readAsBytesSync().lengthInBytes /
-                                            (1024 * 1024))
-                                        .toStringAsFixed(2) +
-                                    " Mb",
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: AppColors.COLOR_LIGHT)),
+                            subtitle: _controllerImage.text == ""
+                                ? Text(
+                                    (imageFile!
+                                                    .readAsBytesSync()
+                                                    .lengthInBytes /
+                                                (1024 * 1024))
+                                            .toStringAsFixed(2) +
+                                        " Mb",
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: AppColors.COLOR_LIGHT))
+                                : null,
                             trailing: IconButton(
                                 icon: Icon(Icons.delete_outline_outlined,
                                     color: AppColors.COLOR_RED),
                                 onPressed: () {
                                   imageFile = null;
-                                  // setState(() {});
+                                  _controllerImage.text = "";
+                                  isDelete = true;
+                                  setState(() {});
                                 }),
                           ),
                         )
@@ -325,7 +351,9 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
     XFile? pickedFile = await ImagePicker().pickImage(
         source: ImageSource.gallery, maxHeight: 1080, maxWidth: 1080);
     imageFile = File(pickedFile!.path);
-    // setState(() {});
+    _convertBase64();
+    setState(() {});
+    print(imageFile);
     Navigator.pop(context);
   }
 
@@ -333,7 +361,8 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
     XFile? pickedFile = await ImagePicker()
         .pickImage(source: ImageSource.camera, maxHeight: 1080, maxWidth: 1080);
     imageFile = File(pickedFile!.path);
-    // setState(() {});
+    _convertBase64();
+    setState(() {});
     Navigator.pop(context);
   }
 
@@ -345,7 +374,6 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
 
   void validate() {
     if (_formKey.currentState!.validate()) {
-      _convertBase64();
       loaner.type = _controllerType.text;
       loaner.image = _controllerImage.text;
       loaner.name = _controllerName.text;
@@ -353,17 +381,9 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
       loaner.qty = _controllerQty.text;
       loaner.size = _controllerSize.text;
 
-      // context
-      //     .read<LoanerBloc>()
-      //     .add(LoanerCreate(loaner: loaner, isEdit: widget.isEdit));
-      Navigator.pop(
-          context,
-          MaterialPageRoute(
-              builder: (context) => LoanerPage(
-                    isFillForm: false,
-                    selectedLoaner: [],
-                    isEdit: false,
-                  )));
+      logger.i(loaner.toJson());
+      context.read<LoanerBloc>().add(LoanerCreate(loaner: loaner));
+      Navigator.pop(context);
     } else {
       BotToast.showText(text: Constants.TEXT_FORM_FIELD);
     }

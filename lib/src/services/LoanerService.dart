@@ -18,7 +18,7 @@ class LoanerService {
 
       Map<String, dynamic> _body = {
         'function': "MANAGE_LOANER",
-        "loaner": loaner
+        "loaner": loaner,
       };
 
       logger.i(_body);

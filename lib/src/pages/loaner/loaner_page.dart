@@ -12,10 +12,13 @@ import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/loaner/loaner_create_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_detail_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_sum_page.dart';
+import 'package:loaner/src/services/Urls.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
+import 'package:loaner/src/utils/DefaultImage.dart';
 import 'package:loaner/src/utils/MyAppBar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class LoanerPage extends StatefulWidget {
   LoanerPage(
@@ -32,14 +35,6 @@ class LoanerPage extends StatefulWidget {
 class _LoanerPageState extends State<LoanerPage> {
   TextEditingController searchController = TextEditingController(text: "");
 
-  List<LoanerModel> loaners = [
-    LoanerModel(
-        name: 'LoanerA',
-        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-        rent: 0,
-        note: '')
-  ];
-
   List<LoanerModel> items = [];
   int loanerCount = 0;
 
@@ -49,28 +44,6 @@ class _LoanerPageState extends State<LoanerPage> {
     context.read<AppointmentBloc>().add(AppointmentCountLoaner());
     items.clear();
     super.initState();
-  }
-
-  void filterSearchResults(String query) {
-    List<LoanerModel> dummyListData = [];
-    if (query.isNotEmpty) {
-      loaners.forEach((item) {
-        if (item.name!.contains(query)) {
-          dummyListData.add(item);
-        }
-      });
-      setState(() {
-        items.clear();
-        items.addAll(dummyListData);
-      });
-      return;
-    } else {
-      setState(() {
-        items.clear();
-        items.addAll(loaners);
-      });
-    }
-    print(items.toList());
   }
 
   @override
@@ -197,7 +170,7 @@ class _LoanerPageState extends State<LoanerPage> {
           loaner = state.data;
         }
         return Expanded(
-          child: loaners.isEmpty
+          child: loaner.isEmpty
               ? Center(
                   child: Text(Constants.TEXT_DATA_NOT_FOUND),
                 )
@@ -212,11 +185,7 @@ class _LoanerPageState extends State<LoanerPage> {
 
   late File imageFile;
   _mapList(List<LoanerModel> object, int index) {
-    if (object[index].image != "") {
-      // decodeImage(object[index].image!);
-      // print(imageFile.path);
-      // logger.w(object[index].image!);
-    }
+    // logger.w('${Urls.imageLoanerUrl}/${object[index].image!}');
 
     return Card(
         shape: RoundedRectangleBorder(
@@ -234,10 +203,12 @@ class _LoanerPageState extends State<LoanerPage> {
                   color: AppColors.COLOR_GREY,
                   border: Border.all(color: AppColors.COLOR_GREY, width: 2.0)),
               child: object[index].image != ""
-                  ?
-                  // Image.memory(base64.decode("object[index].image!"))
-                  // Image.file(File(imageFile.path))
-                  null
+                  ? FadeInImage.memoryNetwork(
+                      imageErrorBuilder: ((context, error, stackTrace) =>
+                          defaultImage()),
+                      fit: BoxFit.cover,
+                      placeholder: kTransparentImage,
+                      image: '${Urls.imageLoanerUrl}/${object[index].image!}')
                   : Icon(Icons.image),
             ),
           ),
@@ -269,14 +240,5 @@ class _LoanerPageState extends State<LoanerPage> {
             //bloc count selectedLoaners
           },
         ));
-  }
-
-  decodeImage(String img64) async {
-    Uint8List byte = base64Decode(img64);
-    String dir = (await getApplicationDocumentsDirectory()).path;
-    imageFile = File('$dir/testImage.png');
-    imageFile.writeAsBytesSync(byte);
-    setState(() {});
-    // print(imageFile.path);
   }
 }

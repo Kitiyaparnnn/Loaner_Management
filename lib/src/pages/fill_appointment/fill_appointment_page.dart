@@ -59,30 +59,23 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   TimeOfDay currentTimeSelect = TimeOfDay.now();
 
   TextEditingController _controllerCompanyName =
-      new TextEditingController(text: "");
-  TextEditingController _controllerEmpId = new TextEditingController(text: "");
+      TextEditingController(text: "");
+  TextEditingController _controllerEmpId = TextEditingController(text: "");
   TextEditingController _controllerHospitalName =
-      new TextEditingController(text: "");
+      TextEditingController(text: "");
   TextEditingController _controllerOrganizeName =
-      new TextEditingController(text: "");
-  TextEditingController _controllerCssdName =
-      new TextEditingController(text: "");
-  TextEditingController _controllerDoctorName =
-      new TextEditingController(text: "");
-  TextEditingController _controllerDepName =
-      new TextEditingController(text: "");
+      TextEditingController(text: "");
+  TextEditingController _controllerCssdName = TextEditingController(text: "");
+  TextEditingController _controllerDoctorName = TextEditingController(text: "");
+  TextEditingController _controllerDepName = TextEditingController(text: "");
   TextEditingController _controllerPatientName =
-      new TextEditingController(text: "");
-  TextEditingController _controllerUseDate =
-      new TextEditingController(text: "");
-  TextEditingController _controllerAppDate =
-      new TextEditingController(text: "");
-  TextEditingController _controllerUseTime =
-      new TextEditingController(text: "");
-  TextEditingController _controllerAppTime =
-      new TextEditingController(text: "");
+      TextEditingController(text: "");
+  TextEditingController _controllerUseDate = TextEditingController(text: "");
+  TextEditingController _controllerAppDate = TextEditingController(text: "");
+  TextEditingController _controllerUseTime = TextEditingController(text: "");
+  TextEditingController _controllerAppTime = TextEditingController(text: "");
   TextEditingController _controllerStatus =
-      new TextEditingController(text: Constants.APP_CREATE);
+      TextEditingController(text: Constants.APP_CREATE);
 
   Future<void> _datePickerShow(TextEditingController date) async {
     DateTime? chooseDate = await showDatePicker(
