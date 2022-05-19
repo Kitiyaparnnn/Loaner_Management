@@ -472,7 +472,7 @@ class _HomePageState extends State<HomePage> {
       MaterialPageRoute(
         builder: (context) => page,
       ),
-    ).then((value) => getMachine());
+    );
   }
 
   Widget _buildList() {

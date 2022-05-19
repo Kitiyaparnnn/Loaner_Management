@@ -10,6 +10,7 @@ import 'package:loaner/src/models/DropdownModel.dart';
 import 'package:loaner/src/models/loaner/LoanerDataModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
+import 'package:loaner/src/services/LoanerService.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
 import 'package:loaner/src/utils/DropdownInput.dart';
@@ -17,30 +18,41 @@ import 'package:loaner/src/utils/MyAppBar.dart';
 import 'package:loaner/src/utils/TextFormFieldInput.dart';
 
 class LoanerCreatePage extends StatefulWidget {
-  LoanerCreatePage({Key? key}) : super(key: key);
+  LoanerCreatePage({required this.isEdit, required this.loanerId});
+
+  bool isEdit;
+  String loanerId;
 
   @override
   State<LoanerCreatePage> createState() => _LoanerCreatePageState();
 }
 
 class _LoanerCreatePageState extends State<LoanerCreatePage> {
-  final loaner = LoanerDataModel(id: "");
+  LoanerDataModel loaner = LoanerDataModel(id: "");
   var _formKey = GlobalKey<FormState>();
-  bool isEdit = false;
 
-  TextEditingController _controllerType = new TextEditingController(text: "");
-  TextEditingController _controllerImage = new TextEditingController(text: "");
-  TextEditingController _controllerName = new TextEditingController(text: "");
-  TextEditingController _controllerDetail = new TextEditingController(text: "");
-  TextEditingController _controllerQty = new TextEditingController(text: "");
-  TextEditingController _controllerSize = new TextEditingController(text: "");
+  TextEditingController _controllerType = TextEditingController(text: "");
+  TextEditingController _controllerImage = TextEditingController(text: "");
+  TextEditingController _controllerName = TextEditingController(text: "");
+  TextEditingController _controllerDetail = TextEditingController(text: "");
+  TextEditingController _controllerQty = TextEditingController(text: "");
+  TextEditingController _controllerSize = TextEditingController(text: "");
 
   File? imageFile;
 
   @override
   void initState() {
-    context.read<LoanerBloc>().add(LoanerGetType());
+    loading();
     super.initState();
+  }
+
+  List<DropdownModel> type = [];
+  Future loading() async {
+    final _loanerService = LoanerService();
+    type = await _loanerService.getLoanerType();
+    setState(() {
+      context.read<LoanerBloc>().add(LoanerGetDetail(id: widget.loanerId));
+    });
   }
 
   @override
@@ -53,15 +65,7 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
               splashRadius: 18,
               icon:
                   Icon(Icons.arrow_back_outlined, color: AppColors.COLOR_BLACK),
-              onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LoanerPage(
-                              isEdit: false,
-                              isFillForm: false,
-                              selectedLoaner: [],
-                            )),
-                  )),
+              onPressed: () => Navigator.pop(context)),
           title: Column(
             children: [
               Text(
@@ -107,6 +111,19 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
         children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BlocBuilder<LoanerBloc, LoanerState>(
+                builder: (context, state) {
+                  if (state is LoanerStateGetDetail) {
+                    _controllerType.text = state.data.type!;
+                  }
+                  return buildDropdownInput(_controllerType, type, "หมวดหมู่");
+                },
+              )
+            ],
+          ),
           const SizedBox(height: 10),
           _buildInput(),
         ],
@@ -115,137 +132,135 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
   }
 
   Widget _buildInput() {
-    return Form(
-        key: _formKey,
-        child: BlocBuilder<LoanerBloc, LoanerState>(
-          builder: (context, state) {
-            List<DropdownModel> type = [];
+    return BlocBuilder<LoanerBloc, LoanerState>(
+      builder: (context, state) {
+        if (state is LoanerStateGetDetail) {
+          loaner = state.data;
+          logger.d(loaner.toJson());
+          _controllerType.text = loaner.type ?? '';
+          _controllerName.text = loaner.name ?? '';
+          _controllerSize.text = loaner.size ?? '';
+          _controllerDetail.text = loaner.detail ?? '';
+          _controllerQty.text = loaner.qty ?? '';
+          _controllerImage.text = loaner.image ?? '';
+        }
 
-            if (state is LoanerStateGetType) {
-              type = state.data;
-            }
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildDropdownInput(_controllerType, type, "หมวดหมู่"),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [buildTextFormField(_controllerName, "ชื่อรายการ")],
-                ),
-                const SizedBox(height: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildTextFormField(_controllerSize, "ขนาด (w x h x l)")
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildLongTextFormField(
-                        _controllerDetail, "รายละเอียด (ถ้ามี)")
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [buildStockTextFormField(_controllerQty)],
-                ),
-                const SizedBox(height: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("อัปโหลดรูปถ่าย Loaner",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 10),
-                    imageFile == null
-                        ? InkWell(
-                            onTap: () => _showImageDialog(),
-                            child: Container(
+        return Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [buildTextFormField(_controllerName, "ชื่อรายการ")],
+              ),
+              const SizedBox(height: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildTextFormField(_controllerSize, "ขนาด (w x h x l)")
+                ],
+              ),
+              const SizedBox(height: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildLongTextFormField(
+                      _controllerDetail, "รายละเอียด (ถ้ามี)")
+                ],
+              ),
+              const SizedBox(height: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [buildStockTextFormField(_controllerQty)],
+              ),
+              const SizedBox(height: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("อัปโหลดรูปถ่าย Loaner",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  imageFile == null
+                      ? InkWell(
+                          onTap: () => _showImageDialog(),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: AppColors.COLOR_WHITE,
+                                borderRadius: BorderRadius.circular(8.0),
+                                border:
+                                    Border.all(color: AppColors.COLOR_GREY)),
+                            height: 150,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                      onPressed: () => _showImageDialog(),
+                                      icon: Icon(Icons.file_download_outlined,
+                                          color: AppColors.COLOR_PRIMARY)),
+                                  Text("ลากรูปภาพไปที่โซนหรือคลิกอัปโหลด",
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: AppColors.COLOR_LIGHT))
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      : Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          color: AppColors.COLOR_WHITE,
+                          elevation: 0.0,
+                          child: ListTile(
+                            contentPadding: EdgeInsets.all(10.0),
+                            leading: Container(
                               decoration: BoxDecoration(
-                                  color: AppColors.COLOR_WHITE,
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  border:
-                                      Border.all(color: AppColors.COLOR_GREY)),
-                              height: 150,
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () => _showImageDialog(),
-                                        icon: Icon(Icons.file_download_outlined,
-                                            color: AppColors.COLOR_PRIMARY)),
-                                    Text("ลากรูปภาพไปที่โซนหรือคลิกอัปโหลด",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: AppColors.COLOR_LIGHT))
-                                  ],
-                                ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: AppColors.COLOR_GREY,
+                                  border: Border.all(
+                                      color: AppColors.COLOR_GREY, width: 2.0)),
+                              height: 60,
+                              width: 60,
+                              child: Image.file(
+                                imageFile!,
+                                fit: BoxFit.cover,
                               ),
                             ),
-                          )
-                        : Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                            title: Text(
+                              imageFile!.path.split("/").last,
+                              style: TextStyle(
+                                  fontSize: 16, color: AppColors.COLOR_PRIMARY),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            color: AppColors.COLOR_WHITE,
-                            elevation: 0.0,
-                            child: ListTile(
-                              contentPadding: EdgeInsets.all(10.0),
-                              leading: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: AppColors.COLOR_GREY,
-                                    border: Border.all(
-                                        color: AppColors.COLOR_GREY,
-                                        width: 2.0)),
-                                height: 60,
-                                width: 60,
-                                child: Image.file(
-                                  imageFile!,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              title: Text(
-                                imageFile!.path.split("/").last,
+                            subtitle: Text(
+                                (imageFile!.readAsBytesSync().lengthInBytes /
+                                            (1024 * 1024))
+                                        .toStringAsFixed(2) +
+                                    " Mb",
                                 style: TextStyle(
-                                    fontSize: 16,
-                                    color: AppColors.COLOR_PRIMARY),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              subtitle: Text(
-                                  (imageFile!.readAsBytesSync().lengthInBytes /
-                                              (1024 * 1024))
-                                          .toStringAsFixed(2) +
-                                      " Mb",
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: AppColors.COLOR_LIGHT)),
-                              trailing: IconButton(
-                                  icon: Icon(Icons.delete_outline_outlined,
-                                      color: AppColors.COLOR_RED),
-                                  onPressed: () {
-                                    imageFile = null;
-                                    setState(() {});
-                                  }),
-                            ),
-                          )
-                  ],
-                )
-              ],
-            );
-          },
-        ));
+                                    fontSize: 12,
+                                    color: AppColors.COLOR_LIGHT)),
+                            trailing: IconButton(
+                                icon: Icon(Icons.delete_outline_outlined,
+                                    color: AppColors.COLOR_RED),
+                                onPressed: () {
+                                  imageFile = null;
+                                  // setState(() {});
+                                }),
+                          ),
+                        )
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _showImageDialog() {
@@ -310,7 +325,7 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
     XFile? pickedFile = await ImagePicker().pickImage(
         source: ImageSource.gallery, maxHeight: 1080, maxWidth: 1080);
     imageFile = File(pickedFile!.path);
-    setState(() {});
+    // setState(() {});
     Navigator.pop(context);
   }
 
@@ -318,7 +333,7 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
     XFile? pickedFile = await ImagePicker()
         .pickImage(source: ImageSource.camera, maxHeight: 1080, maxWidth: 1080);
     imageFile = File(pickedFile!.path);
-    setState(() {});
+    // setState(() {});
     Navigator.pop(context);
   }
 
@@ -338,9 +353,9 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
       loaner.qty = _controllerQty.text;
       loaner.size = _controllerSize.text;
 
-      context
-          .read<LoanerBloc>()
-          .add(LoanerCreate(loaner: loaner, isEdit: isEdit));
+      // context
+      //     .read<LoanerBloc>()
+      //     .add(LoanerCreate(loaner: loaner, isEdit: widget.isEdit));
       Navigator.pop(
           context,
           MaterialPageRoute(

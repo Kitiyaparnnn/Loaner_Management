@@ -12,11 +12,7 @@ import 'package:loaner/src/services/SharedPreferencesService.dart';
 import 'package:loaner/src/services/Urls.dart';
 
 void main() async {
-  final SharedPreferencesService _sharedPreferencesService =
-      SharedPreferencesService();
   WidgetsFlutterBinding.ensureInitialized();
-  await Urls().init();
-  Urls.baseUrl = await _sharedPreferencesService.preferenceGetBaseApiUrl();
   BlocOverrides.runZoned(
     () {
       runApp(MultiBlocProvider(
@@ -27,7 +23,7 @@ void main() async {
           BlocProvider<LoginBloc>(
             create: (_) => LoginBloc(
                 authenticationBloc: BlocProvider.of<AuthenticationBloc>(_))
-              ..add(LoginEventStart()),
+              // ..add(LoginEventStart()),
           ),
           BlocProvider<AppointmentBloc>(
             create: (_) => AppointmentBloc(),

@@ -7,11 +7,7 @@ class Urls {
   // static String devUrl = "http://poseintelligence.dyndns.biz:8088/temperature_api/api";
   // static String productionUrl = "http://poseintelligence.dyndns.biz:8088/temperature_api/api";
 
-  static String? baseUrl;
-
-  init() async {
-    baseUrl = "http://192.168.1.104/Loaner_Management_api/api";
-  }
+  static String baseUrl = "http://192.168.1.104/Loaner_Management_api/api";
 
   //login
   static String loginUrl = "$baseUrl/login.php";

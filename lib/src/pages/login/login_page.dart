@@ -334,8 +334,8 @@ class _LoginPageState extends State<LoginPage>
                     BlocProvider.of<LoginBloc>(context)
                         .add(LoginEventOnPress(loginData: loginData));
 
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomePage()));
+                    // Navigator.push(context,
+                    //     MaterialPageRoute(builder: (context) => HomePage()));
                   }
                 : null,
             child: Container(

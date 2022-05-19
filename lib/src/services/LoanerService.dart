@@ -13,7 +13,7 @@ class LoanerService {
     LoanerDataModel _result = LoanerDataModel();
 
     try {
-      final _url = Uri.parse("http://192.168.1.104/Loaner_Management_api/api/loaner/loaner.php");
+      final _url = Uri.parse(Urls.loanerUrl);
       var _response;
 
       Map<String, dynamic> _body = {
@@ -47,10 +47,8 @@ class LoanerService {
     List<LoanerModel> _result = [];
 
     try {
-      final _url = Uri.parse(
-          "http://192.168.1.104/Loaner_Management_api/api/loaner/loaner.php");
+      final _url = Uri.parse(Urls.loanerUrl);
       var _response;
-      print(Urls.loanerUrl);
 
       Map<String, dynamic> _body = {
         'function': "GET_ALL_LOANERS",
@@ -83,7 +81,7 @@ class LoanerService {
     List<LoanerModel> _result = [];
 
     try {
-      final _url = Uri.parse("http://192.168.1.104/Loaner_Management_api/api/loaner/loaner.php");
+      final _url = Uri.parse(Urls.loanerUrl);
       var _response;
 
       Map<String, dynamic> _body = {
@@ -117,8 +115,7 @@ class LoanerService {
     List<DropdownModel> _result = [];
 
     try {
-      final _url = Uri.parse(
-          "http://192.168.1.104/Loaner_Management_api/api/loaner/loaner.php");
+      final _url = Uri.parse(Urls.loanerUrl);
       var _response;
 
       Map<String, dynamic> _body = {
@@ -147,18 +144,14 @@ class LoanerService {
     }
   }
 
-  Future<LoanerDataModel> getLoanerDetail(
-      {required String id}) async {
+  Future<LoanerDataModel> getLoanerDetail({required String id}) async {
     LoanerDataModel _result = LoanerDataModel();
 
     try {
-      final _url = Uri.parse("http://192.168.1.104/Loaner_Management_api/api/loaner/loaner.php");
+      final _url = Uri.parse(Urls.loanerUrl);
       var _response;
 
-      Map<String, dynamic> _body = {
-        'function': "GET_LOANER_DETAIL",
-        "id": id
-      };
+      Map<String, dynamic> _body = {'function': "GET_LOANER_DETAIL", "id": id};
 
       logger.i(_body);
 
@@ -168,9 +161,8 @@ class LoanerService {
       );
 
       if (_response.statusCode == 200) {
-        final List _jsonResponse = json.decode(_response.body);
-
-       LoanerDataModel _resultData =
+        final _jsonResponse = json.decode(_response.body);
+        final LoanerDataModel _resultData =
             LoanerDataModel.fromJson(_jsonResponse);
         _result = _resultData;
       }

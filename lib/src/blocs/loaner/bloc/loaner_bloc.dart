@@ -35,7 +35,6 @@ class LoanerBloc extends Bloc<LoanerEvent, LoanerState> {
     final _result = await _loanerService.getAllLoaners();
 
     emit(LoanerStateGetAll(data: _result));
-    emit(LoanerStateLoading());
   }
 
   _maploanerGetSearchTypeToState(

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -105,7 +106,11 @@ class _LoanerPageState extends State<LoanerPage> {
                       onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => LoanerCreatePage()))),
+                              builder: (context) => LoanerCreatePage(
+                                    isEdit: false,
+                                    loanerId: '',
+                                  ))).then((value) =>
+                          context.read<LoanerBloc>().add(LoanerGetAll()))),
                 ],
           centerTitle: true,
         ),
@@ -208,17 +213,18 @@ class _LoanerPageState extends State<LoanerPage> {
   late File imageFile;
   _mapList(List<LoanerModel> object, int index) {
     if (object[index].image != "") {
-      decodeImage(object[index].image!);
+      // decodeImage(object[index].image!);
       // print(imageFile.path);
+      // logger.w(object[index].image!);
     }
 
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      color: AppColors.COLOR_WHITE,
-      elevation: 0.0,
-      child: ListTile(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        color: AppColors.COLOR_WHITE,
+        elevation: 0.0,
+        child: ListTile(
           leading: SizedBox(
             height: 60,
             width: 60,
@@ -229,8 +235,9 @@ class _LoanerPageState extends State<LoanerPage> {
                   border: Border.all(color: AppColors.COLOR_GREY, width: 2.0)),
               child: object[index].image != ""
                   ?
-                  //  Image.memory(base64.decode(object[index].image!))
-                  Image.file(File(imageFile.path))
+                  // Image.memory(base64.decode("object[index].image!"))
+                  // Image.file(File(imageFile.path))
+                  null
                   : Icon(Icons.image),
             ),
           ),
@@ -241,24 +248,27 @@ class _LoanerPageState extends State<LoanerPage> {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          onTap: () => widget.isFillForm
-              ? Navigator.push(
+          onTap: () {
+            if (widget.isFillForm) {
+              Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => LoanerDetailPage(
                             loaner: object[index],
                           ))).then((value) => context
                   .read<AppointmentBloc>()
-                  .add(AppointmentCountLoaner())) //bloc count selectedLoaners
-              : Navigator.push(
+                  .add(AppointmentCountLoaner()));
+            } else {
+              Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => LoanerCreatePage(
-                            
-                          ))).then((value) => context
-                  .read<LoanerBloc>()
-                  .add(LoanerGetDetail(id: object[index].id!)))),
-    );
+                          isEdit: true, loanerId: object[index].id!))).then(
+                  (value) => context.read<LoanerBloc>().add(LoanerGetAll()));
+            }
+            //bloc count selectedLoaners
+          },
+        ));
   }
 
   decodeImage(String img64) async {

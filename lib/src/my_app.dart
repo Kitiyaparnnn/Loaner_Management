@@ -87,7 +87,7 @@ class _MyApp extends State<MyApp> {
                 }
 
                 if (state is AuthenticationAuthenticated) {
-                  return SplashPage();
+                  return HomePage();
                 }
 
                 return LoginPage();

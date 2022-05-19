@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loaner/src/models/DropdownModel.dart';
+import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/utils/SelectDecoration.dart';
 
 DropdownButtonFormField buildDropdown(
@@ -23,6 +24,7 @@ DropdownButtonFormField buildDropdown(
 DropdownButtonFormField buildDropdownInput(
     TextEditingController form, List<DropdownModel> items, String hintText) {
   return DropdownButtonFormField(
+    value: form.text == "" ? null : form.text,
     validator: (value) => value == null ? "โปรดเลือก" : null,
     decoration: selectDecoration(hintText: hintText),
     icon: Icon(Icons.expand_more_rounded),
