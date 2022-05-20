@@ -6,11 +6,14 @@ import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_sum_page.dart';
+import 'package:loaner/src/services/Urls.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
+import 'package:loaner/src/utils/DefaultImage.dart';
 import 'package:loaner/src/utils/InputDecoration.dart';
 import 'package:loaner/src/utils/LabelFormat.dart';
 import 'package:loaner/src/utils/MyAppBar.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class LoanerDetailPage extends StatefulWidget {
   LoanerDetailPage({required this.loaner});
@@ -25,32 +28,6 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
   TextEditingController _controllernote = new TextEditingController(text: "");
   var _formKey = GlobalKey<FormState>();
   int no = 0;
-
-  List<LoanerModel> loaners = [
-    LoanerModel(
-        name: 'LoanerA',
-        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-        rent: 0,
-        note: ''),
-    LoanerModel(
-        name: 'LoanerB',
-        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-        image: '',
-        rent: 0,
-        note: ''),
-    LoanerModel(
-        name: 'LoanerC',
-        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-        image: '',
-        rent: 0,
-        note: ''),
-    LoanerModel(
-        name: 'LoanerD',
-        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-        image: '',
-        rent: 0,
-        note: ''),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -99,8 +76,8 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
 
   _showImage() {
     return Align(
-      alignment: Alignment.topCenter,
-      child: Container(
+        alignment: Alignment.topCenter,
+        child: Container(
           // decoration: BoxDecoration(
           //   border: Border.all(color: AppColors.COLOR_BLACK),
           // ),
@@ -110,11 +87,15 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
                   width: 200,
                   child: Icon(Icons.image),
                 )
-              : SizedBox(
-                  height: 200,
-                  width: 200,
-                  child: Image.asset("${Constants.IMAGE_DIR}/sample.png"))),
-    );
+              : FadeInImage.memoryNetwork(
+                  imageErrorBuilder: ((context, error, stackTrace) =>
+                      defaultImage()),
+                  placeholderErrorBuilder: (context, error, stackTrace) =>
+                      defaultImage(),
+                  fit: BoxFit.cover,
+                  placeholder: kTransparentImage,
+                  image: '${Urls.imageLoanerUrl}/${widget.loaner.image}'),
+        ));
   }
 
   _showDetail() {

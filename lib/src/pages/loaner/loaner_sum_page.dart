@@ -5,12 +5,15 @@ import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/appointment/appointment_page.dart';
+import 'package:loaner/src/services/Urls.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/AskForConfirmToSave.dart';
 import 'package:loaner/src/utils/AskForConfirmToSaveAtLoaner.dart';
 import 'package:loaner/src/utils/Constants.dart';
+import 'package:loaner/src/utils/DefaultImage.dart';
 import 'package:loaner/src/utils/LabelFormat.dart';
 import 'package:loaner/src/utils/MyAppBar.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class LoanerSumPage extends StatefulWidget {
   LoanerSumPage({required this.isEdit});
@@ -66,8 +69,8 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
               primary: AppColors.COLOR_PRIMARY),
           onPressed: () {
             try {
-              askForConfirmToSaveAtLoaner(context: context, isSupplier: true,isEdit:widget.isEdit);
-              
+              askForConfirmToSaveAtLoaner(
+                  context: context, isSupplier: true, isEdit: widget.isEdit);
             } catch (e) {
               logger.e(e);
               BotToast.showText(text: Constants.TEXT_FORM_FIELD);
@@ -99,7 +102,17 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
                       color: AppColors.COLOR_GREY,
                       border:
                           Border.all(color: AppColors.COLOR_GREY, width: 2.0)),
-                  child: object[index].image != null ? null : Icon(Icons.image),
+                  child: object[index].image != null
+                      ? FadeInImage.memoryNetwork(
+                          imageErrorBuilder: ((context, error, stackTrace) =>
+                              defaultImage()),
+                          placeholderErrorBuilder:
+                              (context, error, stackTrace) => defaultImage(),
+                          fit: BoxFit.cover,
+                          placeholder: kTransparentImage,
+                          image:
+                              '${Urls.imageLoanerUrl}/${object[index].image!}')
+                      : Icon(Icons.image),
                 ),
               ),
               title: Text(object[index].name!, style: TextStyle(fontSize: 16)),
