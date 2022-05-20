@@ -4,7 +4,7 @@ class LoginDataUserModel {
       this.firstName,
       this.lastName,
       this.depName,
-       this.depId,
+      this.depId,
       this.typeId,
       this.image});
 

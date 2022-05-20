@@ -21,6 +21,9 @@ class Urls {
   //employee
   static String employeeUrl = "$baseUrl/employee/employee.php";
 
-  //image
+  //image loaner
   static String imageLoanerUrl = "$baseUrl/images/loaner";
+
+    //image employee
+  static String imageEmployeeUrl = "$baseUrl/images/employee";
 }

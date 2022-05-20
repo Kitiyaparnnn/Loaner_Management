@@ -188,14 +188,18 @@ class _LoanerPageState extends State<LoanerPage> {
     );
   }
 
-  late File imageFile;
   _mapList(List<LoanerModel> object, int index) {
     // logger.w('${Urls.imageLoanerUrl}/${object[index].image!}');
+    // logger.d(object[index].isActive);
     return Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        color: AppColors.COLOR_WHITE,
+        color: object[index].isActive == null
+            ? AppColors.COLOR_GREY
+            : object[index].isActive == "1"
+                ? AppColors.COLOR_WHITE
+                : AppColors.COLOR_GREY,
         elevation: 0.0,
         child: ListTile(
           leading: SizedBox(

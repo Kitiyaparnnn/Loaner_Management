@@ -62,7 +62,5 @@ class LoanerBloc extends Bloc<LoanerEvent, LoanerState> {
         await _loanerService.getLoanerDetail(id: event.id);
 
     emit(LoanerStateGetDetail(data: _result));
-
-    add(LoanerLoading());
   }
 }

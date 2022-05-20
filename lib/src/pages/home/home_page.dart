@@ -17,9 +17,12 @@ import 'package:loaner/src/pages/loaner/loaner_page.dart';
 import 'package:loaner/src/pages/splash/splash_page.dart';
 import 'package:loaner/src/services/AppointmentService.dart';
 import 'package:loaner/src/services/SharedPreferencesService.dart';
+import 'package:loaner/src/services/Urls.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/AskForConfirmToLogout.dart';
 import 'package:loaner/src/utils/Constants.dart';
+import 'package:loaner/src/utils/DefaultImage.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class HomePage extends StatefulWidget {
   HomePage();
@@ -62,6 +65,8 @@ class _HomePageState extends State<HomePage> {
   final _sharedPreferencesService = SharedPreferencesService();
 
   String isSupplier = "";
+  String fullName = "";
+  String image = "";
   void _select(MenuChoice choice) {
     switch (choice.key) {
       case "SETTING":
@@ -80,8 +85,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // loading2(context);
     // loading();
-    getUserTypeId();
-    getFullName();
+    getUserData();
     super.initState();
   }
 
@@ -140,16 +144,11 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  String fullName = "";
-
-  Future<void> getFullName() async {
-    fullName = await _sharedPreferencesService.preferenceGetFullName();
-  }
-
-  Future<void> getUserTypeId() async {
+  Future<void> getUserData() async {
     // logger.w("set Menu");
     isSupplier = await _sharedPreferencesService.preferenceGetType();
-
+    fullName = await _sharedPreferencesService.preferenceGetFullName();
+    image = await _sharedPreferencesService.preferenceGetImage();
     getMachine();
   }
 
@@ -221,7 +220,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    logger.w("home page");
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -292,6 +290,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildAppBar() {
+    logger.w(image);
     return Container(
       // margin: EdgeInsets.only(top: 30),
       padding: EdgeInsets.only(left: 20, right: 10, top: 10),
@@ -299,7 +298,19 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CircleAvatar(),
+          CircleAvatar(
+              child: image == ""
+                  ? Image.asset(
+                      '${Constants.IMAGE_DIR}/Group 120.png',
+                      fit: BoxFit.cover,
+                    )
+                  : FadeInImage.memoryNetwork(
+                      imageErrorBuilder: ((context, error, stackTrace) =>
+                          defaultImage()),
+                      placeholderErrorBuilder: (context, error, stackTrace) =>
+                          defaultImage(),
+                      placeholder: kTransparentImage,
+                      image: '${Urls.imageEmployeeUrl}/$image')),
           SizedBox(
             width: 5,
           ),

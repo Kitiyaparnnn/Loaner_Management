@@ -32,7 +32,7 @@ class LoanerCreatePage extends StatefulWidget {
 }
 
 class _LoanerCreatePageState extends State<LoanerCreatePage> {
-  LoanerDataModel loaner = LoanerDataModel(id: "");
+  LoanerDataModel loaner = LoanerDataModel(id: "", isActive: "1");
   var _formKey = GlobalKey<FormState>();
   bool isDelete = false;
 
@@ -193,6 +193,8 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
                 children: [buildStockTextFormField(_controllerQty)],
               ),
               const SizedBox(height: 10),
+              _buildCheckBox(),
+              const SizedBox(height: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -254,6 +256,9 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
                                         imageErrorBuilder:
                                             ((context, error, stackTrace) =>
                                                 defaultImage()),
+                                        placeholderErrorBuilder:
+                                            (context, error, stackTrace) =>
+                                                defaultImage(),
                                         placeholder: kTransparentImage,
                                         image:
                                             '${Urls.imageLoanerUrl}/${_controllerImage.text}')),
@@ -378,6 +383,36 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
     final bytes = imageFile!.readAsBytesSync();
     String img64 = base64Encode(bytes);
     _controllerImage.text = img64;
+  }
+
+  Row _buildCheckBox() {
+    return Row(
+      children: [
+        IconButton(
+            highlightColor: AppColors.COLOR_PRIMARY,
+            onPressed: () {
+              loaner.isActive = "1";
+              setState(() {});
+            },
+            icon: Icon(loaner.isActive == "1"
+                ? Icons.radio_button_checked_outlined
+                : Icons.radio_button_unchecked_outlined)),
+        Text("active"),
+        SizedBox(
+          width: 20,
+        ),
+        IconButton(
+            highlightColor: AppColors.COLOR_PRIMARY,
+            onPressed: () {
+              loaner.isActive = "0";
+              setState(() {});
+            },
+            icon: Icon(loaner.isActive == "1"
+                ? Icons.radio_button_unchecked_outlined
+                : Icons.radio_button_checked_outlined)),
+        Text("inactive"),
+      ],
+    );
   }
 
   void validate() {

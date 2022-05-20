@@ -15,8 +15,7 @@ class AuthenticationService {
 
   Future<bool> login({LoginModel? dataLogin}) async {
     try {
-      final _url =
-          Uri.parse("http://192.168.1.104/Loaner_Management_api/api/login.php");
+      final _url = Uri.parse(Urls.loginUrl);
       var _response;
 
       if (dataLogin == null) {
