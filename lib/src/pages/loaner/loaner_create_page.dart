@@ -96,7 +96,9 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
             ),
           ),
         ),
-        bottomNavigationBar: _bottomButton());
+        bottomNavigationBar: imageFile != null || _controllerImage.text != ""
+            ? _bottomButton()
+            : null);
   }
 
   Widget _bottomButton() {
@@ -143,12 +145,18 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
       builder: (context, state) {
         if (state is LoanerStateGetDetail) {
           loaner = state.data;
-          logger.d(loaner.toJson());
-          _controllerType.text = loaner.type ?? '';
-          _controllerName.text = loaner.name ?? '';
-          _controllerSize.text = loaner.size ?? '';
-          _controllerDetail.text = loaner.detail ?? '';
-          _controllerQty.text = loaner.qty ?? '';
+          // logger.d(loaner.toJson());
+          if (_controllerType.text == "" ||
+              _controllerName.text == "" ||
+              _controllerSize.text == "" ||
+              // _controllerDetail.text == "" ||
+              _controllerQty.text == "") {
+            _controllerType.text = loaner.type ?? '';
+            _controllerName.text = loaner.name ?? '';
+            _controllerSize.text = loaner.size ?? '';
+            _controllerDetail.text = loaner.detail ?? '';
+            _controllerQty.text = loaner.qty ?? '';
+          }
           if (_controllerImage.text == "" && !isDelete) {
             _controllerImage.text = loaner.image ?? '';
           }

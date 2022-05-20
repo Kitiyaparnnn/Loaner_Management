@@ -48,7 +48,6 @@ class _LoanerPageState extends State<LoanerPage> {
 
   @override
   Widget build(BuildContext context) {
-    // logger.d(widget.selectedLoaner);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.COLOR_SWATCH,
@@ -135,7 +134,6 @@ class _LoanerPageState extends State<LoanerPage> {
       builder: (context, state) {
         return TextField(
           onChanged: (value) {
-            // filterSearchResults(value);
             context.read<LoanerBloc>().add(LoanerSearchType(textSearch: value));
           },
           controller: searchController,
@@ -166,19 +164,26 @@ class _LoanerPageState extends State<LoanerPage> {
     return BlocBuilder<LoanerBloc, LoanerState>(
       builder: (context, state) {
         List<LoanerModel> loaner = [];
+        bool isLoading = false;
         if (state is LoanerStateGetAll) {
           loaner = state.data;
         }
-        return Expanded(
-          child: loaner.isEmpty
-              ? Center(
-                  child: Text(Constants.TEXT_DATA_NOT_FOUND),
-                )
-              : ListView.builder(
-                  itemCount: loaner.length,
-                  itemBuilder: ((context, index) => _mapList(loaner, index)),
-                ),
-        );
+        if (state is LoanerStateLoading) {
+          isLoading = true;
+        }
+        return isLoading
+            ? CircularProgressIndicator()
+            : Expanded(
+                child: loaner.isEmpty
+                    ? Center(
+                        child: Text(Constants.TEXT_DATA_NOT_FOUND),
+                      )
+                    : ListView.builder(
+                        itemCount: loaner.length,
+                        itemBuilder: ((context, index) =>
+                            _mapList(loaner, index)),
+                      ),
+              );
       },
     );
   }
@@ -186,7 +191,6 @@ class _LoanerPageState extends State<LoanerPage> {
   late File imageFile;
   _mapList(List<LoanerModel> object, int index) {
     // logger.w('${Urls.imageLoanerUrl}/${object[index].image!}');
-
     return Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),

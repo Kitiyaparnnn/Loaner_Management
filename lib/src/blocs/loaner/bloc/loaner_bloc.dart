@@ -24,8 +24,6 @@ class LoanerBloc extends Bloc<LoanerEvent, LoanerState> {
 
   _mapLoanerCreateToState(LoanerCreate event, Emitter emit) async {
     final _result = await _loanerService.createLoaner(loaner: event.loaner);
-
-    logger.d(_result.toJson());
   }
 
   _mapLoanerGetAllToState(LoanerGetAll event, Emitter<LoanerState> emit) async {

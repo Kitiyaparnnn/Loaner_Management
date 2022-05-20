@@ -29,7 +29,7 @@ class LoanerService {
       );
 
       if (_response.statusCode == 200) {
-        final List _jsonResponse = json.decode(_response.body);
+        final  _jsonResponse = json.decode(_response.body);
 
         final LoanerDataModel _resultData =
             LoanerDataModel.fromJson(_jsonResponse);
