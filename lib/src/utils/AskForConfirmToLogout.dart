@@ -29,9 +29,6 @@ void askForConfirmToLogout(BuildContext context) {
             ),
             onPressed: () {
               Navigator.of(dialogContext).pop();
-
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginPage()));
               BlocProvider.of<AuthenticationBloc>(context)
                   .add(AuthEventLoggedOut());
             },
