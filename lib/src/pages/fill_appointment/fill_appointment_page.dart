@@ -463,6 +463,16 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   }
 
   validate(int button) {
+    if (button == 1) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => LoanerPage(
+                    isFillForm: true,
+                    selectedLoaner: [],
+                    isEdit: false,
+                  )));
+    }
     if (_formKey2.currentState!.validate() &&
         _formKey.currentState!.validate() &&
         _controllerUseDate.text != "" &&

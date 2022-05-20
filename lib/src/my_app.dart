@@ -57,7 +57,8 @@ class _MyApp extends State<MyApp> {
                   primarySwatch: Colors.blue,
                   fontFamily: Constants.APP_FONT,
                   scaffoldBackgroundColor: Colors.white),
-              home: Container(color: AppColors.COLOR_WHITE),
+              home: SplashPage()
+              //  Container(color: AppColors.COLOR_WHITE),
             );
           }
           return MaterialApp(

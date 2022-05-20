@@ -210,6 +210,8 @@ class _LoanerPageState extends State<LoanerPage> {
                   ? FadeInImage.memoryNetwork(
                       imageErrorBuilder: ((context, error, stackTrace) =>
                           defaultImage()),
+                      placeholderErrorBuilder: (context, error, stackTrace) =>
+                          defaultImage(),
                       fit: BoxFit.cover,
                       placeholder: kTransparentImage,
                       image: '${Urls.imageLoanerUrl}/${object[index].image!}')
