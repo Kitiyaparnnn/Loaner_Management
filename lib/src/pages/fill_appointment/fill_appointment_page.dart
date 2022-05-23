@@ -2,6 +2,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
+import 'package:loaner/src/models/DropdownModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
 import 'package:loaner/src/models/employee/EmployeeDataModel.dart';
 import 'package:loaner/src/models/employee/EmployeeModel.dart';
@@ -15,6 +16,7 @@ import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/AskForConfirmToSave.dart';
 import 'package:loaner/src/utils/Constants.dart';
 import 'package:loaner/src/utils/ConvertDateFormat.dart';
+import 'package:loaner/src/utils/DropdownInput.dart';
 import 'package:loaner/src/utils/InputDecoration.dart';
 import 'package:loaner/src/utils/InputDecorationDate.dart';
 import 'package:loaner/src/utils/LabelFormat.dart';
@@ -50,6 +52,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       AppointmentDataModel(status: "0", loaners: []);
   var _formKey = GlobalKey<FormState>();
   var _formKey2 = GlobalKey<FormState>();
+  final _sharedPreferencesService = SharedPreferencesService();
 
   String currentDateSelectText =
       ConvertDateFormat.convertDateFormat(date: DateTime.now());
@@ -121,25 +124,33 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   bool isLoading = true;
   bool isDocument = false;
   bool isFillAppoint = false;
+  String supId = "";
+  List<DropdownModel> emp = [];
 
   @override
   void initState() {
     isDocument = widget.appointStatus == "0" ? false : true;
-    getCompanyName();
     getDocumentDetail();
+    // getFormDetail();
     super.initState();
   }
 
-  getDocumentDetail() {
+  getDocumentDetail() async {
     if (!isDocument) {
       context.read<AppointmentBloc>().add(AppointmentClear());
+      _controllerCompanyName.text =
+          await _sharedPreferencesService.preferenceGetDepName();
+      supId = await _sharedPreferencesService.preferenceGetDepId();
+      _controllerEmpId.text =
+          await _sharedPreferencesService.preferenceGetUserId();
+      context
+          .read<AppointmentBloc>()
+          .add(AppointmentGetGetSupEmpandHos(supId: supId));
     }
   }
 
-  Future<void> getCompanyName() async {
-    final _sharedPreferencesService = SharedPreferencesService();
-    _controllerCompanyName.text =
-        await _sharedPreferencesService.preferenceGetDepName();
+  getFormDetail() async {
+    context.read<AppointmentBloc>().add(AppointmentGetHospital());
   }
 
   @override
@@ -194,13 +205,13 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
               // logger.w("123");
               appointment = state.data;
               isFillAppoint = true;
-              _controllerCompanyName.text = appointment.companyName!;
-              _controllerEmpId.text = appointment.empId!;
-              _controllerHospitalName.text = appointment.hospitalName!;
-              _controllerOrganizeName.text = appointment.organizeName!;
-              _controllerCssdName.text = appointment.cssdName!;
-              _controllerDoctorName.text = appointment.docName!;
-              _controllerDepName.text = appointment.depName!;
+              _controllerCompanyName.text = appointment.supId!;
+              _controllerEmpId.text = appointment.supEmpId!;
+              _controllerHospitalName.text = appointment.hosId!;
+              _controllerOrganizeName.text = appointment.hosDeptId!;
+              _controllerCssdName.text = appointment.hosEmpId!;
+              _controllerDoctorName.text = appointment.docId!;
+              _controllerDepName.text = appointment.userDeptId!;
               _controllerPatientName.text = appointment.patientName!;
               _controllerUseDate.text = appointment.useDate!;
               _controllerUseTime.text = appointment.useTime!;
@@ -246,8 +257,15 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildDropdown(
-                      _controllerEmpId, Constants.emp, "เจ้าหน้าที่บริษัท"),
+                  BlocBuilder<AppointmentBloc, AppointmentState>(
+                    builder: (context, state) {
+                      if (state is AppointmentStateGetGetSupEmpandHos) {
+                        emp = state.supEmp;
+                      }
+                      return buildDropdownInput(
+                          _controllerEmpId, emp, "เจ้าหน้าที่บริษัท");
+                    },
+                  ),
                 ],
               ),
               const SizedBox(height: 10),
@@ -276,141 +294,159 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
     );
   }
 
+  List<DropdownModel> hospital = [];
+  List<DropdownModel> hosDept = [];
+  List<DropdownModel> hosEmp = [];
+  List<DropdownModel> hosDoc = [];
   Widget _buildInputForm2() {
-    return Form(
-      key: _formKey,
-      child: Column(children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDropdown(_controllerHospitalName, Constants.hos, "โรงพยาบาล"),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDropdown(_controllerOrganizeName, Constants.org,
-                "หน่วยงานที่ต้องการติดต่อ"),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTextFormField(_controllerCssdName, "เจ้าหน้าที่ผู้ติดต่อ"),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDropdown(
-                _controllerDoctorName, Constants.doc, "แพทย์ผู้ใช้อุปกรณ์"),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDropdown(_controllerDepName, Constants.dep, "หน่วยงาน")
-          ],
-        ),
-        const SizedBox(height: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTextFormField(_controllerPatientName, "ชื่อผู้ป่วย")
-          ],
-        ),
-        const SizedBox(height: 10),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * .4,
-              child: InkWell(
-                onTap: () {
-                  _datePickerShow(_controllerUseDate);
-                },
-                child: TextFormField(
-                  enabled: false,
-                  controller: _controllerUseDate,
-                  decoration: inputDecorationDate(
-                      hintText: "วันที่ขอใช้", isDate: true),
-                ),
-              ),
+    return BlocBuilder<AppointmentBloc, AppointmentState>(
+      builder: (context, state) {
+        if (state is AppointmentStateGetHosDetail) {
+          hosDept = state.dept;
+          hosEmp = state.emp;
+          hosDoc = state.doctor;
+        }
+        if (state is AppointmentStateGetGetSupEmpandHos) {
+          hospital = state.hos;
+        }
+        return Form(
+          key: _formKey,
+          child: Column(children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDropdownInput(
+                    _controllerHospitalName, hospital, "โรงพยาบาล"),
+              ],
             ),
-            Spacer(),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * .4,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InkWell(
+            const SizedBox(height: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildDropdownInput(_controllerOrganizeName, hosDept,
+                    "หน่วยงานที่ต้องการติดต่อ"),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildDropdownInput(
+                    _controllerCssdName, hosEmp, "เจ้าหน้าที่ผู้ติดต่อ"),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildDropdownInput(
+                    _controllerDoctorName, hosDoc, "แพทย์ผู้ใช้อุปกรณ์"),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildDropdownInput(_controllerDepName, hosDept, "หน่วยงาน")
+              ],
+            ),
+            const SizedBox(height: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildTextFormField(_controllerPatientName, "ชื่อผู้ป่วย")
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * .4,
+                  child: InkWell(
                     onTap: () {
-                      _timePickerShow(_controllerUseTime);
+                      _datePickerShow(_controllerUseDate);
                     },
                     child: TextFormField(
                       enabled: false,
-                      controller: _controllerUseTime,
-                      decoration:
-                          inputDecorationDate(hintText: "เวลา", isDate: false),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * .4,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      _datePickerShow(_controllerAppDate);
-                    },
-                    child: TextFormField(
-                      enabled: false,
-                      controller: _controllerAppDate,
+                      controller: _controllerUseDate,
                       decoration: inputDecorationDate(
-                          hintText: "วันที่นัดเข้าพบ", isDate: true),
+                          hintText: "วันที่ขอใช้", isDate: true),
                     ),
-                  )
-                ],
-              ),
+                  ),
+                ),
+                Spacer(),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * .4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          _timePickerShow(_controllerUseTime);
+                        },
+                        child: TextFormField(
+                          enabled: false,
+                          controller: _controllerUseTime,
+                          decoration: inputDecorationDate(
+                              hintText: "เวลา", isDate: false),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Spacer(),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * .4,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      _timePickerShow(_controllerAppTime);
-                    },
-                    child: TextFormField(
-                      enabled: false,
-                      controller: _controllerAppTime,
-                      decoration:
-                          inputDecorationDate(hintText: "เวลา", isDate: false),
-                    ),
-                  )
-                ],
-              ),
+            const SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * .4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          _datePickerShow(_controllerAppDate);
+                        },
+                        child: TextFormField(
+                          enabled: false,
+                          controller: _controllerAppDate,
+                          decoration: inputDecorationDate(
+                              hintText: "วันที่นัดเข้าพบ", isDate: true),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Spacer(),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * .4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          _timePickerShow(_controllerAppTime);
+                        },
+                        child: TextFormField(
+                          enabled: false,
+                          controller: _controllerAppTime,
+                          decoration: inputDecorationDate(
+                              hintText: "เวลา", isDate: false),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        _buildButtonAddLoaner(context),
-      ]),
+            const SizedBox(height: 10),
+            _buildButtonAddLoaner(context),
+          ]),
+        );
+      },
     );
   }
 
@@ -442,22 +478,24 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
         decoration: inputDecoration(hintText: hintText));
   }
 
-  DropdownButtonFormField _buildDropdown(
-      TextEditingController form, Map<String, String> items, String hintText) {
+  DropdownButtonFormField _buildDropdownInput(
+      TextEditingController form, List<DropdownModel> items, String hintText) {
     return DropdownButtonFormField(
-      value: widget.isSupplier ? null : form.text,
+      value: form.text == "" ? null : form.text,
       validator: (value) => value == null ? "โปรดเลือก" : null,
-      decoration:
-          selectDecoration(hintText: widget.isSupplier ? hintText : form.text),
+      decoration: selectDecoration(hintText: hintText),
       icon: Icon(Icons.expand_more_rounded),
-      items: items.keys.map<DropdownMenuItem<String>>((value) {
+      items: items.map<DropdownMenuItem<String>>((item) {
         return DropdownMenuItem(
-          value: value,
-          child: Text(items[value]!),
+          value: item.id,
+          child: Text(item.name == null ? "" : item.name!),
         );
       }).toList(),
       onChanged: (value) {
         form.text = value;
+        context
+            .read<AppointmentBloc>()
+            .add(AppointmentGetHosDetail(hosId: value.toString()));
       },
     );
   }
@@ -477,19 +515,19 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
         _formKey.currentState!.validate() &&
         _controllerUseDate.text != "" &&
         _controllerAppDate.text != "") {
-      appointment.companyName = _controllerCompanyName.text;
-      appointment.empId = _controllerEmpId.text;
-      appointment.hospitalName = _controllerHospitalName.text;
-      appointment.organizeName = _controllerOrganizeName.text;
-      appointment.cssdName = _controllerCssdName.text;
-      appointment.docName = _controllerDoctorName.text;
-      appointment.depName = _controllerDepName.text;
+      appointment.supId = supId;
+      appointment.supEmpId = _controllerEmpId.text;
+      appointment.hosId = _controllerHospitalName.text;
+      appointment.hosDeptId = _controllerOrganizeName.text;
+      appointment.hosEmpId = _controllerCssdName.text;
+      appointment.docId = _controllerDoctorName.text;
+      appointment.userDeptId = _controllerDepName.text;
       appointment.patientName = _controllerPatientName.text;
       appointment.useDate = _controllerUseDate.text;
       appointment.appDate = _controllerAppDate.text;
       appointment.useTime = _controllerUseTime.text;
       appointment.appTime = _controllerAppTime.text;
-      // logger.d(appointment.toJson());
+      logger.d(appointment.toJson());
       if (button == 1) {
         Navigator.push(
             context,

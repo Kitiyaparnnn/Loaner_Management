@@ -18,19 +18,19 @@ class ConfirmAppointmentPage extends StatefulWidget {
 class _ConfirmAppointmentPageState extends State<ConfirmAppointmentPage> {
   List<AppointmentDataModel> appointments = [
     AppointmentDataModel(
-        companyName: "บริษัท ก",
-        empId: "0",
-        cssdName: "สายสาคร นครยานพ",
-        organizeName: "0",
-        docName: "0",
-        depName: "0",
+        supId: "บริษัท ก",
+        supEmpId: "0",
+        hosEmpId: "สายสาคร นครยานพ",
+        hosDeptId: "0",
+        docId: "0",
+        userDeptId: "0",
         patientName: "มานาบี ชีวันนา",
         useDate: "13-02-2022",
         useTime: "12:00",
         appDate: "23-02-2022",
         appTime: "11:00",
         status: "1",
-        hospitalName: "0",
+        hosId: "0",
         loaners: [
           LoanerModel(
               name: 'LoanerA',
@@ -70,19 +70,19 @@ class _ConfirmAppointmentPageState extends State<ConfirmAppointmentPage> {
               note: '')
         ]),
     AppointmentDataModel(
-        companyName: "บริษัท 123",
-        empId: "1",
-        cssdName: "สายสาคร นครยานพ",
-        organizeName: "1",
-        docName: "1",
-        depName: "1",
+        supId: "บริษัท 123",
+        supEmpId: "1",
+        hosEmpId: "สายสาคร นครยานพ",
+        hosDeptId: "1",
+        docId: "1",
+        userDeptId: "1",
         patientName: "มานาบี ชีวันนา",
         useDate: "13-02-2022",
         useTime: "12:00",
         appDate: "23-02-2022",
         appTime: "11:00",
         status: "1",
-        hospitalName: "1",
+        hosId: "1",
         loaners: [
           LoanerModel(
               name: 'LoanerX',

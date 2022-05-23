@@ -26,14 +26,14 @@ class _HistoryPageState extends State<HistoryPage> {
 
   List<AppointmentDataModel> appointments = [
     AppointmentDataModel(
-        hospitalName: "โรงพยาบาล ก",
-        organizeName: "บริษัท ก",
+        hosId: "โรงพยาบาล ก",
+        supId: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
         status: "3"),
     AppointmentDataModel(
-        hospitalName: "โรงพยาบาล ก",
-        organizeName: "บริษัท ก",
+        hosId: "โรงพยาบาล ก",
+        supId: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
         status: "4")

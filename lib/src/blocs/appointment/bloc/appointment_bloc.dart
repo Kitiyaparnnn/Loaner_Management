@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:loaner/src/models/DropdownModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentSearchModel.dart';
 import 'package:loaner/src/models/employee/EmployeeModel.dart';
@@ -36,11 +37,33 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     on<AppointmentGetBySearch>(_mapAppointmentGetBySearchToState);
     on<AppointmentGetByStatus>(_mapAppointmentGetByStatusToState);
     on<AppointmentGetToEdit>(_mapAppointmentGetToEditToState);
+    on<AppointmentGetGetSupEmpandHos>(_mapAppointmentGetSupEmpandHosToState);
+    on<AppointmentGetHosDetail>(_mapAppointmentGetHosDetailToState);
   }
 
   _mapAppointmentClearToState(AppointmentClear event, Emitter emit) {
     // emit(AppointmentStateLoading());
     appointment.loaners!.clear();
+  }
+
+  _mapAppointmentGetSupEmpandHosToState(
+      AppointmentGetGetSupEmpandHos event, Emitter emit) async {
+    emit(AppointmentStateLoading());
+    final supEmp =
+        await _appointmentService.getSupplierEmp(depId: event.supId);
+
+    final hos = await _appointmentService.getHospital();
+    emit(AppointmentStateGetGetSupEmpandHos(supEmp: supEmp,hos: hos));
+
+  }
+
+
+  _mapAppointmentGetHosDetailToState(
+      AppointmentGetHosDetail event, Emitter emit) async {
+    final dept = await _appointmentService.getHosDept(hosId: event.hosId);
+    final emp = await _appointmentService.getHosEmp(hosId: event.hosId);
+    final doctor = await _appointmentService.getHosDoc(hosId: event.hosId);
+    emit(AppointmentStateGetHosDetail(dept: dept,emp:emp,doctor: doctor));
   }
 
   _mapAppointmentGetEmpIdToState(AppointmentGetEmpId event, Emitter emit) {

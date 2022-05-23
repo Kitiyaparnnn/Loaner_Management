@@ -24,9 +24,9 @@ class AppointmentPage extends StatefulWidget {
 class _AppointmentPageState extends State<AppointmentPage> {
   List<AppointmentDataModel> appointments = [
     AppointmentDataModel(
-        companyName: "บริษัท ก",
-        hospitalName: "โรงพยาบาล ก",
-        organizeName: "บริษัท ก",
+        supId: "บริษัท ก",
+        hosId: "โรงพยาบาล ก",
+        hosDeptId: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
         status: "0",
@@ -45,9 +45,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
               note: ''),
         ]),
     AppointmentDataModel(
-        companyName: "บริษัท ก",
-        hospitalName: "โรงพยาบาล ง",
-        organizeName: "บริษัท ก",
+        supId: "บริษัท ก",
+        hosId: "โรงพยาบาล ง",
+        hosDeptId: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
         status: "2",
@@ -65,27 +65,6 @@ class _AppointmentPageState extends State<AppointmentPage> {
               rent: 2,
               note: ''),
         ]),
-    AppointmentDataModel(
-        companyName: "บริษัท ก",
-        hospitalName: "โรงพยาบาล ง",
-        organizeName: "บริษัท ก",
-        appDate: "22-04-2022",
-        appTime: "12:00",
-        status: "1",
-        loaners: [
-          LoanerModel(
-              name: 'LoanerD',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 1,
-              note: ''),
-          LoanerModel(
-              name: 'LoanerE',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 7,
-              note: ''),
-        ])
   ];
 
   @override

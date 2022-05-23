@@ -46,15 +46,15 @@ List<MenuChoice> choices = const <MenuChoice>[
 
 List<AppointmentDataModel> appointmentsData = [
   AppointmentDataModel(
-      hospitalName: "โรงพยาบาล ก",
-      organizeName: "บริษัท ก",
+      hosId: "โรงพยาบาล ก",
+      hosDeptId: "บริษัท ก",
       appDate: "22-04-2022",
       appTime: "12:00",
       status: Constants.status[0],
       loaners: []),
   AppointmentDataModel(
-      hospitalName: "โรงพยาบาล ก",
-      organizeName: "บริษัท ก",
+      hosId: "โรงพยาบาล ก",
+      hosDeptId: "บริษัท ก",
       appDate: "28-04-2022",
       appTime: "12:00",
       status: Constants.status[1],
@@ -83,8 +83,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // loading2(context);
-    // loading();
+    // loading2();
+    loading();
     getUserData();
     super.initState();
   }
@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
     BotToast.closeAllLoading();
   }
 
-  Widget loading2(BuildContext context) {
+  Widget loading2() {
     return Container(
         color: AppColors.COLOR_PRIMARY,
         child: Column(
@@ -290,7 +290,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildAppBar() {
-    logger.w(image);
+    // logger.w(image);
     return Container(
       // margin: EdgeInsets.only(top: 30),
       padding: EdgeInsets.only(left: 20, right: 10, top: 10),
@@ -543,9 +543,9 @@ class _HomePageState extends State<HomePage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(appointmentsData[index].hospitalName!,
+                  Text(appointmentsData[index].hosId!,
                       style: TextStyle(fontSize: 14)),
-                  Text("${appointmentsData[index].organizeName}",
+                  Text("${appointmentsData[index].hosDeptId}",
                       style: TextStyle(
                           fontSize: 14, color: AppColors.COLOR_LIGHT)),
                   Row(

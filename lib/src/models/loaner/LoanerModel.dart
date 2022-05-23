@@ -3,7 +3,7 @@ class LoanerModel {
       {this.image,
       this.name,
       this.detail,
-      this.rent,
+      this.rent = 1,
       this.note,
       this.isActive,
       this.id});

@@ -35,7 +35,7 @@ Card appointmentCard_cssd(
                   children: [
                     Row(
                       children: [
-                        Text(object.companyName!,
+                        Text(object.supId!,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         Spacer(),

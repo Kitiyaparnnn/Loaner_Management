@@ -33,7 +33,7 @@ Card appointmentCard(
                   children: [
                     Row(
                       children: [
-                        Text(object.hospitalName!,
+                        Text(object.hosId!,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         Spacer(),
@@ -56,7 +56,7 @@ Card appointmentCard(
                         Text("หน่วยงาน : ",
                             style: TextStyle(
                                 fontSize: 14, color: AppColors.COLOR_LIGHT)),
-                        Text(object.organizeName!,
+                        Text(object.hosDeptId!,
                             style: TextStyle(
                                 fontSize: 14, color: AppColors.COLOR_BLACK))
                       ],

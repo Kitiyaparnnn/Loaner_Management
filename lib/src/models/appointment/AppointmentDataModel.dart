@@ -1,15 +1,18 @@
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 
+//create&update input id
+//get detail output name
 class AppointmentDataModel {
   AppointmentDataModel(
-      {this.appNo,
-      this.companyName,
-      this.empId,
-      this.hospitalName,
-      this.organizeName,
-      this.cssdName,
-      this.docName,
-      this.depName,
+      {
+      this.id,
+      this.supId,
+      this.supEmpId,
+      this.hosId,
+      this.hosDeptId,
+      this.hosEmpId,
+      this.docId,
+      this.userDeptId,
       this.patientName,
       this.useDate,
       this.useTime,
@@ -19,14 +22,14 @@ class AppointmentDataModel {
       this.loaners});
 
   AppointmentDataModel.fromJson(dynamic json) {
-    appNo = json['appNo'];
-    companyName = json['company_name'];
-    empId = json['empId'];
-    hospitalName = json['hospital_name'];
-    organizeName = json['organize_name'];
-    cssdName = json['cssd_name'];
-    docName = json['doc_name'];
-    depName = json['dep_name'];
+    id = json['id'];
+    supId = json['sup_id'];
+    supEmpId = json['sup_emp_id'];
+    hosId = json['hospital_id'];
+    hosDeptId = json['hos_dept_id'];
+    hosEmpId = json['hos_emp_id'];
+    docId = json['doc_id'];
+    userDeptId = json['user_dept_id'];
     patientName = json['patient_name'];
     useDate = json['use_date'];
     useTime = json['use_time'];
@@ -36,14 +39,14 @@ class AppointmentDataModel {
     loaners = json['loaners'];
   }
 
-  String? appNo;
-  String? companyName;
-  String? empId; 
-  String? hospitalName;
-  String? organizeName;
-  String? cssdName;
-  String? docName;
-  String? depName;
+  String? id;
+  String? supId;
+  String? supEmpId; 
+  String? hosId;
+  String? hosDeptId;
+  String? hosEmpId;
+  String? docId;
+  String? userDeptId;
   String? patientName;
   String? useDate;
   String? useTime;
@@ -54,14 +57,14 @@ class AppointmentDataModel {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['appNo'] = appNo;
-    map['company_name'] = companyName;
-    map['empId'] = empId;
-    map['hospital_name'] = hospitalName;
-    map['organize_name'] = organizeName;
-    map['cssd_name'] = cssdName;
-    map['doc_name'] = docName;
-    map['dep_name'] = depName;
+    map['id'] = id;
+    map['sup_id'] = supId;
+    map['sup_emp_id'] = supEmpId;
+    map['hospital_id'] = hosId;
+    map['hos_dept_id'] = hosDeptId;
+    map['hos_emp_id'] = hosEmpId;
+    map['doc_id'] = docId;
+    map['user_dept_id'] = userDeptId;
     map['patient_name'] = patientName;
     map['use_date'] = useDate;
     map['use_time'] = useTime;

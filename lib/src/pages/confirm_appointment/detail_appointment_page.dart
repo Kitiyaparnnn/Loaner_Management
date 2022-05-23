@@ -106,7 +106,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(appointment.companyName!,
+          Text(appointment.supId!,
               style: TextStyle(
                   fontSize: 21,
                   color: AppColors.COLOR_BLACK,
@@ -155,7 +155,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     Text("เจ้าหน้าที่ผู้ติดต่อ :",
                         style: TextStyle(
                             fontSize: 12, color: AppColors.COLOR_LIGHT)),
-                    Text(appointment.cssdName!,
+                    Text(appointment.hosEmpId!,
                         style: TextStyle(
                             fontSize: 14,
                             color: AppColors.COLOR_BLACK,
@@ -175,7 +175,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     Text("แพทย์ผู้ใช้อุปกรณ์ :",
                         style: TextStyle(
                             fontSize: 12, color: AppColors.COLOR_LIGHT)),
-                    Text(Constants.doc[appointment.docName]!,
+                    Text(Constants.doc[appointment.docId]!,
                         style: TextStyle(
                             fontSize: 14,
                             color: AppColors.COLOR_BLACK,
@@ -200,7 +200,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     Text("หน่วยงาน :",
                         style: TextStyle(
                             fontSize: 12, color: AppColors.COLOR_LIGHT)),
-                    Text(Constants.org[appointment.organizeName]!,
+                    Text(Constants.org[appointment.userDeptId]!,
                         style: TextStyle(
                             fontSize: 14,
                             color: AppColors.COLOR_BLACK,

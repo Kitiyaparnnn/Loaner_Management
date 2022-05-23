@@ -11,8 +11,7 @@ import 'package:loaner/src/services/Urls.dart';
 class AppointmentService {
   final _prefService = SharedPreferencesService();
 
-   Future<List<AppointmentDataModel>> getAllAppointments(
-      ) async {
+  Future<List<AppointmentDataModel>> getAllAppointments() async {
     List<AppointmentDataModel> _result = [];
 
     try {
@@ -150,8 +149,10 @@ class AppointmentService {
     }
   }
 
-    Future<List<AppointmentDataModel>> getAppointmentsBySearch(
-      {required String status,required String date,required String hospital}) async {
+  Future<List<AppointmentDataModel>> getAppointmentsBySearch(
+      {required String status,
+      required String date,
+      required String hospital}) async {
     List<AppointmentDataModel> _result = [];
 
     try {
@@ -161,8 +162,8 @@ class AppointmentService {
       Map<String, dynamic> _body = {
         'function': "GET_APPOINTMENTS_BY_SEARCH",
         "status": status,
-        "hospital" :hospital,
-        "date" : date
+        "hospital": hospital,
+        "date": date
       };
 
       logger.i(_body);
@@ -187,8 +188,7 @@ class AppointmentService {
     }
   }
 
-   Future<List<DropdownModel>> getHospitalList(
-      ) async {
+  Future<List<DropdownModel>> getHospital() async {
     List<DropdownModel> _result = [];
 
     try {
@@ -196,7 +196,7 @@ class AppointmentService {
       var _response;
 
       Map<String, dynamic> _body = {
-        'function': "GET_HOSPITAL_LIST",
+        'function': "GET_HOSPITAL",
       };
 
       logger.i(_body);
@@ -221,17 +221,118 @@ class AppointmentService {
     }
   }
 
-   Future<List<DropdownModel>> getEmployeeByDepId({required String depId}
-      ) async {
+  Future<List<DropdownModel>> getSupplierEmp({required String depId}) async {
     List<DropdownModel> _result = [];
 
     try {
-      final _url = Uri.parse(Urls.employeeUrl);
+      final _url = Uri.parse(Urls.appointmentUrl);
       var _response;
 
       Map<String, dynamic> _body = {
-        'function': "GET_EMPLOYEE_BY_DEPID",
-        'depId' : depId
+        'function': "GET_SUPPLIER_EMP",
+        'depId': depId
+      };
+
+      logger.i(_body);
+
+      _response = await http.post(
+        _url,
+        body: jsonEncode(_body),
+      );
+
+      if (_response.statusCode == 200) {
+        final List _jsonResponse = json.decode(_response.body);
+
+        List<DropdownModel> _resultData =
+            _jsonResponse.map((i) => DropdownModel.fromJson(i)).toList();
+        _result = _resultData;
+      }
+
+      return _result;
+    } catch (e) {
+      logger.e(e);
+      return _result;
+    }
+  }
+
+  Future<List<DropdownModel>> getHosDept({required String hosId}) async {
+    List<DropdownModel> _result = [];
+
+    try {
+      final _url = Uri.parse(Urls.appointmentUrl);
+      var _response;
+
+      Map<String, dynamic> _body = {
+        'function': "GET_HOS_DEPT",
+        'hospitalId': hosId
+      };
+
+      logger.i(_body);
+
+      _response = await http.post(
+        _url,
+        body: jsonEncode(_body),
+      );
+
+      if (_response.statusCode == 200) {
+        final List _jsonResponse = json.decode(_response.body);
+
+        List<DropdownModel> _resultData =
+            _jsonResponse.map((i) => DropdownModel.fromJson(i)).toList();
+        _result = _resultData;
+      }
+
+      return _result;
+    } catch (e) {
+      logger.e(e);
+      return _result;
+    }
+  }
+
+  Future<List<DropdownModel>> getHosEmp({required String hosId}) async {
+    List<DropdownModel> _result = [];
+
+    try {
+      final _url = Uri.parse(Urls.appointmentUrl);
+      var _response;
+
+      Map<String, dynamic> _body = {
+        'function': "GET_HOS_EMP",
+        'hospitalId': hosId
+      };
+
+      logger.i(_body);
+
+      _response = await http.post(
+        _url,
+        body: jsonEncode(_body),
+      );
+
+      if (_response.statusCode == 200) {
+        final List _jsonResponse = json.decode(_response.body);
+
+        List<DropdownModel> _resultData =
+            _jsonResponse.map((i) => DropdownModel.fromJson(i)).toList();
+        _result = _resultData;
+      }
+
+      return _result;
+    } catch (e) {
+      logger.e(e);
+      return _result;
+    }
+  }
+
+  Future<List<DropdownModel>> getHosDoc({required String hosId}) async {
+    List<DropdownModel> _result = [];
+
+    try {
+      final _url = Uri.parse(Urls.appointmentUrl);
+      var _response;
+
+      Map<String, dynamic> _body = {
+        'function': "GET_HOS_DOC",
+        'hospitalId': hosId
       };
 
       logger.i(_body);
