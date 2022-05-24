@@ -47,10 +47,10 @@ class AppointmentButtonOnPress extends AppointmentEvent {
   List<Object> get props => [appointment, employee];
 }
 
-class AppointmentButtonOnPress2 extends AppointmentEvent {
+class AppointmentButtonOnSave extends AppointmentEvent {
   final bool isEdit;
 
-  AppointmentButtonOnPress2({required this.isEdit});
+  AppointmentButtonOnSave({required this.isEdit});
 
   @override
   List<Object> get props => [isEdit];
@@ -128,6 +128,14 @@ class AppointmentGetHosDetail extends AppointmentEvent {
   final String hosId;
   AppointmentGetHosDetail({required this.hosId});
 
-    @override
+  @override
   List<Object> get props => [hosId];
+}
+
+class AppointmentSetAppoint extends AppointmentEvent {
+  final AppointmentDataModel app;
+  AppointmentSetAppoint({required this.app});
+
+    @override
+  List<Object> get props => [app];
 }

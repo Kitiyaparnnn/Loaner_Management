@@ -25,7 +25,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
   List<AppointmentDataModel> appointments = [
     AppointmentDataModel(
         supId: "บริษัท ก",
-        hosId: "โรงพยาบาล ก",
+        hospitalId: "โรงพยาบาล ก",
         hosDeptId: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
@@ -46,7 +46,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
         ]),
     AppointmentDataModel(
         supId: "บริษัท ก",
-        hosId: "โรงพยาบาล ง",
+        hospitalId: "โรงพยาบาล ง",
         hosDeptId: "บริษัท ก",
         appDate: "22-04-2022",
         appTime: "12:00",
@@ -85,11 +85,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_outlined, color: AppColors.COLOR_BLACK),
-          onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomePage(),
-              )),
+          onPressed: () => Navigator.popUntil(
+              context, (Route<dynamic> route) => route.isFirst),
         ),
         title: Column(
           children: [

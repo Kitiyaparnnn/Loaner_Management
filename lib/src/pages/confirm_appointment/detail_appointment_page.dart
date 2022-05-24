@@ -200,7 +200,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     Text("หน่วยงาน :",
                         style: TextStyle(
                             fontSize: 12, color: AppColors.COLOR_LIGHT)),
-                    Text(Constants.org[appointment.userDeptId]!,
+                    Text(Constants.org[appointment.useDeptId]!,
                         style: TextStyle(
                             fontSize: 14,
                             color: AppColors.COLOR_BLACK,

@@ -23,14 +23,14 @@ class _ConfirmAppointmentPageState extends State<ConfirmAppointmentPage> {
         hosEmpId: "สายสาคร นครยานพ",
         hosDeptId: "0",
         docId: "0",
-        userDeptId: "0",
+        useDeptId: "0",
         patientName: "มานาบี ชีวันนา",
         useDate: "13-02-2022",
         useTime: "12:00",
         appDate: "23-02-2022",
         appTime: "11:00",
         status: "1",
-        hosId: "0",
+        hospitalId: "0",
         loaners: [
           LoanerModel(
               name: 'LoanerA',
@@ -75,14 +75,14 @@ class _ConfirmAppointmentPageState extends State<ConfirmAppointmentPage> {
         hosEmpId: "สายสาคร นครยานพ",
         hosDeptId: "1",
         docId: "1",
-        userDeptId: "1",
+        useDeptId: "1",
         patientName: "มานาบี ชีวันนา",
         useDate: "13-02-2022",
         useTime: "12:00",
         appDate: "23-02-2022",
         appTime: "11:00",
         status: "1",
-        hosId: "1",
+        hospitalId: "1",
         loaners: [
           LoanerModel(
               name: 'LoanerX',

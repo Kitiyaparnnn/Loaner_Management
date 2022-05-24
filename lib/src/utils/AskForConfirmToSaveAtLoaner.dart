@@ -45,7 +45,7 @@ void askForConfirmToSaveAtLoaner(
                   : Navigator.pop(context);
               context
                   .read<AppointmentBloc>()
-                  .add(AppointmentButtonOnPress2(isEdit: isEdit));
+                  .add(AppointmentButtonOnSave(isEdit: isEdit));
             },
           ),
         ],

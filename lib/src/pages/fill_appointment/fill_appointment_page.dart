@@ -49,7 +49,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   EmployeeModel employee = EmployeeModel();
 
   AppointmentDataModel appointment =
-      AppointmentDataModel(status: "0", loaners: []);
+      AppointmentDataModel(status: "0", loaners: [], id: "");
   var _formKey = GlobalKey<FormState>();
   var _formKey2 = GlobalKey<FormState>();
   final _sharedPreferencesService = SharedPreferencesService();
@@ -125,13 +125,13 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   bool isDocument = false;
   bool isFillAppoint = false;
   String supId = "";
+  String empId = "";
   List<DropdownModel> emp = [];
 
   @override
   void initState() {
     isDocument = widget.appointStatus == "0" ? false : true;
     getDocumentDetail();
-    // getFormDetail();
     super.initState();
   }
 
@@ -141,36 +141,33 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       _controllerCompanyName.text =
           await _sharedPreferencesService.preferenceGetDepName();
       supId = await _sharedPreferencesService.preferenceGetDepId();
-      _controllerEmpId.text =
-          await _sharedPreferencesService.preferenceGetUserId();
+      empId = await _sharedPreferencesService.preferenceGetUserId();
+      _controllerEmpId.text = empId;
       context
           .read<AppointmentBloc>()
           .add(AppointmentGetGetSupEmpandHos(supId: supId));
     }
   }
 
-  getFormDetail() async {
-    context.read<AppointmentBloc>().add(AppointmentGetHospital());
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: myAppBar(
-            title: isDocument
-                ? Constants.EDIT_APPOINT_TITLE
-                : Constants.FILL_APPOINT_TITLE,
-            context: context),
-        body: SafeArea(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: GestureDetector(
-              onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
-              child: _buildForm(context),
-            ),
+      appBar: myAppBar(
+          title: isDocument
+              ? Constants.EDIT_APPOINT_TITLE
+              : Constants.FILL_APPOINT_TITLE,
+          context: context),
+      body: SafeArea(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+            child: _buildForm(context),
           ),
         ),
-        bottomNavigationBar: _bottomButton());
+      ),
+      // bottomNavigationBar: _bottomButton()
+    );
   }
 
   Widget _bottomButton() {
@@ -207,11 +204,11 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
               isFillAppoint = true;
               _controllerCompanyName.text = appointment.supId!;
               _controllerEmpId.text = appointment.supEmpId!;
-              _controllerHospitalName.text = appointment.hosId!;
+              _controllerHospitalName.text = appointment.hospitalId!;
               _controllerOrganizeName.text = appointment.hosDeptId!;
               _controllerCssdName.text = appointment.hosEmpId!;
               _controllerDoctorName.text = appointment.docId!;
-              _controllerDepName.text = appointment.userDeptId!;
+              _controllerDepName.text = appointment.hospitalId!;
               _controllerPatientName.text = appointment.patientName!;
               _controllerUseDate.text = appointment.useDate!;
               _controllerUseTime.text = appointment.useTime!;
@@ -261,6 +258,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                     builder: (context, state) {
                       if (state is AppointmentStateGetGetSupEmpandHos) {
                         emp = state.supEmp;
+                        logger.w("build");
                       }
                       return buildDropdownInput(
                           _controllerEmpId, emp, "เจ้าหน้าที่บริษัท");
@@ -295,16 +293,21 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   }
 
   List<DropdownModel> hospital = [];
-  List<DropdownModel> hosDept = [];
-  List<DropdownModel> hosEmp = [];
-  List<DropdownModel> hosDoc = [];
+
   Widget _buildInputForm2() {
     return BlocBuilder<AppointmentBloc, AppointmentState>(
       builder: (context, state) {
+        List<DropdownModel> hosDept = [];
+        List<DropdownModel> hosEmp = [];
+        List<DropdownModel> hosDoc = [];
         if (state is AppointmentStateGetHosDetail) {
           hosDept = state.dept;
           hosEmp = state.emp;
           hosDoc = state.doctor;
+          _controllerCssdName.text = hosEmp[0].id.toString();
+          _controllerDepName.text = hosDept[0].id.toString();
+          _controllerDoctorName.text = hosDoc[0].id.toString();
+          _controllerOrganizeName.text = hosDept[0].id.toString();
         }
         if (state is AppointmentStateGetGetSupEmpandHos) {
           hospital = state.hos;
@@ -348,6 +351,23 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 buildDropdownInput(_controllerDepName, hosDept, "หน่วยงาน")
+                // DropdownButtonFormField(
+                //   value: dept,
+                //   validator: (value) => value == null ? "โปรดเลือก" : null,
+                //   decoration: selectDecoration(hintText: "หน่วยงาน"),
+                //   icon: Icon(Icons.expand_more_rounded),
+                //   items: hosDept.map<DropdownMenuItem<String>>((item) {
+                //     logger.d(item.toJson());
+                //     return DropdownMenuItem(
+                //       value: item.id ?? "",
+                //       child: Text(item.name == null ? "" : item.name!),
+                //     );
+                //   }).toList(),
+                //   onChanged: (value) {
+                //     dept = value.toString();
+                //     logger.d("con: ${dept}");
+                //   },
+                // )
               ],
             ),
             const SizedBox(height: 10),
@@ -495,40 +515,33 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
         form.text = value;
         context
             .read<AppointmentBloc>()
-            .add(AppointmentGetHosDetail(hosId: value.toString()));
+            .add(AppointmentGetHosDetail(hosId: value));
       },
     );
   }
 
   validate(int button) {
-    if (button == 1) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => LoanerPage(
-                    isFillForm: true,
-                    selectedLoaner: [],
-                    isEdit: false,
-                  )));
-    }
     if (_formKey2.currentState!.validate() &&
         _formKey.currentState!.validate() &&
         _controllerUseDate.text != "" &&
         _controllerAppDate.text != "") {
       appointment.supId = supId;
       appointment.supEmpId = _controllerEmpId.text;
-      appointment.hosId = _controllerHospitalName.text;
+      appointment.hospitalId = _controllerHospitalName.text;
       appointment.hosDeptId = _controllerOrganizeName.text;
       appointment.hosEmpId = _controllerCssdName.text;
       appointment.docId = _controllerDoctorName.text;
-      appointment.userDeptId = _controllerDepName.text;
+      appointment.useDeptId = _controllerDepName.text;
       appointment.patientName = _controllerPatientName.text;
       appointment.useDate = _controllerUseDate.text;
       appointment.appDate = _controllerAppDate.text;
       appointment.useTime = _controllerUseTime.text;
       appointment.appTime = _controllerAppTime.text;
-      logger.d(appointment.toJson());
+      // logger.d(appointment.toJson());
       if (button == 1) {
+        context
+            .read<AppointmentBloc>()
+            .add(AppointmentSetAppoint(app: appointment));
         Navigator.push(
             context,
             MaterialPageRoute(

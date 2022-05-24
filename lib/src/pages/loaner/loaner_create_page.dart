@@ -193,7 +193,15 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
                 children: [buildStockTextFormField(_controllerQty)],
               ),
               const SizedBox(height: 10),
-              _buildCheckBox(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("สถานะ Loaner",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  _buildCheckBox(),
+                ],
+              ),
               const SizedBox(height: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

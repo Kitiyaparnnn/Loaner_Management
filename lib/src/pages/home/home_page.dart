@@ -46,14 +46,14 @@ List<MenuChoice> choices = const <MenuChoice>[
 
 List<AppointmentDataModel> appointmentsData = [
   AppointmentDataModel(
-      hosId: "โรงพยาบาล ก",
+      hospitalId: "โรงพยาบาล ก",
       hosDeptId: "บริษัท ก",
       appDate: "22-04-2022",
       appTime: "12:00",
       status: Constants.status[0],
       loaners: []),
   AppointmentDataModel(
-      hosId: "โรงพยาบาล ก",
+      hospitalId: "โรงพยาบาล ก",
       hosDeptId: "บริษัท ก",
       appDate: "28-04-2022",
       appTime: "12:00",
@@ -543,7 +543,7 @@ class _HomePageState extends State<HomePage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(appointmentsData[index].hosId!,
+                  Text(appointmentsData[index].hospitalId!,
                       style: TextStyle(fontSize: 14)),
                   Text("${appointmentsData[index].hosDeptId}",
                       style: TextStyle(

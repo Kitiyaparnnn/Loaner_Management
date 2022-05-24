@@ -33,7 +33,7 @@ Card appointmentCard(
                   children: [
                     Row(
                       children: [
-                        Text(object.hosId!,
+                        Text(object.hospitalId!,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         Spacer(),

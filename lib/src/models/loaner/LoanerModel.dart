@@ -1,6 +1,7 @@
 class LoanerModel {
   LoanerModel(
       {this.image,
+      this.itemCode,
       this.name,
       this.detail,
       this.rent = 1,
@@ -10,6 +11,7 @@ class LoanerModel {
 
   LoanerModel.fromJson(dynamic json) {
     id = json['id'];
+    itemCode = json['item_code'];
     image = json['image'];
     name = json['name'];
     detail = json['detail'];
@@ -18,6 +20,7 @@ class LoanerModel {
     isActive = json['is_active'];
   }
   String? id;
+  String? itemCode;
   String? image;
   String? name;
   String? detail;
@@ -28,6 +31,7 @@ class LoanerModel {
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['id'] = id;
+    map['item_code'] = itemCode;
     map['image'] = image;
     map['name'] = name;
     map['detail'] = detail;

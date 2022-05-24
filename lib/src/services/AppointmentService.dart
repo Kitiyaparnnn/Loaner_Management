@@ -89,7 +89,7 @@ class AppointmentService {
 
       Map<String, dynamic> _body = {
         'function': "GET_APPOINTMENT_DETAIL",
-        "appNo": appNo
+        "id": appNo
       };
 
       logger.i(_body);
@@ -100,7 +100,7 @@ class AppointmentService {
       );
 
       if (_response.statusCode == 200) {
-        final List _jsonResponse = json.decode(_response.body);
+        final _jsonResponse = json.decode(_response.body);
 
         final AppointmentDataModel _resultData =
             AppointmentDataModel.fromJson(_jsonResponse);
@@ -121,10 +121,14 @@ class AppointmentService {
     try {
       final _url = Uri.parse(Urls.appointmentUrl);
       var _response;
+      final _sharedPreferencesService = SharedPreferencesService();
+      String empId = await _sharedPreferencesService.preferenceGetUserId();
+      // logger.d(app.toJson());
 
       Map<String, dynamic> _body = {
         'function': "MANAGE_APPOINTMENT",
-        "app": app
+        "app": app,
+        "emp_id": empId
       };
 
       logger.i(_body);
@@ -135,12 +139,13 @@ class AppointmentService {
       );
 
       if (_response.statusCode == 200) {
-        final List _jsonResponse = json.decode(_response.body);
+        final _jsonResponse = json.decode(_response.body);
 
         final AppointmentDataModel _resultData =
             AppointmentDataModel.fromJson(_jsonResponse);
         _result = _resultData;
       }
+      logger.d(_response.body);
 
       return _result;
     } catch (e) {
@@ -281,7 +286,6 @@ class AppointmentService {
             _jsonResponse.map((i) => DropdownModel.fromJson(i)).toList();
         _result = _resultData;
       }
-
       return _result;
     } catch (e) {
       logger.e(e);

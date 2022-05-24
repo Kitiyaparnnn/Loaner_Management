@@ -27,10 +27,11 @@ class LoanerDetailPage extends StatefulWidget {
 class _LoanerDetailPageState extends State<LoanerDetailPage> {
   TextEditingController _controllernote = new TextEditingController(text: "");
   var _formKey = GlobalKey<FormState>();
-  int no = 0;
+  int no = 1;
 
   @override
   Widget build(BuildContext context) {
+    logger.d(widget.loaner.toJson());
     return Scaffold(
       appBar: myAppBar(title: "", context: context),
       bottomNavigationBar: Padding(

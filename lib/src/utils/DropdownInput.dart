@@ -29,6 +29,7 @@ DropdownButtonFormField buildDropdownInput(
     decoration: selectDecoration(hintText: hintText),
     icon: Icon(Icons.expand_more_rounded),
     items: items.map<DropdownMenuItem<String>>((item) {
+      // logger.d(item.toJson());
       return DropdownMenuItem(
         value: item.id,
         child: Text(item.name == null ? "" : item.name!),
@@ -36,6 +37,7 @@ DropdownButtonFormField buildDropdownInput(
     }).toList(),
     onChanged: (value) {
       form.text = value;
+      // logger.d("con: ${form.text}");
     },
   );
 }

@@ -27,7 +27,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     on<AppointmentGetEmpId>(_mapAppointmentGetEmpIdToState);
     on<AppointmentGetDetail>(_mapAppointmentGetDetailToState);
     on<AppointmentButtonOnPress>(_mapAppointmentButtonOnPressToState);
-    on<AppointmentButtonOnPress2>(_mapAppointmentButtonOnPress2ToState);
+    on<AppointmentButtonOnSave>(_mapAppointmentButtonOnSaveToState);
     on<AppointmentAddLoaner>(_mapAppointmentAddLoanerToState);
     on<AppointmentCountLoaner>(_mapAppointmentCountLoanerToState);
     on<AppointmentGetLoaner>(_mapAppointmentGetLoanerToState);
@@ -39,6 +39,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     on<AppointmentGetToEdit>(_mapAppointmentGetToEditToState);
     on<AppointmentGetGetSupEmpandHos>(_mapAppointmentGetSupEmpandHosToState);
     on<AppointmentGetHosDetail>(_mapAppointmentGetHosDetailToState);
+    on<AppointmentSetAppoint>(_mapAppointmentSetAppointToState);
   }
 
   _mapAppointmentClearToState(AppointmentClear event, Emitter emit) {
@@ -49,21 +50,18 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   _mapAppointmentGetSupEmpandHosToState(
       AppointmentGetGetSupEmpandHos event, Emitter emit) async {
     emit(AppointmentStateLoading());
-    final supEmp =
-        await _appointmentService.getSupplierEmp(depId: event.supId);
+    final supEmp = await _appointmentService.getSupplierEmp(depId: event.supId);
 
     final hos = await _appointmentService.getHospital();
-    emit(AppointmentStateGetGetSupEmpandHos(supEmp: supEmp,hos: hos));
-
+    emit(AppointmentStateGetGetSupEmpandHos(supEmp: supEmp, hos: hos));
   }
-
 
   _mapAppointmentGetHosDetailToState(
       AppointmentGetHosDetail event, Emitter emit) async {
     final dept = await _appointmentService.getHosDept(hosId: event.hosId);
     final emp = await _appointmentService.getHosEmp(hosId: event.hosId);
     final doctor = await _appointmentService.getHosDoc(hosId: event.hosId);
-    emit(AppointmentStateGetHosDetail(dept: dept,emp:emp,doctor: doctor));
+    emit(AppointmentStateGetHosDetail(dept: dept, emp: emp, doctor: doctor));
   }
 
   _mapAppointmentGetEmpIdToState(AppointmentGetEmpId event, Emitter emit) {
@@ -121,16 +119,14 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   }
 
   //loaner_sum_page
-  _mapAppointmentButtonOnPress2ToState(
-      AppointmentButtonOnPress2 event, Emitter emit) async {
-    if (!event.isEdit) {
-      // appointment.loaners = [];
-    }
+  _mapAppointmentButtonOnSaveToState(
+      AppointmentButtonOnSave event, Emitter emit) async {
+    // if (!event.isEdit) {
+    //   appointment.loaners = [];
+    // }
 
-    // final _result =
-    //     await _appointmentService.manageAppointment(app: appointment);
-
-    logger.d(appointment.toJson());
+    final _result =
+        await _appointmentService.manageAppointment(app: appointment);
   }
 
   _mapAppointmentAddLoanerToState(
@@ -224,5 +220,10 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       data: appointment,
       employee: employee,
     ));
+  }
+
+  _mapAppointmentSetAppointToState(AppointmentSetAppoint event, Emitter emit) {
+    appointment = event.app;
+    logger.d(appointment.toJson());
   }
 }
