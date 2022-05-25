@@ -84,7 +84,7 @@ Card appointmentCard_cssd(
                 context,
                 MaterialPageRoute(
                   builder: (context) => DetailAppointmentPage(
-                    appointment: object,
+                    appId: object.id!,
                   ),
                 ));
           }

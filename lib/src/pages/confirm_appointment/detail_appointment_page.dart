@@ -19,22 +19,29 @@ import 'package:loaner/src/utils/MyAppBar.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class DetailAppointmentPage extends StatefulWidget {
-  DetailAppointmentPage({required this.appointment});
+  DetailAppointmentPage({required this.appId});
 
-  AppointmentModel appointment;
+  String appId;
 
   @override
   State<DetailAppointmentPage> createState() => _DetailAppointmentPageState();
 }
 
 class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
-  AppointmentDataModel appointment = AppointmentDataModel();
-
-  EmployeeModel employee = EmployeeModel();
+  AppointmentModel appointment = AppointmentModel();
 
   @override
   void initState() {
+    //get appoint name detail
+    getAppointmentData();
     super.initState();
+  }
+
+  getAppointmentData() async {
+    context
+        .read<AppointmentBloc>()
+        .add(AppointmentGetEachDetail(appId: widget.appId));
+    await Future.delayed(Duration(seconds: 2));
   }
 
   @override
@@ -59,15 +66,14 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
             // height: double.maxFinite,
             child: BlocBuilder<AppointmentBloc, AppointmentState>(
               builder: (context, state) {
-                if (state is AppointmentStateGetDetail) {
+                bool isLoading = true;
+                if (state is AppointmentStateGetEachDetail) {
                   appointment = state.data;
-                  employee = state.employee;
-                  // logger.d(employee.toJson());
+                  isLoading = false;
                 }
-
                 return Column(
                   children: [
-                    _showAllDetail(widget.appointment),
+                    _showAllDetail(appointment),
                     SizedBox(height: 20),
                     Container(
                       width: MediaQuery.of(context).size.width,
@@ -91,7 +97,9 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                                         color: AppColors.COLOR_BLACK,
                                         fontWeight: FontWeight.bold)),
                               ),
-                              _showLoaner(widget.appointment.loaner!)
+                              isLoading
+                                  ? CircularProgressIndicator()
+                                  : _showLoaner(appointment.loaner!)
                             ]),
                       ),
                     ),
@@ -115,7 +123,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(appointment.supName!,
+          Text(appointment.supName ?? '',
               style: TextStyle(
                   fontSize: 21,
                   color: AppColors.COLOR_BLACK,
@@ -166,7 +174,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     Text("เจ้าหน้าที่ผู้ติดต่อ :",
                         style: TextStyle(
                             fontSize: 12, color: AppColors.COLOR_LIGHT)),
-                    Text(appointment.hosEmpName!,
+                    Text(appointment.hosEmpName ?? '',
                         style: TextStyle(
                             fontSize: 14,
                             color: AppColors.COLOR_BLACK,
@@ -186,7 +194,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     Text("แพทย์ผู้ใช้อุปกรณ์ :",
                         style: TextStyle(
                             fontSize: 12, color: AppColors.COLOR_LIGHT)),
-                    Text(appointment.docName!,
+                    Text(appointment.docName ?? '',
                         style: TextStyle(
                             fontSize: 14,
                             color: AppColors.COLOR_BLACK,
@@ -211,7 +219,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     Text("หน่วยงาน :",
                         style: TextStyle(
                             fontSize: 12, color: AppColors.COLOR_LIGHT)),
-                    Text(appointment.useDeptName!,
+                    Text(appointment.useDeptName ?? '',
                         style: TextStyle(
                             fontSize: 14,
                             color: AppColors.COLOR_BLACK,
@@ -231,7 +239,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     Text("ผู้ป่วย :",
                         style: TextStyle(
                             fontSize: 12, color: AppColors.COLOR_LIGHT)),
-                    Text(appointment.patientName!,
+                    Text(appointment.patientName ?? '',
                         style: TextStyle(
                             fontSize: 14,
                             color: AppColors.COLOR_BLACK,
@@ -252,7 +260,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                   style: TextStyle(fontSize: 12, color: AppColors.COLOR_LIGHT)),
               Row(
                 children: [
-                  Text(appointment.useDate!,
+                  Text('${appointment.useDate}',
                       style: TextStyle(
                           fontSize: 14,
                           color: AppColors.COLOR_BLACK,
@@ -327,9 +335,10 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                       : Icon(Icons.image),
                 ),
               ),
-              title: Text(loaners[index].name!, style: TextStyle(fontSize: 16)),
+              title: Text('${loaners[index].name!}',
+                  style: TextStyle(fontSize: 16)),
               subtitle: Text(
-                loaners[index].detail!,
+                '${loaners[index].detail!}',
                 style: TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -342,20 +351,23 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
   validateToEdit() {
     context
         .read<AppointmentBloc>()
-        .add(AppointmentGetDetail(appointId: '${widget.appointment.id!}'));
+        .add(AppointmentGetDetail(appointId: '${appointment.id!}'));
 
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => FillAppointmentPage(
-                  isSupplier: false,
-                  appointStatus: "1",
-                )));
+                isSupplier: false,
+                appointStatus: "1",
+                supName: '${appointment.supName!}'))).then((value) => context
+        .read<AppointmentBloc>()
+        .add(AppointmentGetEachDetail(appId: widget.appId)));
   }
 
   validate() {
-    context.read<AppointmentBloc>().add(
-        AppointmentChangeStatus(appId: widget.appointment.id!, status: "2"));
+    context
+        .read<AppointmentBloc>()
+        .add(AppointmentChangeStatus(appId: appointment.id!, status: "2"));
 
     Navigator.push(
         context,

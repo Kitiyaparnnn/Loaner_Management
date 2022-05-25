@@ -24,10 +24,14 @@ import 'package:loaner/src/utils/MyAppBar.dart';
 import 'package:loaner/src/utils/SelectDecoration.dart';
 
 class FillAppointmentPage extends StatefulWidget {
-  FillAppointmentPage({required this.isSupplier, required this.appointStatus});
+  FillAppointmentPage(
+      {required this.isSupplier,
+      required this.appointStatus,
+      this.supName = ""});
 
   bool isSupplier;
   String appointStatus;
+  String supName = "";
   @override
   State<FillAppointmentPage> createState() => _FillAppointmentPageState();
 }
@@ -152,22 +156,21 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(
-          title: isDocument
-              ? Constants.EDIT_APPOINT_TITLE
-              : Constants.FILL_APPOINT_TITLE,
-          context: context),
-      body: SafeArea(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: GestureDetector(
-            onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
-            child: _buildForm(context),
+        appBar: myAppBar(
+            title: isDocument
+                ? Constants.EDIT_APPOINT_TITLE
+                : Constants.FILL_APPOINT_TITLE,
+            context: context),
+        body: SafeArea(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: GestureDetector(
+              onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+              child: _buildForm(context),
+            ),
           ),
         ),
-      ),
-      // bottomNavigationBar: _bottomButton()
-    );
+        bottomNavigationBar: isDocument ? _bottomButton() : null);
   }
 
   Widget _bottomButton() {
@@ -180,7 +183,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
           onPressed: () {
             validate(2);
           },
-          child: Text("บันทึก", style: TextStyle(fontSize: 16))),
+          child: Text("บันทึกการแก้ไข", style: TextStyle(fontSize: 16))),
     );
   }
 
@@ -200,9 +203,16 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
             if (!isFillAppoint) {
               appointment = state.data;
               isFillAppoint = true;
-              _controllerCompanyName.text = appointment.supId!;
+              context.read<AppointmentBloc>().add(
+                  AppointmentGetGetSupEmpandHos(supId: appointment.supId!));
+              _controllerCompanyName.text = widget.supName;
               _controllerEmpId.text = appointment.supEmpId!;
               _controllerHospitalName.text = appointment.hospitalId!;
+
+              context
+                  .read<AppointmentBloc>()
+                  .add(AppointmentGetHosDetail(hosId: appointment.hospitalId!));
+
               _controllerOrganizeName.text = appointment.hosDeptId!;
               _controllerCssdName.text = appointment.hosEmpId!;
               _controllerDoctorName.text = appointment.docId!;
@@ -531,7 +541,6 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                       isEdit: false,
                     )));
       } else {
-        // logger.d(appointment.toJson());
         askForConfirmToSave(
             context: context,
             isSupplier: widget.isSupplier,
@@ -552,7 +561,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
               employee.isTrained = "1";
               setState(() {});
             },
-            icon: Icon(employee.isTrained=="1"
+            icon: Icon(employee.isTrained == "1"
                 ? Icons.radio_button_checked_outlined
                 : Icons.radio_button_unchecked_outlined)),
         Text("เคยอบรม"),
@@ -565,7 +574,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
               employee.isTrained = "0";
               setState(() {});
             },
-            icon: Icon(employee.isTrained=="1"
+            icon: Icon(employee.isTrained == "1"
                 ? Icons.radio_button_unchecked_outlined
                 : Icons.radio_button_checked_outlined)),
         Text("ไม่เคยอบรม"),

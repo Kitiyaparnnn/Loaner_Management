@@ -60,10 +60,10 @@ class AppointmentChangeStatus extends AppointmentEvent {
   final String appId;
   final String status;
 
-  AppointmentChangeStatus({required this.appId,required this.status});
+  AppointmentChangeStatus({required this.appId, required this.status});
 
   @override
-  List<Object> get props => [appId,status];
+  List<Object> get props => [appId, status];
 }
 
 class AppointmentAddLoaner extends AppointmentEvent {
@@ -148,4 +148,13 @@ class AppointmentSetAppoint extends AppointmentEvent {
 
   @override
   List<Object> get props => [app];
+}
+
+class AppointmentGetEachDetail extends AppointmentEvent {
+  final String appId;
+
+  AppointmentGetEachDetail({required this.appId});
+
+    @override
+  List<Object> get props => [appId];
 }

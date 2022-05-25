@@ -435,4 +435,41 @@ class AppointmentService {
       return _result;
     }
   }
+
+  Future<AppointmentModel> getEachAppointmentDetail(
+      {required String id}) async {
+    AppointmentModel _result = AppointmentModel();
+
+    try {
+      final _url = Uri.parse(Urls.appointmentUrl);
+      var _response;
+
+      Map<String, dynamic> _body = {
+        'function': "GET_APPOINTMENT_EACH_DETAIL",
+        "id": id
+      };
+
+      logger.i(_body);
+
+      _response = await http.post(
+        _url,
+        body: jsonEncode(_body),
+      );
+
+      if (_response.statusCode == 200) {
+        final _jsonResponse = json.decode(_response.body);
+
+        final AppointmentModel _resultData =
+            AppointmentModel.fromJson(_jsonResponse);
+        _result = _resultData;
+      }
+
+      return _result;
+    } catch (e) {
+      logger.e(e);
+      return _result;
+    }
+  }
+
+
 }

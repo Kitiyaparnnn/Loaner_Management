@@ -43,6 +43,15 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     on<AppointmentSetAppoint>(_mapAppointmentSetAppointToState);
     on<AppointmentGetHospital>(_mapAppointmentGetHospitalToState);
     on<AppointmentChangeStatus>(_mapAppointmentChangeStatusToState);
+    on<AppointmentGetEachDetail>(_mapAppointmentSetEachDetailToState);
+  }
+  _mapAppointmentSetEachDetailToState(
+      AppointmentGetEachDetail event, Emitter emit) async {
+    emit(AppointmentStateLoading());
+    final _result =
+        await _appointmentService.getEachAppointmentDetail(id: event.appId);
+
+    emit(AppointmentStateGetEachDetail(data: _result));
   }
 
   _mapAppointmentClearToState(AppointmentClear event, Emitter emit) {
@@ -105,34 +114,12 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     emit(AppointmentStateGetDetail(data: appointment, employee: employee));
   }
 
-//fill appointment form
+//fill appointment form page
   _mapAppointmentButtonOnPressToState(
       AppointmentButtonOnPress event, Emitter emit) async {
-    if (event.isEdit) {
-      appointment = event.appointment;
-      employee = event.employee;
-    }
-
-    if (appointment.loaners!.length != 0) {
-      // final _result =
-      //     await _appointmentService.createAppointment(app: appointment);
-
-      // emit(AppointmentStateButtonOnPressed(result: _result, isLoading: false));
-
-      // add(AppointmentGetDetail(appNo: _result.appNo!));
-      if (!event.isEdit) {
-        // appointment.loaners = [];
-      } else {
-        emit(AppointmentStateLoading());
-        logger.d(employee.toJson());
-        // add(AppointmentGetDetail(app: appointment));
-        //update employee data
-      }
-    } else {
-      logger.w("loaner is empty");
-    }
-
-    logger.d(appointment.toJson());
+    //update appointment
+    logger.d(event.appointment.toJson());
+    // await _appointmentService.manageAppointment(app: event.appointment);
   }
 
   //loaner_sum_page

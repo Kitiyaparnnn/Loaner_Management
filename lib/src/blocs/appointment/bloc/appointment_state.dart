@@ -63,7 +63,7 @@ class AppointmentStateGetGetSupEmpandHos extends AppointmentState {
   AppointmentStateGetGetSupEmpandHos({required this.supEmp, required this.hos});
 
   @override
-  List<Object?> get props => [supEmp,hos];
+  List<Object?> get props => [supEmp, hos];
 }
 
 class AppointmentStateGetHospital extends AppointmentState {
@@ -78,8 +78,17 @@ class AppointmentStateGetHosDetail extends AppointmentState {
   final List<DropdownModel> dept;
   final List<DropdownModel> emp;
   final List<DropdownModel> doctor;
-  AppointmentStateGetHosDetail({required this.dept, required this.emp,required this.doctor});
+  AppointmentStateGetHosDetail(
+      {required this.dept, required this.emp, required this.doctor});
 
   @override
-  List<Object?> get props => [dept,emp,doctor];
+  List<Object?> get props => [dept, emp, doctor];
+}
+
+class AppointmentStateGetEachDetail extends AppointmentState {
+  final AppointmentModel data;
+  AppointmentStateGetEachDetail({required this.data});
+
+    @override
+  List<Object?> get props => [data];
 }
