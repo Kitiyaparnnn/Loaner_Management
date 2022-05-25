@@ -5,6 +5,7 @@ import 'package:loaner/src/models/DropdownModel.dart';
 import 'package:loaner/src/models/MenuChoice.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentModel.dart';
+import 'package:loaner/src/models/employee/EmployeeModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/services/SharedPreferencesService.dart';
 import 'package:loaner/src/services/Urls.dart';
@@ -82,7 +83,7 @@ class AppointmentService {
   }
 
   Future<AppointmentDataModel> getAppointmentDetail(
-      {required String appNo}) async {
+      {required String id}) async {
     AppointmentDataModel _result = AppointmentDataModel();
 
     try {
@@ -91,7 +92,7 @@ class AppointmentService {
 
       Map<String, dynamic> _body = {
         'function': "GET_APPOINTMENT_DETAIL",
-        "id": appNo
+        "id": id
       };
 
       logger.i(_body);
@@ -106,6 +107,41 @@ class AppointmentService {
 
         final AppointmentDataModel _resultData =
             AppointmentDataModel.fromJson(_jsonResponse);
+        _result = _resultData;
+      }
+
+      return _result;
+    } catch (e) {
+      logger.e(e);
+      return _result;
+    }
+  }
+
+  Future<EmployeeModel> getAppointmentEmpDetail(
+      {required String id}) async {
+    EmployeeModel _result = EmployeeModel();
+
+    try {
+      final _url = Uri.parse(Urls.appointmentUrl);
+      var _response;
+
+      Map<String, dynamic> _body = {
+        'function': "GET_APPOINTMENT_EMP_DETAIL",
+        "id": id
+      };
+
+      logger.i(_body);
+
+      _response = await http.post(
+        _url,
+        body: jsonEncode(_body),
+      );
+
+      if (_response.statusCode == 200) {
+        final _jsonResponse = json.decode(_response.body);
+
+        final EmployeeModel _resultData =
+            EmployeeModel.fromJson(_jsonResponse);
         _result = _resultData;
       }
 
@@ -355,6 +391,43 @@ class AppointmentService {
             _jsonResponse.map((i) => DropdownModel.fromJson(i)).toList();
         _result = _resultData;
       }
+
+      return _result;
+    } catch (e) {
+      logger.e(e);
+      return _result;
+    }
+  }
+
+    Future<AppointmentDataModel> setAppointmentStatus(
+      {required String id,required String status}) async {
+    AppointmentDataModel _result = AppointmentDataModel();
+
+    try {
+      final _url = Uri.parse(Urls.appointmentUrl);
+      var _response;
+
+      Map<String, dynamic> _body = {
+        'function': "SET_APPOINTMENT_STATUS",
+        'appId':id,
+        'status':status
+      };
+
+      logger.i(_body);
+
+      _response = await http.post(
+        _url,
+        body: jsonEncode(_body),
+      );
+
+      if (_response.statusCode == 200) {
+        final _jsonResponse = json.decode(_response.body);
+
+        final AppointmentDataModel _resultData =
+            AppointmentDataModel.fromJson(_jsonResponse);
+        _result = _resultData;
+      }
+      logger.d(_response.body);
 
       return _result;
     } catch (e) {

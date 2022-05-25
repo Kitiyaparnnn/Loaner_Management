@@ -27,11 +27,12 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
   @override
   void initState() {
-    widget.isSupplier
-        ? context.read<AppointmentBloc>().add(AppointmentGetAll())
-        : context
-            .read<AppointmentBloc>()
-            .add(AppointmentGetByStatus(status: "3"));
+    // widget.isSupplier
+    //     ?
+    context.read<AppointmentBloc>().add(AppointmentGetAll());
+    // : context
+    //     .read<AppointmentBloc>()
+    //     .add(AppointmentGetByStatus(status: "2"));
     super.initState();
   }
 

@@ -21,12 +21,12 @@ class _EmployeePageState extends State<EmployeePage> {
     EmployeeModel(
         username: 'user1',
         detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-        isTrained: true),
-    EmployeeModel(username: 'user2', detail: '', isTrained: false),
+        isTrained: "1"),
+    EmployeeModel(username: 'user2', detail: '', isTrained: "0"),
     EmployeeModel(
         username: 'user3',
         detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-        isTrained: true),
+        isTrained: "1"),
   ];
 
   List<EmployeeModel> items = [];
@@ -206,7 +206,7 @@ class _EmployeePageState extends State<EmployeePage> {
                   object[index].detail!,
                   style: TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT),
                 ),
-          object[index].isTrained!
+          object[index].isTrained=="1"
               ? Text('• ผ่านการอบรม',
                   style: TextStyle(fontSize: 12, color: AppColors.COLOR_GREEN2))
               : Text('• ไม่ผ่านการอบรม',

@@ -79,11 +79,13 @@ Card appointmentCard_cssd(
           if (!isCompleted) {
             // context
             //     .read<AppointmentBloc>()
-            //     .add(AppointmentGetEmpId(app: object));
+            //     .add(AppointmentGetDetail(appointId: '${object.id}'));
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => DetailAppointmentPage(),
+                  builder: (context) => DetailAppointmentPage(
+                    appointment: object,
+                  ),
                 ));
           }
         }),

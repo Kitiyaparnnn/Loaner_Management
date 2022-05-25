@@ -4,18 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/models/appointment/AppointmentModel.dart';
 import 'package:loaner/src/models/employee/EmployeeDataModel.dart';
 import 'package:loaner/src/models/employee/EmployeeModel.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/appointment/appointment_page.dart';
 import 'package:loaner/src/pages/fill_appointment/fill_appointment_page.dart';
+import 'package:loaner/src/services/Urls.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
+import 'package:loaner/src/utils/DefaultImage.dart';
 import 'package:loaner/src/utils/MyAppBar.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class DetailAppointmentPage extends StatefulWidget {
-  DetailAppointmentPage({Key? key}) : super(key: key);
+  DetailAppointmentPage({required this.appointment});
+
+  AppointmentModel appointment;
 
   @override
   State<DetailAppointmentPage> createState() => _DetailAppointmentPageState();
@@ -56,10 +62,12 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                 if (state is AppointmentStateGetDetail) {
                   appointment = state.data;
                   employee = state.employee;
+                  // logger.d(employee.toJson());
                 }
+
                 return Column(
                   children: [
-                    _showAllDetail(appointment),
+                    _showAllDetail(widget.appointment),
                     SizedBox(height: 20),
                     Container(
                       width: MediaQuery.of(context).size.width,
@@ -83,7 +91,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                                         color: AppColors.COLOR_BLACK,
                                         fontWeight: FontWeight.bold)),
                               ),
-                              _showLoaner(appointment.loaners!)
+                              _showLoaner(widget.appointment.loaner!)
                             ]),
                       ),
                     ),
@@ -97,21 +105,22 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
     );
   }
 
-  _showAllDetail(AppointmentDataModel appointment) {
-    List<Color> _color = employee.isTrained!
+  _showAllDetail(AppointmentModel appointment) {
+    List<Color> _color = appointment.isTrained == "1"
         ? [AppColors.COLOR_GREEN2, AppColors.COLOR_GREEN]
         : [AppColors.COLOR_YELLOW2, AppColors.COLOR_YELLOW];
+
     return Padding(
       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(appointment.supId!,
+          Text(appointment.supName!,
               style: TextStyle(
                   fontSize: 21,
                   color: AppColors.COLOR_BLACK,
                   fontWeight: FontWeight.bold)),
-          Text("เจ้าหน้าที่ : ${employee.username}",
+          Text("เจ้าหน้าที่ : ${appointment.supEmpName}",
               style: TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT)),
           Container(
               decoration: BoxDecoration(
@@ -119,7 +128,9 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: Text(
-                    employee.isTrained! ? "ผ่านการอบรม" : "ไม่ผ่านการอบรม",
+                    appointment.isTrained == "1"
+                        ? "ผ่านการอบรม"
+                        : "ไม่ผ่านการอบรม",
                     style: TextStyle(fontSize: 14, color: _color[0])),
               )),
           Row(
@@ -155,7 +166,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     Text("เจ้าหน้าที่ผู้ติดต่อ :",
                         style: TextStyle(
                             fontSize: 12, color: AppColors.COLOR_LIGHT)),
-                    Text(appointment.hosEmpId!,
+                    Text(appointment.hosEmpName!,
                         style: TextStyle(
                             fontSize: 14,
                             color: AppColors.COLOR_BLACK,
@@ -175,7 +186,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     Text("แพทย์ผู้ใช้อุปกรณ์ :",
                         style: TextStyle(
                             fontSize: 12, color: AppColors.COLOR_LIGHT)),
-                    Text(Constants.doc[appointment.docId]!,
+                    Text(appointment.docName!,
                         style: TextStyle(
                             fontSize: 14,
                             color: AppColors.COLOR_BLACK,
@@ -200,7 +211,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                     Text("หน่วยงาน :",
                         style: TextStyle(
                             fontSize: 12, color: AppColors.COLOR_LIGHT)),
-                    Text(Constants.org[appointment.useDeptId]!,
+                    Text(appointment.useDeptName!,
                         style: TextStyle(
                             fontSize: 14,
                             color: AppColors.COLOR_BLACK,
@@ -303,8 +314,17 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
                       color: AppColors.COLOR_GREY,
                       border:
                           Border.all(color: AppColors.COLOR_GREY, width: 2.0)),
-                  child:
-                      loaners[index].image != null ? null : Icon(Icons.image),
+                  child: loaners[index].image != null
+                      ? FadeInImage.memoryNetwork(
+                          imageErrorBuilder: ((context, error, stackTrace) =>
+                              defaultImage()),
+                          placeholderErrorBuilder:
+                              (context, error, stackTrace) => defaultImage(),
+                          fit: BoxFit.cover,
+                          placeholder: kTransparentImage,
+                          image:
+                              '${Urls.imageLoanerUrl}/${loaners[index].image!}')
+                      : Icon(Icons.image),
                 ),
               ),
               title: Text(loaners[index].name!, style: TextStyle(fontSize: 16)),
@@ -320,7 +340,9 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
   }
 
   validateToEdit() {
-    context.read<AppointmentBloc>().add(AppointmentGetDetail(app: appointment));
+    context
+        .read<AppointmentBloc>()
+        .add(AppointmentGetDetail(appointId: '${widget.appointment.id!}'));
 
     Navigator.push(
         context,
@@ -332,10 +354,8 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
   }
 
   validate() {
-    appointment.status = "2";
-
-    context.read<AppointmentBloc>().add(AppointmentButtonOnPress(
-        appointment: appointment, isEdit: false, employee: employee));
+    context.read<AppointmentBloc>().add(
+        AppointmentChangeStatus(appId: widget.appointment.id!, status: "2"));
 
     Navigator.push(
         context,

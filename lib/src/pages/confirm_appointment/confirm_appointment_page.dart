@@ -70,7 +70,7 @@ class _ConfirmAppointmentPageState extends State<ConfirmAppointmentPage> {
   }
 
   _mapList(List<AppointmentModel> object, int index) {
-    List<Color> _color = [AppColors.COLOR_YELLOW2, AppColors.COLOR_YELLOW];
+    List<Color> _color = [AppColors.COLOR_PRIMARY, AppColors.COLOR_BLUE];
 
     return appointmentCard_cssd(
         color: _color,

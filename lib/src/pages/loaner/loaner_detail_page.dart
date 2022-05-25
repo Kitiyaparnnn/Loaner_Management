@@ -118,34 +118,31 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
             style: const TextStyle(color: AppColors.COLOR_LIGHT, fontSize: 16),
             controller: _controllernote,
             decoration: inputDecoration(hintText: "หมายเหตุ"),
-            onChanged: (value) {
-              _controllernote.text = value;
-            },
           ),
           Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                  onTap: () {
-                    no = no - 1;
-                    setState(() {});
-                  },
-                  child: Image.asset("${Constants.IMAGE_DIR}/minus.png")),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                child: Text('$no',
-                    style:
-                        TextStyle(fontSize: 21, fontWeight: FontWeight.bold)),
-              ),
-              InkWell(
-                  onTap: () {
-                    no = no + 1;
-                    setState(() {});
-                  },
-                  child: Image.asset("${Constants.IMAGE_DIR}/plus.png"))
-            ],
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     InkWell(
+          //         onTap: () {
+          //           no = no - 1;
+          //           setState(() {});
+          //         },
+          //         child: Image.asset("${Constants.IMAGE_DIR}/minus.png")),
+          //     Padding(
+          //       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+          //       child: Text('$no',
+          //           style:
+          //               TextStyle(fontSize: 21, fontWeight: FontWeight.bold)),
+          //     ),
+          //     InkWell(
+          //         onTap: () {
+          //           no = no + 1;
+          //           setState(() {});
+          //         },
+          //         child: Image.asset("${Constants.IMAGE_DIR}/plus.png"))
+          //   ],
+          // ),
         ],
       ),
     );

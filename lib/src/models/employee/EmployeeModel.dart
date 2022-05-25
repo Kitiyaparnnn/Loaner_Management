@@ -5,7 +5,7 @@ class EmployeeModel {
   String? image;
   String? username;
   String? detail;
-  bool? isTrained;
+  String? isTrained;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

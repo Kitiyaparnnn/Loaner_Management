@@ -10,12 +10,12 @@ abstract class AppointmentEvent extends Equatable {
 class AppointmentLoading extends AppointmentEvent {}
 
 class AppointmentGetDetail extends AppointmentEvent {
-  final AppointmentDataModel app;
+  final String appointId;
 
-  AppointmentGetDetail({required this.app});
+  AppointmentGetDetail({required this.appointId});
 
   @override
-  List<Object> get props => [app];
+  List<Object> get props => [appointId];
 
   //database
   // final String appNo;
@@ -54,6 +54,16 @@ class AppointmentButtonOnSave extends AppointmentEvent {
 
   @override
   List<Object> get props => [isEdit];
+}
+
+class AppointmentChangeStatus extends AppointmentEvent {
+  final String appId;
+  final String status;
+
+  AppointmentChangeStatus({required this.appId,required this.status});
+
+  @override
+  List<Object> get props => [appId,status];
 }
 
 class AppointmentAddLoaner extends AppointmentEvent {
@@ -136,6 +146,6 @@ class AppointmentSetAppoint extends AppointmentEvent {
   final AppointmentDataModel app;
   AppointmentSetAppoint({required this.app});
 
-    @override
+  @override
   List<Object> get props => [app];
 }

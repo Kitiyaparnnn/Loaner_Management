@@ -197,9 +197,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
           //   );
           // }
           if (state is AppointmentStateGetDetail) {
-            // logger.w("123");
             if (!isFillAppoint) {
-              // logger.w("123");
               appointment = state.data;
               isFillAppoint = true;
               _controllerCompanyName.text = appointment.supId!;
@@ -292,13 +290,12 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   }
 
   List<DropdownModel> hospital = [];
-
+  List<DropdownModel> hosDept = [];
+  List<DropdownModel> hosEmp = [];
+  List<DropdownModel> hosDoc = [];
   Widget _buildInputForm2() {
     return BlocBuilder<AppointmentBloc, AppointmentState>(
       builder: (context, state) {
-        List<DropdownModel> hosDept = [];
-        List<DropdownModel> hosEmp = [];
-        List<DropdownModel> hosDoc = [];
         if (state is AppointmentStateGetHosDetail) {
           hosDept = state.dept;
           hosEmp = state.emp;
@@ -311,7 +308,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
         if (state is AppointmentStateGetGetSupEmpandHos) {
           hospital = state.hos;
         }
-        print(_controllerOrganizeName.text);
+        // print(_controllerOrganizeName.text);
         return Form(
           key: _formKey,
           child: Column(children: [
@@ -552,10 +549,10 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
         IconButton(
             highlightColor: AppColors.COLOR_PRIMARY,
             onPressed: () {
-              employee.isTrained = true;
+              employee.isTrained = "1";
               setState(() {});
             },
-            icon: Icon(employee.isTrained!
+            icon: Icon(employee.isTrained=="1"
                 ? Icons.radio_button_checked_outlined
                 : Icons.radio_button_unchecked_outlined)),
         Text("เคยอบรม"),
@@ -565,10 +562,10 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
         IconButton(
             highlightColor: AppColors.COLOR_PRIMARY,
             onPressed: () {
-              employee.isTrained = false;
+              employee.isTrained = "0";
               setState(() {});
             },
-            icon: Icon(employee.isTrained!
+            icon: Icon(employee.isTrained=="1"
                 ? Icons.radio_button_unchecked_outlined
                 : Icons.radio_button_checked_outlined)),
         Text("ไม่เคยอบรม"),

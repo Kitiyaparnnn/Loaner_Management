@@ -42,6 +42,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     on<AppointmentGetHosDetail>(_mapAppointmentGetHosDetailToState);
     on<AppointmentSetAppoint>(_mapAppointmentSetAppointToState);
     on<AppointmentGetHospital>(_mapAppointmentGetHospitalToState);
+    on<AppointmentChangeStatus>(_mapAppointmentChangeStatusToState);
   }
 
   _mapAppointmentClearToState(AppointmentClear event, Emitter emit) {
@@ -80,21 +81,28 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         empId: "1",
         username: "นาย ข",
         detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-        isTrained: false);
+        isTrained: "0");
 
-    add(AppointmentGetDetail(app: event.app));
+    // add(AppointmentGetDetail(id: event.app));
   }
 
   _mapAppointmentGetDetailToState(
       AppointmentGetDetail event, Emitter emit) async {
     emit(AppointmentStateLoading());
-    // final _result =
-    //     await _appointmentService.getAppointmentDetail(appNo: event.appNo);
 
-    appointment = event.app;
+    final appoint =
+        await _appointmentService.getAppointmentDetail(id: event.appointId);
 
-    emit(AppointmentStateGetDetail(data: event.app, employee: employee));
-    // emit(AppointmentStateLoading());
+    appointment = appoint;
+
+    final emp = await _appointmentService.getAppointmentEmpDetail(
+        id: appointment.empId!);
+
+    employee = emp;
+
+    // logger.d(appointment.toJson());
+
+    emit(AppointmentStateGetDetail(data: appointment, employee: employee));
   }
 
 //fill appointment form
@@ -130,12 +138,14 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   //loaner_sum_page
   _mapAppointmentButtonOnSaveToState(
       AppointmentButtonOnSave event, Emitter emit) async {
-    // if (!event.isEdit) {
-    //   appointment.loaners = [];
-    // }
+    appointment.status = "1";
 
     final _result =
         await _appointmentService.manageAppointment(app: appointment);
+
+    if (!event.isEdit) {
+      appointment.loaners = [];
+    }
   }
 
   _mapAppointmentAddLoanerToState(
@@ -158,7 +168,10 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   }
 
   _mapAppointmentCountLoanerToState(
-      AppointmentCountLoaner event, Emitter emit) {
+      AppointmentCountLoaner event, Emitter emit) async {
+    emit(AppointmentStateLoading());
+
+    await Future.delayed(Duration(seconds: 3));
     logger.d("loanerCount : ${appointment.loaners!.length}");
     emit(AppointmentStateCountLoaner(
         loanerCount:
@@ -233,5 +246,14 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   _mapAppointmentSetAppointToState(AppointmentSetAppoint event, Emitter emit) {
     appointment = event.app;
     logger.d(appointment.toJson());
+  }
+
+  _mapAppointmentChangeStatusToState(
+      AppointmentChangeStatus event, Emitter emit) async {
+    emit(AppointmentStateLoading());
+
+    final _result = await _appointmentService.setAppointmentStatus(
+        id: event.appId, status: event.status);
+    logger.w("appointment status: ${event.status}");
   }
 }

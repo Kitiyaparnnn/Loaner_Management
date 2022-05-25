@@ -76,7 +76,7 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
               BotToast.showText(text: Constants.TEXT_FORM_FIELD);
             }
           },
-          child: Text(widget.isEdit ? "แก้ไขข้อมูล" : "บันทึก",
+          child: Text(widget.isEdit ? "แก้ไขข้อมูล" : "ส่งนัดหมาย",
               style: TextStyle(fontSize: 16))),
     );
   }
@@ -117,7 +117,7 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
               ),
               title: Text(object[index].name!, style: TextStyle(fontSize: 16)),
               subtitle: Text(
-                object[index].detail!,
+                '${object[index].detail}',
                 style: TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -134,32 +134,11 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      appStatus == "0"
-                          ? InkWell(
-                              onTap: () {
-                                context
-                                    .read<AppointmentBloc>()
-                                    .add(AppointmentMinusLoaner(index: index));
-                              },
-                              child: Image.asset(
-                                  "${Constants.IMAGE_DIR}/minus.png"))
-                          : SizedBox(height: 10),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                        child: Text("${object[index].rent}",
+                        child: Text(object[index].rent == null ? "1" : "",
                             style: TextStyle(fontSize: 21)),
                       ),
-                      appStatus == "0"
-                          ? InkWell(
-                              onTap: () {
-                                context
-                                    .read<AppointmentBloc>()
-                                    .add(AppointmentPlusLoaner(index: index));
-                              },
-                              child: Image.asset(
-                                  "${Constants.IMAGE_DIR}/plus.png"),
-                            )
-                          : SizedBox(height: 10)
                     ],
                   )
                 ],
@@ -182,7 +161,7 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
                         style:
                             TextStyle(fontSize: 14, color: AppColors.COLOR_RED))
                   ]),
-                  Text(object[index].note!,
+                  Text(object[index].note == null ? "" : "",
                       style:
                           TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT))
                 ],

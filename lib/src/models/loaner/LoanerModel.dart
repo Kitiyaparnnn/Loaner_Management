@@ -4,7 +4,7 @@ class LoanerModel {
       this.itemCode,
       this.name,
       this.detail,
-      this.rent = 1,
+      this.rent,
       this.note,
       this.isActive,
       this.id});

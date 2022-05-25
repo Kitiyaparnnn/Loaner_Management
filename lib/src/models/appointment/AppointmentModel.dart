@@ -3,6 +3,7 @@ import 'package:loaner/src/models/loaner/LoanerModel.dart';
 class AppointmentModel {
   String? id;
   String? supEmpName;
+  String? isTrained;
   String? supName;
   String? hospitalName;
   String? hosEmpName;
@@ -20,6 +21,7 @@ class AppointmentModel {
   AppointmentModel(
       {this.id,
       this.supEmpName,
+      this.isTrained,
       this.supName,
       this.hospitalName,
       this.hosEmpName,
@@ -37,6 +39,7 @@ class AppointmentModel {
   AppointmentModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     supEmpName = json['sup_emp_name'];
+    isTrained = json['is_trained'];
     supName = json['sup_name'];
     hospitalName = json['hospital_name'];
     hosEmpName = json['hos_emp_name'];
@@ -61,6 +64,7 @@ class AppointmentModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['sup_emp_name'] = this.supEmpName;
+    data['is_trained'] = this.isTrained;
     data['sup_name'] = this.supName;
     data['hospital_name'] = this.hospitalName;
     data['hos_emp_name'] = this.hosEmpName;

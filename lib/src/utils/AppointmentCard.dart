@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentModel.dart';
+import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
@@ -84,14 +85,17 @@ Card appointmentCard(
           ),
         ),
         onTap: () {
-          // context
-          //     .read<AppointmentBloc>()
-          //     .add(AppointmentGetDetail(app: object));
+          context
+              .read<AppointmentBloc>()
+              .add(AppointmentGetDetail(appointId: '${object.id}'));
           Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => LoanerPage(
-                    isFillForm: true, selectedLoaner: object.loaner ?? [],isEdit: true,),
+                  isFillForm: true,
+                  selectedLoaner: object.loaner ?? [],
+                  isEdit: true,
+                ),
               ));
         }),
   );
