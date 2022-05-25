@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/models/appointment/AppointmentModel.dart';
 import 'package:loaner/src/pages/confirm_appointment/detail_appointment_page.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
@@ -9,7 +10,7 @@ import 'package:loaner/src/utils/Constants.dart';
 
 Card appointmentCard_cssd(
     {required List<Color> color,
-    required AppointmentDataModel object,
+    required AppointmentModel object,
     required BuildContext context,
     required bool isCompleted}) {
   return Card(
@@ -35,7 +36,7 @@ Card appointmentCard_cssd(
                   children: [
                     Row(
                       children: [
-                        Text(object.supId!,
+                        Text(object.supName!,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         Spacer(),
@@ -76,9 +77,9 @@ Card appointmentCard_cssd(
         ),
         onTap: () {
           if (!isCompleted) {
-            context
-                .read<AppointmentBloc>()
-                .add(AppointmentGetEmpId(app: object));
+            // context
+            //     .read<AppointmentBloc>()
+            //     .add(AppointmentGetEmpId(app: object));
             Navigator.push(
                 context,
                 MaterialPageRoute(

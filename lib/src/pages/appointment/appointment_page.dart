@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/models/appointment/AppointmentModel.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/appointment/history_page.dart';
@@ -22,50 +23,7 @@ class AppointmentPage extends StatefulWidget {
 }
 
 class _AppointmentPageState extends State<AppointmentPage> {
-  List<AppointmentDataModel> appointments = [
-    AppointmentDataModel(
-        supId: "บริษัท ก",
-        hospitalId: "โรงพยาบาล ก",
-        hosDeptId: "บริษัท ก",
-        appDate: "22-04-2022",
-        appTime: "12:00",
-        status: "0",
-        loaners: [
-          LoanerModel(
-              name: 'LoanerA',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 3,
-              note: ''),
-          LoanerModel(
-              name: 'LoanerB',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 2,
-              note: ''),
-        ]),
-    AppointmentDataModel(
-        supId: "บริษัท ก",
-        hospitalId: "โรงพยาบาล ง",
-        hosDeptId: "บริษัท ก",
-        appDate: "22-04-2022",
-        appTime: "12:00",
-        status: "2",
-        loaners: [
-          LoanerModel(
-              name: 'LoanerA',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 3,
-              note: ''),
-          LoanerModel(
-              name: 'LoanerB',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 2,
-              note: ''),
-        ]),
-  ];
+  List<AppointmentModel> appointments = [];
 
   @override
   void initState() {
@@ -73,7 +31,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
         ? context.read<AppointmentBloc>().add(AppointmentGetAll())
         : context
             .read<AppointmentBloc>()
-            .add(AppointmentGetByStatus(status: "2"));
+            .add(AppointmentGetByStatus(status: "3"));
     super.initState();
   }
 
@@ -106,8 +64,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
                     color: AppColors.COLOR_BLACK,
                     size: 30,
                   ),
-                  onPressed: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HistoryPage())))
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HistoryPage())).then((value) =>
+                      context.read<AppointmentBloc>().add(AppointmentGetAll())))
               : SizedBox(
                   width: 10,
                 ),
@@ -138,7 +99,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
     return BlocBuilder<AppointmentBloc, AppointmentState>(
       builder: (context, state) {
         if (state is AppointmentStateGetAll) {
-          // appointments = state.data;
+          appointments = state.data;
         }
 
         return Expanded(
@@ -156,10 +117,10 @@ class _AppointmentPageState extends State<AppointmentPage> {
     );
   }
 
-  _mapList(List<AppointmentDataModel> object, int index) {
-    List<Color> _color = object[index].status == "0"
+  _mapList(List<AppointmentModel> object, int index) {
+    List<Color> _color = object[index].status == "1"
         ? [AppColors.COLOR_PRIMARY, AppColors.COLOR_BLUE]
-        : object[index].status == "1"
+        : object[index].status == "2"
             ? [AppColors.COLOR_YELLOW2, AppColors.COLOR_YELLOW]
             : [AppColors.COLOR_GREEN2, AppColors.COLOR_GREEN];
 

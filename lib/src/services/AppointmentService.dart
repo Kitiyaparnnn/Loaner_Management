@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:loaner/src/models/DropdownModel.dart';
 import 'package:loaner/src/models/MenuChoice.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/models/appointment/AppointmentModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/services/SharedPreferencesService.dart';
 import 'package:loaner/src/services/Urls.dart';
@@ -11,8 +12,8 @@ import 'package:loaner/src/services/Urls.dart';
 class AppointmentService {
   final _prefService = SharedPreferencesService();
 
-  Future<List<AppointmentDataModel>> getAllAppointments() async {
-    List<AppointmentDataModel> _result = [];
+  Future<List<AppointmentModel>> getAllAppointments({required String limit}) async {
+    List<AppointmentModel> _result = [];
 
     try {
       final _url = Uri.parse(Urls.appointmentUrl);
@@ -20,6 +21,7 @@ class AppointmentService {
 
       Map<String, dynamic> _body = {
         'function': "GET_ALL_APPOINTMENTS",
+        'limit' : limit
       };
 
       logger.i(_body);
@@ -32,8 +34,8 @@ class AppointmentService {
       if (_response.statusCode == 200) {
         final List _jsonResponse = json.decode(_response.body);
 
-        List<AppointmentDataModel> _resultData =
-            _jsonResponse.map((i) => AppointmentDataModel.fromJson(i)).toList();
+        List<AppointmentModel> _resultData =
+            _jsonResponse.map((i) => AppointmentModel.fromJson(i)).toList();
         _result = _resultData;
       }
 
@@ -44,9 +46,9 @@ class AppointmentService {
     }
   }
 
-  Future<List<AppointmentDataModel>> getAppointmentsByStatus(
+  Future<List<AppointmentModel>> getAppointmentsByStatus(
       {required String status}) async {
-    List<AppointmentDataModel> _result = [];
+    List<AppointmentModel> _result = [];
 
     try {
       final _url = Uri.parse(Urls.appointmentUrl);
@@ -67,8 +69,8 @@ class AppointmentService {
       if (_response.statusCode == 200) {
         final List _jsonResponse = json.decode(_response.body);
 
-        List<AppointmentDataModel> _resultData =
-            _jsonResponse.map((i) => AppointmentDataModel.fromJson(i)).toList();
+        List<AppointmentModel> _resultData =
+            _jsonResponse.map((i) => AppointmentModel.fromJson(i)).toList();
         _result = _resultData;
       }
 
@@ -154,11 +156,11 @@ class AppointmentService {
     }
   }
 
-  Future<List<AppointmentDataModel>> getAppointmentsBySearch(
+  Future<List<AppointmentModel>> getAppointmentsBySearch(
       {required String status,
       required String date,
       required String hospital}) async {
-    List<AppointmentDataModel> _result = [];
+    List<AppointmentModel> _result = [];
 
     try {
       final _url = Uri.parse(Urls.appointmentUrl);
@@ -181,8 +183,8 @@ class AppointmentService {
       if (_response.statusCode == 200) {
         final List _jsonResponse = json.decode(_response.body);
 
-        List<AppointmentDataModel> _resultData =
-            _jsonResponse.map((i) => AppointmentDataModel.fromJson(i)).toList();
+        List<AppointmentModel> _resultData =
+            _jsonResponse.map((i) => AppointmentModel.fromJson(i)).toList();
         _result = _resultData;
       }
 

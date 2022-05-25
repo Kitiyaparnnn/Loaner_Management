@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/models/appointment/AppointmentModel.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/AppointmentCard_cssd.dart';
@@ -16,94 +17,7 @@ class ConfirmAppointmentPage extends StatefulWidget {
 }
 
 class _ConfirmAppointmentPageState extends State<ConfirmAppointmentPage> {
-  List<AppointmentDataModel> appointments = [
-    AppointmentDataModel(
-        supId: "บริษัท ก",
-        supEmpId: "0",
-        hosEmpId: "สายสาคร นครยานพ",
-        hosDeptId: "0",
-        docId: "0",
-        useDeptId: "0",
-        patientName: "มานาบี ชีวันนา",
-        useDate: "13-02-2022",
-        useTime: "12:00",
-        appDate: "23-02-2022",
-        appTime: "11:00",
-        status: "1",
-        hospitalId: "0",
-        loaners: [
-          LoanerModel(
-              name: 'LoanerA',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 3,
-              note: ''),
-          LoanerModel(
-              name: 'LoanerB',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 2,
-              note: ''),
-          LoanerModel(
-              name: 'LoanerC',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 2,
-              note: ''),
-          LoanerModel(
-              name: 'LoanerD',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 2,
-              note: ''),
-          LoanerModel(
-              name: 'LoanerE',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 2,
-              note: ''),
-          LoanerModel(
-              name: 'LoanerF',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 2,
-              note: '')
-        ]),
-    AppointmentDataModel(
-        supId: "บริษัท 123",
-        supEmpId: "1",
-        hosEmpId: "สายสาคร นครยานพ",
-        hosDeptId: "1",
-        docId: "1",
-        useDeptId: "1",
-        patientName: "มานาบี ชีวันนา",
-        useDate: "13-02-2022",
-        useTime: "12:00",
-        appDate: "23-02-2022",
-        appTime: "11:00",
-        status: "1",
-        hospitalId: "1",
-        loaners: [
-          LoanerModel(
-              name: 'LoanerX',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 3,
-              note: ''),
-          LoanerModel(
-              name: 'LoanerY',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 2,
-              note: ''),
-          LoanerModel(
-              name: 'LoanerZ',
-              detail:
-                  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-              rent: 2,
-              note: '')
-        ]),
-  ];
+  List<AppointmentModel> appointments = [];
   @override
   void initState() {
     context.read<AppointmentBloc>().add(AppointmentGetByStatus(status: "1"));
@@ -138,7 +52,7 @@ class _ConfirmAppointmentPageState extends State<ConfirmAppointmentPage> {
     return BlocBuilder<AppointmentBloc, AppointmentState>(
       builder: (context, state) {
         if (state is AppointmentStateGetAll) {
-          // appointments = state.data;
+          appointments = state.data;
         }
         return Expanded(
           child: appointments.length == 0
@@ -155,7 +69,7 @@ class _ConfirmAppointmentPageState extends State<ConfirmAppointmentPage> {
     );
   }
 
-  _mapList(List<AppointmentDataModel> object, int index) {
+  _mapList(List<AppointmentModel> object, int index) {
     List<Color> _color = [AppColors.COLOR_YELLOW2, AppColors.COLOR_YELLOW];
 
     return appointmentCard_cssd(

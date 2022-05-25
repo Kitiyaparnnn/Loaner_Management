@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
+import 'package:loaner/src/models/DropdownModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/models/appointment/AppointmentModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentSearchModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/utils/AppColors.dart';
@@ -24,20 +26,7 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   final AppointmentSearchModel search = AppointmentSearchModel();
 
-  List<AppointmentDataModel> appointments = [
-    AppointmentDataModel(
-        hospitalId: "โรงพยาบาล ก",
-        supId: "บริษัท ก",
-        appDate: "22-04-2022",
-        appTime: "12:00",
-        status: "3"),
-    AppointmentDataModel(
-        hospitalId: "โรงพยาบาล ก",
-        supId: "บริษัท ก",
-        appDate: "22-04-2022",
-        appTime: "12:00",
-        status: "4")
-  ];
+  List<AppointmentModel> appointments = [];
 
   TextEditingController _controllerStatus = new TextEditingController(text: "");
   TextEditingController _controllerAppDate =
@@ -66,6 +55,12 @@ class _HistoryPageState extends State<HistoryPage> {
       date.text = ConvertDateFormat.convertDateFormat(date: chooseDate);
       validate();
     }
+  }
+
+  @override
+  void initState() {
+    context.read<AppointmentBloc>().add(AppointmentGetHospital());
+    super.initState();
   }
 
   @override
@@ -99,7 +94,7 @@ class _HistoryPageState extends State<HistoryPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: MediaQuery.of(context).size.width * .45,
+            width: MediaQuery.of(context).size.width * .55,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -110,7 +105,7 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
           Spacer(),
           SizedBox(
-            width: MediaQuery.of(context).size.width * .4,
+            width: MediaQuery.of(context).size.width * .3,
             child: InkWell(
               onTap: () {
                 _datePickerShow(_controllerAppDate);
@@ -118,8 +113,8 @@ class _HistoryPageState extends State<HistoryPage> {
               child: TextFormField(
                 enabled: false,
                 controller: _controllerAppDate,
-                decoration:
-                    inputDecorationDate(hintText: "วันที่ขอใช้", isDate: true),
+                decoration: inputDecorationDate(
+                    hintText: "วันที่นัดหมาย", isDate: true),
               ),
             ),
           ),
@@ -129,7 +124,16 @@ class _HistoryPageState extends State<HistoryPage> {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildDropdown(_controllerHospitalName, Constants.hos, "โรงพยาบาล"),
+          BlocBuilder<AppointmentBloc, AppointmentState>(
+            builder: (context, state) {
+              List<DropdownModel> hospital = [];
+              if (state is AppointmentStateGetHospital) {
+                hospital = state.data;
+              }
+              return buildDropdownInput(
+                  _controllerHospitalName, hospital, "โรงพยาบาล");
+            },
+          ),
         ],
       )
     ]);
@@ -157,10 +161,12 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  _mapList(List<AppointmentDataModel> object, int index) {
-    List<Color> _color = object[index].status! == "3"
-        ? [AppColors.COLOR_GREEN2, AppColors.COLOR_GREEN]
-        : [AppColors.COLOR_YELLOW2, AppColors.COLOR_YELLOW];
+  _mapList(List<AppointmentModel> object, int index) {
+    List<Color> _color = object[index].status == "1"
+        ? [AppColors.COLOR_PRIMARY, AppColors.COLOR_BLUE]
+        : object[index].status == "2"
+            ? [AppColors.COLOR_YELLOW2, AppColors.COLOR_YELLOW]
+            : [AppColors.COLOR_GREEN2, AppColors.COLOR_GREEN];
 
     return appointmentCard(
         color: _color, object: object[index], context: context);

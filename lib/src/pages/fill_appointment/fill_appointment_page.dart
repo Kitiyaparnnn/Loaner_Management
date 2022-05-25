@@ -258,7 +258,6 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                     builder: (context, state) {
                       if (state is AppointmentStateGetGetSupEmpandHos) {
                         emp = state.supEmp;
-                        logger.w("build");
                       }
                       return buildDropdownInput(
                           _controllerEmpId, emp, "เจ้าหน้าที่บริษัท");
@@ -312,6 +311,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
         if (state is AppointmentStateGetGetSupEmpandHos) {
           hospital = state.hos;
         }
+        print(_controllerOrganizeName.text);
         return Form(
           key: _formKey,
           child: Column(children: [
@@ -351,23 +351,6 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 buildDropdownInput(_controllerDepName, hosDept, "หน่วยงาน")
-                // DropdownButtonFormField(
-                //   value: dept,
-                //   validator: (value) => value == null ? "โปรดเลือก" : null,
-                //   decoration: selectDecoration(hintText: "หน่วยงาน"),
-                //   icon: Icon(Icons.expand_more_rounded),
-                //   items: hosDept.map<DropdownMenuItem<String>>((item) {
-                //     logger.d(item.toJson());
-                //     return DropdownMenuItem(
-                //       value: item.id ?? "",
-                //       child: Text(item.name == null ? "" : item.name!),
-                //     );
-                //   }).toList(),
-                //   onChanged: (value) {
-                //     dept = value.toString();
-                //     logger.d("con: ${dept}");
-                //   },
-                // )
               ],
             ),
             const SizedBox(height: 10),

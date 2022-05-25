@@ -49,7 +49,7 @@ class AppointmentStateGetLoaner extends AppointmentState {
 }
 
 class AppointmentStateGetAll extends AppointmentState {
-  final List<AppointmentDataModel> data;
+  final List<AppointmentModel> data;
 
   AppointmentStateGetAll({required this.data});
 

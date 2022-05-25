@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:loaner/src/models/DropdownModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/models/appointment/AppointmentModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentSearchModel.dart';
 import 'package:loaner/src/models/employee/EmployeeModel.dart';
 import 'package:loaner/src/models/loaner/LoanerModel.dart';
@@ -17,7 +18,7 @@ part 'appointment_state.dart';
 
 class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   AppointmentDataModel appointment =
-      AppointmentDataModel(status: "0", loaners: []);
+      AppointmentDataModel(status: "1", loaners: []);
   EmployeeModel employee = EmployeeModel();
   final _appointmentService = AppointmentService();
   final _employeeService = EmployeeService();
@@ -40,11 +41,19 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     on<AppointmentGetGetSupEmpandHos>(_mapAppointmentGetSupEmpandHosToState);
     on<AppointmentGetHosDetail>(_mapAppointmentGetHosDetailToState);
     on<AppointmentSetAppoint>(_mapAppointmentSetAppointToState);
+    on<AppointmentGetHospital>(_mapAppointmentGetHospitalToState);
   }
 
   _mapAppointmentClearToState(AppointmentClear event, Emitter emit) {
     // emit(AppointmentStateLoading());
     appointment.loaners!.clear();
+  }
+
+  _mapAppointmentGetHospitalToState(
+      AppointmentGetHospital event, Emitter emit) async {
+    emit(AppointmentStateLoading());
+    final hos = await _appointmentService.getHospital();
+    emit(AppointmentStateGetHospital(data: hos));
   }
 
   _mapAppointmentGetSupEmpandHosToState(
@@ -185,19 +194,19 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   }
 
   _mapAppointmentGetAllToState(AppointmentGetAll event, Emitter emit) async {
-    final List<AppointmentDataModel> _result = [];
-
-    //  final _result =
-    //     await _appointmentService.getAllAppointments();
+    emit(AppointmentStateLoading());
+    final _result = await _appointmentService.getAllAppointments(limit: "");
     emit(AppointmentStateGetAll(data: _result));
   }
 
   _mapAppointmentGetBySearchToState(
       AppointmentGetBySearch event, Emitter emit) async {
     emit(AppointmentStateLoading());
-    logger.d(event.search.toJson());
-    final List<AppointmentDataModel> _result = [];
-    //  final _result = await _appointmentService.getAppointmentsBySearch(status: event.search.status,hospital: event.search.hospital,date: event.search.date);
+
+    final _result = await _appointmentService.getAppointmentsBySearch(
+        status: event.search.status!,
+        hospital: event.search.hospital!,
+        date: event.search.date!);
 
     emit(AppointmentStateGetAll(data: _result));
   }
@@ -205,10 +214,9 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   _mapAppointmentGetByStatusToState(
       AppointmentGetByStatus event, Emitter emit) async {
     emit(AppointmentStateLoading());
-    final List<AppointmentDataModel> _result = [];
 
-    //  final _result =
-    // await _appointmentService.getAppointmentsByStatus(status: event.status);
+    final _result =
+        await _appointmentService.getAppointmentsByStatus(status: event.status);
 
     emit(AppointmentStateGetAll(data: _result));
   }

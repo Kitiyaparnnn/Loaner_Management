@@ -7,6 +7,7 @@ import 'package:loaner/src/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:loaner/src/models/MenuChoice.dart';
 import 'package:loaner/src/models/MenuModel.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/models/appointment/AppointmentModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/appointment/appointment_page.dart';
 import 'package:loaner/src/pages/confirm_appointment/confirm_appointment_page.dart';
@@ -42,23 +43,6 @@ List<MenuChoice> choices = const <MenuChoice>[
       title: '${Constants.TEXT_LOGOUT}',
       icon: Icons.exit_to_app,
       key: "LOGOUT"),
-];
-
-List<AppointmentDataModel> appointmentsData = [
-  AppointmentDataModel(
-      hospitalId: "โรงพยาบาล ก",
-      hosDeptId: "บริษัท ก",
-      appDate: "22-04-2022",
-      appTime: "12:00",
-      status: Constants.status[0],
-      loaners: []),
-  AppointmentDataModel(
-      hospitalId: "โรงพยาบาล ก",
-      hosDeptId: "บริษัท ก",
-      appDate: "28-04-2022",
-      appTime: "12:00",
-      status: Constants.status[1],
-      loaners: [])
 ];
 
 class _HomePageState extends State<HomePage> {
@@ -97,14 +81,12 @@ class _HomePageState extends State<HomePage> {
     return day;
   }
 
-  List<AppointmentDataModel> appointList = [];
-
+  List<AppointmentModel> appointmentsList = [];
   Future<void> getMachine() async {
-    // logger.w("setMenuList");
-    // final _appointmentService = AppointmentService();
+    final _appointmentService = AppointmentService();
 
-    // appointList =
-    //     await _appointmentService.getAppointments(status: Constants.status[2]);
+    appointmentsList =
+        await _appointmentService.getAppointmentsByStatus(status: "2");
     await generateMenu();
     if (this.mounted) {
       setState(() {});
@@ -491,9 +473,9 @@ class _HomePageState extends State<HomePage> {
     return Container(
       height: double.maxFinite,
       child: ListView.builder(
-        itemCount: appointmentsData.length,
+        itemCount: appointmentsList.length,
         itemBuilder: (context, index) {
-          String day = _convertToDay(appointmentsData[index].appDate!);
+          String day = _convertToDay(appointmentsList[index].appDate!);
           return Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -517,7 +499,7 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(8.0)),
                           child: Center(
                             child: Text(
-                                "${appointmentsData[index].appDate![0]}${appointmentsData[index].appDate![1]}",
+                                "${appointmentsList[index].appDate![0]}${appointmentsList[index].appDate![1]}",
                                 style: TextStyle(
                                     fontSize: 16,
                                     color: AppColors.COLOR_WHITE)),
@@ -533,7 +515,7 @@ class _HomePageState extends State<HomePage> {
                           child: Center(
                             child: Text(day,
                                 style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 10,
                                     color: AppColors.COLOR_BLACK)),
                           ))
                     ],
@@ -543,20 +525,20 @@ class _HomePageState extends State<HomePage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(appointmentsData[index].hospitalId!,
+                  Text(appointmentsList[index].hospitalName!,
                       style: TextStyle(fontSize: 14)),
-                  Text("${appointmentsData[index].hosDeptId}",
+                  Text("${appointmentsList[index].hosDeptName}",
                       style: TextStyle(
                           fontSize: 14, color: AppColors.COLOR_LIGHT)),
                   Row(
                     children: [
                       Icon(Icons.calendar_month_outlined,
                           color: AppColors.COLOR_PRIMARY, size: 14),
-                      Text(" วันที่นัดหมาย: ${appointmentsData[index].appDate}",
+                      Text(" วันที่นัดหมาย: ${appointmentsList[index].appDate}",
                           style: TextStyle(
                               fontSize: 12, color: AppColors.COLOR_PRIMARY)),
                       SizedBox(width: 10),
-                      Text("เวลา: ${appointmentsData[index].appTime} น.",
+                      Text("เวลา: ${appointmentsList[index].appTime} น.",
                           style: TextStyle(
                               fontSize: 12, color: AppColors.COLOR_PRIMARY))
                     ],

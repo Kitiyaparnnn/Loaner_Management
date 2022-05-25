@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/appointment/bloc/appointment_bloc.dart';
 import 'package:loaner/src/models/appointment/AppointmentDataModel.dart';
+import 'package:loaner/src/models/appointment/AppointmentModel.dart';
 import 'package:loaner/src/pages/loaner/loaner_page.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
 
 Card appointmentCard(
     {required List<Color> color,
-    required AppointmentDataModel object,
+    required AppointmentModel object,
     required BuildContext context}) {
   return Card(
     shape: RoundedRectangleBorder(
@@ -33,7 +34,7 @@ Card appointmentCard(
                   children: [
                     Row(
                       children: [
-                        Text(object.hospitalId!,
+                        Text(object.hospitalName!,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         Spacer(),
@@ -56,7 +57,7 @@ Card appointmentCard(
                         Text("หน่วยงาน : ",
                             style: TextStyle(
                                 fontSize: 14, color: AppColors.COLOR_LIGHT)),
-                        Text(object.hosDeptId!,
+                        Text(object.hosDeptName!,
                             style: TextStyle(
                                 fontSize: 14, color: AppColors.COLOR_BLACK))
                       ],
@@ -83,14 +84,14 @@ Card appointmentCard(
           ),
         ),
         onTap: () {
-          context
-              .read<AppointmentBloc>()
-              .add(AppointmentGetDetail(app: object));
+          // context
+          //     .read<AppointmentBloc>()
+          //     .add(AppointmentGetDetail(app: object));
           Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => LoanerPage(
-                    isFillForm: true, selectedLoaner: object.loaners ?? [],isEdit: true,),
+                    isFillForm: true, selectedLoaner: object.loaner ?? [],isEdit: true,),
               ));
         }),
   );
