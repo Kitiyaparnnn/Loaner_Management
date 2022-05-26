@@ -176,7 +176,7 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  buildTextFormField(_controllerSize, "ขนาด (w x h x l)")
+                  buildTextFormField(_controllerSize, "ขนาด (w cm. x h cm. x l cm.)")
                 ],
               ),
               const SizedBox(height: 10),

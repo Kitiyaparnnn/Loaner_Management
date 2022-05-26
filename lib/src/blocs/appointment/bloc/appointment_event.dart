@@ -17,20 +17,6 @@ class AppointmentGetDetail extends AppointmentEvent {
   @override
   List<Object> get props => [appointId];
 
-  //database
-  // final String appNo;
-  // AppointmentGetDetail({required this.appNo});
-  // @override
-  // List<Object> get props => [appNo];
-}
-
-class AppointmentGetEmpId extends AppointmentEvent {
-  final AppointmentDataModel app;
-
-  AppointmentGetEmpId({required this.app});
-
-  @override
-  List<Object> get props => [app];
 }
 
 class AppointmentButtonOnPress extends AppointmentEvent {

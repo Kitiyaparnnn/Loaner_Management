@@ -12,23 +12,19 @@ class EmployeeManage extends EmployeeEvent {
 
   EmployeeManage({required this.employee});
 
-    @override
+  @override
   List<Object?> get props => [employee];
-
 }
 
-class EmployeeGetAll extends EmployeeEvent {
-
-}
+class EmployeeGetAll extends EmployeeEvent {}
 
 class EmployeeGetSearchType extends EmployeeEvent {
   final String textSearch;
 
   EmployeeGetSearchType({required this.textSearch});
 
-    @override
+  @override
   List<Object?> get props => [textSearch];
-
 }
 
 class EmployeeSearchType extends EmployeeEvent {
@@ -36,7 +32,15 @@ class EmployeeSearchType extends EmployeeEvent {
 
   EmployeeSearchType({required this.textSearch});
 
-    @override
+  @override
   List<Object?> get props => [textSearch];
+}
 
+class EmployeeGetDetail extends EmployeeEvent {
+  final String id;
+
+  EmployeeGetDetail({required this.id});
+
+    @override
+  List<Object?> get props => [id];
 }

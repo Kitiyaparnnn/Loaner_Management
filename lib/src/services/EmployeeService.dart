@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:loaner/src/models/employee/EmployeeDataModel.dart';
 import 'package:loaner/src/models/employee/EmployeeModel.dart';
 import 'package:loaner/src/my_app.dart';
+import 'package:loaner/src/services/SharedPreferencesService.dart';
 import 'package:loaner/src/services/Urls.dart';
 
 class EmployeeService {
@@ -26,9 +27,9 @@ class EmployeeService {
         _url,
         body: jsonEncode(_body),
       );
-
+      logger.d(_response.body);
       if (_response.statusCode == 200) {
-        final List _jsonResponse = json.decode(_response.body);
+        final _jsonResponse = json.decode(_response.body);
 
         final EmployeeDataModel _resultData =
             EmployeeDataModel.fromJson(_jsonResponse);
@@ -42,17 +43,18 @@ class EmployeeService {
     }
   }
 
-  Future<List<EmployeeModel>> getAllEmployees({required String depId}
-      ) async {
+  Future<List<EmployeeModel>> getAllEmployees() async {
     List<EmployeeModel> _result = [];
 
     try {
       final _url = Uri.parse(Urls.employeeUrl);
       var _response;
+      final _sharedPreferencesService = SharedPreferencesService();
+      String deptId = await _sharedPreferencesService.preferenceGetDepId();
 
       Map<String, dynamic> _body = {
         'function': "GET_ALL_EMPLOYEES",
-        'depId' : depId
+        'deptId': deptId
       };
 
       logger.i(_body);
@@ -77,19 +79,20 @@ class EmployeeService {
     }
   }
 
-  Future<List<EmployeeModel>> getEmployeeBySearch({
-    required  String textSearch
-  }
-      ) async {
+  Future<List<EmployeeModel>> getEmployeeBySearch(
+      {required String textSearch}) async {
     List<EmployeeModel> _result = [];
 
     try {
       final _url = Uri.parse(Urls.employeeUrl);
       var _response;
+      final _sharedPreferencesService = SharedPreferencesService();
+      String deptId = await _sharedPreferencesService.preferenceGetDepId();
 
       Map<String, dynamic> _body = {
         'function': "GET_EMPLOYEE_BY_SEARCH",
-        "textSearch": textSearch
+        "textSearch": textSearch,
+        "deptId": deptId
       };
 
       logger.i(_body);
@@ -114,11 +117,8 @@ class EmployeeService {
     }
   }
 
-  Future<EmployeeModel> getEmployeeDetail({
-    required  String empId
-  }
-      ) async {
-    EmployeeModel _result = EmployeeModel();
+  Future<EmployeeDataModel> getEmployeeDetail({required String empId}) async {
+    EmployeeDataModel _result = EmployeeDataModel();
 
     try {
       final _url = Uri.parse(Urls.employeeUrl);
@@ -137,10 +137,10 @@ class EmployeeService {
       );
 
       if (_response.statusCode == 200) {
-        final List _jsonResponse = json.decode(_response.body);
+        final _jsonResponse = json.decode(_response.body);
 
-         final EmployeeModel _resultData =
-            EmployeeModel.fromJson(_jsonResponse);
+        final EmployeeDataModel _resultData =
+            EmployeeDataModel.fromJson(_jsonResponse);
         _result = _resultData;
       }
 

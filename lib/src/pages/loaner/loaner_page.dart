@@ -35,14 +35,12 @@ class LoanerPage extends StatefulWidget {
 class _LoanerPageState extends State<LoanerPage> {
   TextEditingController searchController = TextEditingController(text: "");
 
-  List<LoanerModel> items = [];
   int loanerCount = 0;
 
   @override
   void initState() {
     context.read<LoanerBloc>().add(LoanerGetAll());
     context.read<AppointmentBloc>().add(AppointmentCountLoaner());
-    items.clear();
     super.initState();
   }
 
@@ -189,17 +187,13 @@ class _LoanerPageState extends State<LoanerPage> {
   }
 
   _mapList(List<LoanerModel> object, int index) {
-    // logger.w('${Urls.imageLoanerUrl}/${object[index].image!}');
-    // logger.d(object[index].isActive);
     return Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        color: object[index].isActive == null
-            ? AppColors.COLOR_GREY
-            : object[index].isActive == "1"
-                ? AppColors.COLOR_WHITE
-                : AppColors.COLOR_GREY,
+        color: object[index].isActive == "1"
+            ? AppColors.COLOR_WHITE
+            : AppColors.COLOR_GREY,
         elevation: 0.0,
         child: ListTile(
           leading: SizedBox(

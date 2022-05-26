@@ -10,27 +10,38 @@ import 'package:loaner/src/models/employee/EmployeeDataModel.dart';
 import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/employee/employee_page.dart';
 import 'package:loaner/src/services/SharedPreferencesService.dart';
+import 'package:loaner/src/services/Urls.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
+import 'package:loaner/src/utils/DefaultImage.dart';
 import 'package:loaner/src/utils/DropdownInput.dart';
 import 'package:loaner/src/utils/LabelFormat.dart';
 import 'package:loaner/src/utils/MyAppBar.dart';
 import 'package:loaner/src/utils/TextFormFieldInput.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class AddEmployeePage extends StatefulWidget {
-  AddEmployeePage({Key? key}) : super(key: key);
-
+  AddEmployeePage({required this.isEdit, required this.empId});
+  bool isEdit;
+  String empId;
   @override
   State<AddEmployeePage> createState() => _AddEmployeePageState();
 }
 
 class _AddEmployeePageState extends State<AddEmployeePage> {
-  final employeeData = EmployeeDataModel(isTrained: false);
+  EmployeeDataModel employee =
+      EmployeeDataModel(empId: "", isTrained: "1", isActive: "0");
   var _formKey = GlobalKey<FormState>();
+  final _sharedPreferencesService = SharedPreferencesService();
+  bool isDelete = false;
 
   TextEditingController _controllerCompany =
       new TextEditingController(text: "");
   TextEditingController _controllerHeadName =
+      new TextEditingController(text: "");
+  TextEditingController _controllerUsername =
+      new TextEditingController(text: "");
+  TextEditingController _controllerPassword =
       new TextEditingController(text: "");
   TextEditingController _controllerFirstName =
       new TextEditingController(text: "");
@@ -41,15 +52,19 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
 
   File? imageFile;
 
-  Future<void> getCompanyName() async {
-    final _sharedPreferencesService = SharedPreferencesService();
+  Future<void> loading() async {
     _controllerCompany.text =
         await _sharedPreferencesService.preferenceGetDepName();
+    setState(() {
+      if (widget.empId != "") {
+        context.read<EmployeeBloc>().add(EmployeeGetDetail(id: widget.empId));
+      }
+    });
   }
 
   @override
   void initState() {
-    getCompanyName();
+    loading();
     super.initState();
   }
 
@@ -57,19 +72,20 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: myAppBar(title: Constants.EMPLOYEE_ADD_TITLE, context: context),
-        body: SafeArea(
-            child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: GestureDetector(
-            onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+          child: SafeArea(
             child: SingleChildScrollView(
-                child: Center(
-                    child: Column(
-              children: [const SizedBox(height: 10), _buildForm(context)],
-            ))),
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                child: Center(child: _buildForm(context)),
+              ),
+            ),
           ),
-        )),
-        bottomNavigationBar: imageFile != null ? _bottomButton() : null);
+        ),
+        bottomNavigationBar: imageFile != null || _controllerImage.text != ''
+            ? _bottomButton()
+            : null);
   }
 
   Widget _bottomButton() {
@@ -87,13 +103,37 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   Widget _buildForm(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(left: 20, right: 20),
-      child: Column(
-        children: [
-          _buildInput(),
-          const SizedBox(height: 10),
-          _buildImportImage(),
-          const SizedBox(height: 10),
-        ],
+      child: BlocBuilder<EmployeeBloc, EmployeeState>(
+        builder: (context, state) {
+          if (state is EmployeeStateGetDetail) {
+            employee = state.data;
+            logger.d(employee.toJson());
+            if (_controllerHeadName.text == "" ||
+                _controllerFirstName.text == "" ||
+                _controllerLastName.text == "" ||
+                _controllerUsername.text == "" ||
+                _controllerPassword.text == "") {
+              _controllerHeadName.text = employee.prefix ?? '';
+              _controllerFirstName.text = employee.firstName ?? '';
+              _controllerLastName.text = employee.lastName ?? '';
+              _controllerDetail.text = employee.detail ?? '';
+              _controllerUsername.text = employee.username ?? '';
+              _controllerPassword.text = employee.password ?? '';
+            }
+            if (_controllerImage.text == "" && !isDelete) {
+              _controllerImage.text = employee.image ?? '';
+            }
+          }
+          return Column(
+            children: [
+              Container(
+                  height: MediaQuery.of(context).size.height * .7,
+                  child: SingleChildScrollView(child: _buildInput())),
+              const SizedBox(height: 10),
+              _buildImportImage()
+            ],
+          );
+        },
       ),
     );
   }
@@ -114,7 +154,21 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildDropdown(_controllerHeadName, Constants.head, "คำนำหน้า"),
+              buildTextFormField(_controllerUsername, "username"),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildTextFormField(_controllerPassword, "password"),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildDropdown(_controllerHeadName, Constants.prefix, "คำนำหน้า"),
             ],
           ),
           const SizedBox(height: 10),
@@ -145,7 +199,17 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
               Text("ผ่านการอบรม",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-              _buildCheckBox(),
+              _buildTrainCheckBox(),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("สถานะเจ้าหน้าที่",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              _buildActiveCheckBox(),
             ],
           )
         ],
@@ -153,16 +217,16 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     );
   }
 
-  Row _buildCheckBox() {
+  Row _buildTrainCheckBox() {
     return Row(
       children: [
         IconButton(
             highlightColor: AppColors.COLOR_PRIMARY,
             onPressed: () {
-              employeeData.isTrained = true;
+              employee.isTrained = "1";
               setState(() {});
             },
-            icon: Icon(employeeData.isTrained!
+            icon: Icon(employee.isTrained == "1"
                 ? Icons.radio_button_checked_outlined
                 : Icons.radio_button_unchecked_outlined)),
         Text("เคยอบรม"),
@@ -172,10 +236,10 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
         IconButton(
             highlightColor: AppColors.COLOR_PRIMARY,
             onPressed: () {
-              employeeData.isTrained = false;
+              employee.isTrained = "0";
               setState(() {});
             },
-            icon: Icon(employeeData.isTrained!
+            icon: Icon(employee.isTrained == "1"
                 ? Icons.radio_button_unchecked_outlined
                 : Icons.radio_button_checked_outlined)),
         Text("ไม่เคยอบรม"),
@@ -192,7 +256,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
         Text("เราต้องแน่ใจว่าเป็นคุณ ถ่ายรูปให้เห็นหน้า",
             style: TextStyle(fontSize: 12, color: AppColors.COLOR_LIGHT)),
         const SizedBox(height: 10),
-        imageFile == null
+        imageFile == null && _controllerImage.text == ""
             ? InkWell(
                 onTap: () => _showImageDialog(),
                 child: Container(
@@ -233,33 +297,79 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                             color: AppColors.COLOR_GREY, width: 2.0)),
                     height: 60,
                     width: 60,
-                    child: Image.file(
-                      imageFile!,
-                      fit: BoxFit.cover,
-                    ),
+                    child: _controllerImage.text != "" && imageFile != null
+                        ? Image.file(
+                            imageFile!,
+                            fit: BoxFit.cover,
+                          )
+                        : FadeInImage.memoryNetwork(
+                            imageErrorBuilder: ((context, error, stackTrace) =>
+                                defaultImage()),
+                            placeholderErrorBuilder:
+                                (context, error, stackTrace) => defaultImage(),
+                            fit: BoxFit.cover,
+                            placeholder: kTransparentImage,
+                            image:
+                                '${Urls.imageEmployeeUrl}/${employee.image!}'),
                   ),
                   title: Text(
-                    imageFile!.path.split("/").last,
+                    _controllerImage.text != "" && imageFile != null
+                        ? imageFile!.path.split("/").last
+                        : _controllerImage.text,
                     style:
                         TextStyle(fontSize: 16, color: AppColors.COLOR_PRIMARY),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  subtitle: Text(
-                      (imageFile!.readAsBytesSync().lengthInBytes /
-                                  (1024 * 1024))
-                              .toStringAsFixed(2) +
-                          " Mb",
-                      style: TextStyle(
-                          fontSize: 12, color: AppColors.COLOR_LIGHT)),
+                  subtitle: _controllerImage.text == ""
+                      ? Text(
+                          (imageFile!.readAsBytesSync().lengthInBytes /
+                                      (1024 * 1024))
+                                  .toStringAsFixed(2) +
+                              " Mb",
+                          style: TextStyle(
+                              fontSize: 12, color: AppColors.COLOR_LIGHT))
+                      : null,
                   trailing: IconButton(
                       icon: Icon(Icons.delete_outline_outlined,
                           color: AppColors.COLOR_RED),
                       onPressed: () {
                         imageFile = null;
+                        _controllerImage.text = "";
+                        isDelete = true;
                         setState(() {});
                       }),
                 ),
-              )
+              ),
+      ],
+    );
+  }
+
+  _buildActiveCheckBox() {
+    return Row(
+      children: [
+        IconButton(
+            highlightColor: AppColors.COLOR_PRIMARY,
+            onPressed: () {
+              employee.isActive = "0";
+              setState(() {});
+            },
+            icon: Icon(employee.isActive == "0"
+                ? Icons.radio_button_checked_outlined
+                : Icons.radio_button_unchecked_outlined)),
+        Text("active"),
+        SizedBox(
+          width: 20,
+        ),
+        IconButton(
+            highlightColor: AppColors.COLOR_PRIMARY,
+            onPressed: () {
+              employee.isActive = "1";
+              setState(() {});
+            },
+            icon: Icon(employee.isActive == "0"
+                ? Icons.radio_button_unchecked_outlined
+                : Icons.radio_button_checked_outlined)),
+        Text("inactive"),
       ],
     );
   }
@@ -326,6 +436,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     XFile? pickedFile = await ImagePicker().pickImage(
         source: ImageSource.gallery, maxHeight: 1080, maxWidth: 1080);
     imageFile = File(pickedFile!.path);
+    _convertBase64();
     setState(() {});
     Navigator.pop(context);
   }
@@ -334,6 +445,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     XFile? pickedFile = await ImagePicker()
         .pickImage(source: ImageSource.camera, maxHeight: 1080, maxWidth: 1080);
     imageFile = File(pickedFile!.path);
+    _convertBase64();
     setState(() {});
     Navigator.pop(context);
   }
@@ -344,19 +456,19 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     _controllerImage.text = img64;
   }
 
-  void validate() {
+  void validate() async {
     if (_formKey.currentState!.validate()) {
-      _convertBase64();
-      employeeData.companyName = _controllerCompany.text;
-      employeeData.headName = _controllerHeadName.text;
-      employeeData.firstName = _controllerFirstName.text;
-      employeeData.lastName = _controllerLastName.text;
-      employeeData.detail = _controllerDetail.text;
-      employeeData.image = _controllerImage.text;
+      employee.username = _controllerUsername.text;
+      employee.password = _controllerPassword.text;
+      employee.deptId = await _sharedPreferencesService.preferenceGetDepId();
+      employee.prefix = _controllerHeadName.text;
+      employee.firstName = _controllerFirstName.text;
+      employee.lastName = _controllerLastName.text;
+      employee.detail = _controllerDetail.text;
+      employee.image = _controllerImage.text;
 
-      context.read<EmployeeBloc>().add(EmployeeManage(employee: employeeData));
-      Navigator.pop(
-          context, MaterialPageRoute(builder: (context) => EmployeePage()));
+      context.read<EmployeeBloc>().add(EmployeeManage(employee: employee));
+      Navigator.pop(context);
     } else {
       BotToast.showText(text: Constants.TEXT_FORM_FIELD);
     }

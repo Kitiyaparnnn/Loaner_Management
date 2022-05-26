@@ -25,7 +25,6 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
 
   AppointmentBloc() : super(AppointmentStateLoading()) {
     on<AppointmentClear>(_mapAppointmentClearToState);
-    on<AppointmentGetEmpId>(_mapAppointmentGetEmpIdToState);
     on<AppointmentGetDetail>(_mapAppointmentGetDetailToState);
     on<AppointmentButtonOnPress>(_mapAppointmentButtonOnPressToState);
     on<AppointmentButtonOnSave>(_mapAppointmentButtonOnSaveToState);
@@ -83,17 +82,6 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     emit(AppointmentStateGetHosDetail(dept: dept, emp: emp, doctor: doctor));
   }
 
-  _mapAppointmentGetEmpIdToState(AppointmentGetEmpId event, Emitter emit) {
-    //  final _result =
-    // await _employeeService.getEmployeeDetail(empId: appointment.empid)
-    employee = EmployeeModel(
-        empId: "1",
-        username: "นาย ข",
-        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-        isTrained: "0");
-
-    // add(AppointmentGetDetail(id: event.app));
-  }
 
   _mapAppointmentGetDetailToState(
       AppointmentGetDetail event, Emitter emit) async {

@@ -16,7 +16,6 @@ class EmployeeStateGetAll extends EmployeeState {
 
   @override
   List<Object?> get props => [data];
-  
 }
 
 class EmployeeStateSearchType extends EmployeeState {
@@ -26,5 +25,11 @@ class EmployeeStateSearchType extends EmployeeState {
 
   @override
   List<Object?> get props => [textSearch];
-  
+}
+
+class EmployeeStateGetDetail extends EmployeeState {
+  final EmployeeDataModel data;
+  EmployeeStateGetDetail({required this.data});
+  @override
+  List<Object?> get props => [data];
 }

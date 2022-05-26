@@ -37,37 +37,6 @@ class Constants {
   static const List<String> role = ["supplier", "cssd"];
 
   //fill appointment
-  static const Map<String, String> emp = {
-    "0": "นพกร มังกรใส",
-    "1": "นาย ข",
-    "2": "นาย ค",
-    "3": "นาย ง"
-  };
-  static const Map<String, String> hos = {
-    "0": "Hospital A",
-    "1": "โรงพยาบาล ข",
-    "2": "โรงพยาบาล ค",
-    "3": "โรงพยาบาล ง"
-  };
-
-  static const Map<String, String> org = {
-    "0": "หน่วยงาน ก",
-    "1": "บริษัท ข",
-    "2": "บริษัท ค",
-    "3": "บริษัท ง"
-  };
-  static const Map<String, String> doc = {
-    "0": "นพ.สวัสดี มีมาคร",
-    "1": "แพทย์ ข",
-    "2": "แพทย์ ค",
-    "3": "แพทย์ ง"
-  };
-  static const Map<String, String> dep = {
-    "0": "หน่วยงาน ก",
-    "1": "หน่วยงาน ข",
-    "2": "หน่วยงาน ค",
-    "3": "หน่วยงาน ง"
-  };
   static const Map<String, String> status = {
     "0": "draft",
     "1": "ส่งนัดหมาย",
@@ -77,17 +46,12 @@ class Constants {
     "5": "Complete",
     "9": "เอกสารยกเลิก"
   };
-  static const Map<String, String> group = {
-    "0": "หมวดหมู่ ก",
-    "1": "หมวดหมู่ ข",
-    "2": "หมวดหมู่ ค",
-    "3": "หมวดหมู่ ง"
-  };
 
-  static const Map<String, String> head = {
-    "0": "นาย",
-    "1": "นางสาว",
-    "2": "นาง"
+
+  static const Map<String, String> prefix = {
+    "1": "นาย",
+    "2": "นาง",
+    "3": "นางสาว"
   };
 
 //status

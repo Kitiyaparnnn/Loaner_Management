@@ -6,6 +6,7 @@ import 'package:loaner/src/utils/SelectDecoration.dart';
 DropdownButtonFormField buildDropdown(
     TextEditingController form, Map<String, String> items, String hintText) {
   return DropdownButtonFormField(
+    value: form.text == "" ? null : form.text,
     validator: (value) => value == null ? "โปรดเลือก" : null,
     decoration: selectDecoration(hintText: hintText),
     icon: Icon(Icons.expand_more_rounded),

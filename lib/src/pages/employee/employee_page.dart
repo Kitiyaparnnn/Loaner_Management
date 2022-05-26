@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loaner/src/blocs/employee/bloc/employee_bloc.dart';
 import 'package:loaner/src/models/employee/EmployeeModel.dart';
+import 'package:loaner/src/my_app.dart';
 import 'package:loaner/src/pages/employee/add_employee_page.dart';
+import 'package:loaner/src/services/Urls.dart';
 import 'package:loaner/src/utils/AppColors.dart';
 import 'package:loaner/src/utils/Constants.dart';
+import 'package:loaner/src/utils/DefaultImage.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class EmployeePage extends StatefulWidget {
   EmployeePage({Key? key}) : super(key: key);
@@ -14,49 +18,12 @@ class EmployeePage extends StatefulWidget {
 }
 
 class _EmployeePageState extends State<EmployeePage> {
-  TextEditingController searchController = TextEditingController();
-  EmployeeModel _emp = EmployeeModel();
-
-  List<EmployeeModel> employees = [
-    EmployeeModel(
-        username: 'user1',
-        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-        isTrained: "1"),
-    EmployeeModel(username: 'user2', detail: '', isTrained: "0"),
-    EmployeeModel(
-        username: 'user3',
-        detail: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
-        isTrained: "1"),
-  ];
-
-  List<EmployeeModel> items = [];
+  TextEditingController searchController = TextEditingController(text: "");
 
   @override
   void initState() {
-    items.clear();
-    context.read<EmployeeBloc>().add(EmployeeGetSearchType(textSearch: ""));
+    context.read<EmployeeBloc>().add(EmployeeGetAll());
     super.initState();
-  }
-
-  void filterSearchResults(String query) {
-    List<EmployeeModel> dummyListData = [];
-    if (query.isNotEmpty) {
-      employees.forEach((item) {
-        if (item.username!.contains(query)) {
-          dummyListData.add(item);
-        }
-      });
-      setState(() {
-        items.clear();
-        items.addAll(dummyListData);
-      });
-      return;
-    } else {
-      setState(() {
-        items.clear();
-        items.addAll(employees);
-      });
-    }
   }
 
   @override
@@ -85,8 +52,13 @@ class _EmployeePageState extends State<EmployeePage> {
           IconButton(
               icon: Icon(Icons.person_add_alt_1_outlined,
                   color: AppColors.COLOR_BLACK, size: 30),
-              onPressed: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AddEmployeePage()))),
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AddEmployeePage(
+                            isEdit: false,
+                            empId: "",
+                          )))),
         ],
         centerTitle: true,
       ),
@@ -117,16 +89,9 @@ class _EmployeePageState extends State<EmployeePage> {
   _searchBar() {
     return BlocBuilder<EmployeeBloc, EmployeeState>(
       builder: (context, state) {
-        bool isShow = false;
-        if (state is EmployeeStateSearchType) {
-          if (state.textSearch != "") {
-            isShow = true;
-          }
-        }
         return TextField(
           onChanged: (value) {
             // filterSearchResults(value);
-
             context
                 .read<EmployeeBloc>()
                 .add(EmployeeSearchType(textSearch: value));
@@ -140,7 +105,7 @@ class _EmployeePageState extends State<EmployeePage> {
               prefixIcon: Icon(Icons.search),
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              suffixIcon: isShow
+              suffixIcon: searchController.text != ""
                   ? GestureDetector(
                       child: Icon(Icons.cancel_outlined),
                       onTap: () {
@@ -158,20 +123,28 @@ class _EmployeePageState extends State<EmployeePage> {
   _employeeList() {
     return BlocBuilder<EmployeeBloc, EmployeeState>(
       builder: (context, state) {
+        List<EmployeeModel> employee = [];
+        bool isLoading = false;
         if (state is EmployeeStateGetAll) {
-          // employees = state.data;
+          employee = state.data;
+        }
+        if (state is EmployeeStateLoading) {
+          isLoading = true;
         }
 
-        return Expanded(
-          child: employees.isEmpty
-              ? Center(
-                  child: Text(Constants.TEXT_DATA_NOT_FOUND),
-                )
-              : ListView.builder(
-                  itemCount: employees.length,
-                  itemBuilder: ((context, index) => _mapList(employees, index)),
-                ),
-        );
+        return isLoading
+            ? CircularProgressIndicator()
+            : Expanded(
+                child: employee.isEmpty
+                    ? Center(
+                        child: Text(Constants.TEXT_DATA_NOT_FOUND),
+                      )
+                    : ListView.builder(
+                        itemCount: employee.length,
+                        itemBuilder: ((context, index) =>
+                            _mapList(employee, index)),
+                      ),
+              );
       },
     );
   }
@@ -181,38 +154,60 @@ class _EmployeePageState extends State<EmployeePage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      color: AppColors.COLOR_WHITE,
+      color: object[index].isActive == null
+          ? AppColors.COLOR_GREY
+          : object[index].isActive == "0"
+              ? AppColors.COLOR_WHITE
+              : AppColors.COLOR_GREY,
       elevation: 0.0,
       child: ListTile(
-        leading: SizedBox(
-          height: 60,
-          width: 60,
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: AppColors.COLOR_GREY,
-                border: Border.all(color: AppColors.COLOR_GREY, width: 2.0)),
-            child: object[index].image != null ? null : Icon(Icons.image),
+          leading: SizedBox(
+            height: 60,
+            width: 60,
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.COLOR_GREY,
+                  border: Border.all(color: AppColors.COLOR_GREY, width: 2.0)),
+              child: object[index].image != ''
+                  ? FadeInImage.memoryNetwork(
+                      imageErrorBuilder: ((context, error, stackTrace) =>
+                          defaultImage()),
+                      placeholderErrorBuilder: (context, error, stackTrace) =>
+                          defaultImage(),
+                      fit: BoxFit.cover,
+                      placeholder: kTransparentImage,
+                      image: '${Urls.imageEmployeeUrl}/${object[index].image!}')
+                  : Icon(Icons.image),
+            ),
           ),
-        ),
-        title: Text(object[index].username!, style: TextStyle(fontSize: 16)),
-        subtitle:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          object[index].detail == ""
-              ? SizedBox(
-                  height: 1,
-                )
-              : Text(
-                  object[index].detail!,
-                  style: TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT),
-                ),
-          object[index].isTrained=="1"
-              ? Text('• ผ่านการอบรม',
-                  style: TextStyle(fontSize: 12, color: AppColors.COLOR_GREEN2))
-              : Text('• ไม่ผ่านการอบรม',
-                  style: TextStyle(fontSize: 12, color: AppColors.COLOR_RED))
-        ]),
-      ),
+          title: Text(object[index].username!, style: TextStyle(fontSize: 16)),
+          subtitle:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            object[index].detail == ""
+                ? SizedBox(
+                    height: 1,
+                  )
+                : Text(
+                    object[index].detail!,
+                    style:
+                        TextStyle(fontSize: 14, color: AppColors.COLOR_LIGHT),
+                  ),
+            object[index].isTrained == "1"
+                ? Text('• ผ่านการอบรม',
+                    style:
+                        TextStyle(fontSize: 12, color: AppColors.COLOR_GREEN2))
+                : Text('• ไม่ผ่านการอบรม',
+                    style: TextStyle(fontSize: 12, color: AppColors.COLOR_RED))
+          ]),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddEmployeePage(
+                        isEdit: true, empId: object[index].id!))).then(
+                (value) => context.read<EmployeeBloc>().add(EmployeeGetAll()));
+          }),
     );
   }
 }
