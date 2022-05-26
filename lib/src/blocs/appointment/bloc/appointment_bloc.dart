@@ -117,9 +117,10 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
 //fill appointment form page
   _mapAppointmentButtonOnPressToState(
       AppointmentButtonOnPress event, Emitter emit) async {
+    emit(AppointmentStateLoading());
     //update appointment
     logger.d(event.appointment.toJson());
-    // await _appointmentService.manageAppointment(app: event.appointment);
+    await _appointmentService.manageAppointment(app: event.appointment);
   }
 
   //loaner_sum_page
@@ -216,7 +217,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     emit(AppointmentStateLoading());
 
     final _result =
-        await _appointmentService.getAppointmentsByStatus(status: event.status);
+        await _appointmentService.getAppointmentsByStatus(status: event.status,limit:event.limit);
 
     emit(AppointmentStateGetAll(data: _result));
   }

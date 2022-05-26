@@ -267,7 +267,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
                       if (state is AppointmentStateGetGetSupEmpandHos) {
                         emp = state.supEmp;
                       }
-                      return buildDropdownInput(
+                      return _buildDropdown(
                           _controllerEmpId, emp, "เจ้าหน้าที่บริษัท");
                     },
                   ),
@@ -303,6 +303,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   List<DropdownModel> hosDept = [];
   List<DropdownModel> hosEmp = [];
   List<DropdownModel> hosDoc = [];
+
   Widget _buildInputForm2() {
     return BlocBuilder<AppointmentBloc, AppointmentState>(
       builder: (context, state) {
@@ -333,7 +334,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                buildDropdownInput(_controllerOrganizeName, hosDept,
+                _buildDropdown(_controllerOrganizeName, hosDept,
                     "หน่วยงานที่ต้องการติดต่อ"),
               ],
             ),
@@ -341,7 +342,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                buildDropdownInput(
+                _buildDropdown(
                     _controllerCssdName, hosEmp, "เจ้าหน้าที่ผู้ติดต่อ"),
               ],
             ),
@@ -349,7 +350,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                buildDropdownInput(
+                _buildDropdown(
                     _controllerDoctorName, hosDoc, "แพทย์ผู้ใช้อุปกรณ์"),
               ],
             ),
@@ -357,7 +358,7 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                buildDropdownInput(_controllerDepName, hosDept, "หน่วยงาน")
+                _buildDropdown(_controllerDepName, hosDept, "หน่วยงาน")
               ],
             ),
             const SizedBox(height: 10),
@@ -481,10 +482,11 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
   TextFormField _buildTextFormField(
       TextEditingController text, String hintText) {
     return TextFormField(
-        // onChanged: (value) => text.text = value,
-        enabled: hintText == "บริษัท" ? false : true,
+        enabled: hintText == "บริษัท" || isDocument ? false : true,
         validator: (value) => value == "" ? "โปรดกรอกข้อมูล" : null,
         controller: text,
+        style:
+            TextStyle(color: isDocument ? Colors.grey : AppColors.COLOR_BLACK),
         decoration: inputDecoration(hintText: hintText));
   }
 
@@ -501,12 +503,35 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
           child: Text(item.name == null ? "" : item.name!),
         );
       }).toList(),
-      onChanged: (value) {
-        form.text = value;
-        context
-            .read<AppointmentBloc>()
-            .add(AppointmentGetHosDetail(hosId: value));
-      },
+      onChanged: isDocument
+          ? null
+          : (value) {
+              form.text = value;
+              context
+                  .read<AppointmentBloc>()
+                  .add(AppointmentGetHosDetail(hosId: value));
+            },
+    );
+  }
+
+  DropdownButtonFormField _buildDropdown(
+      TextEditingController form, List<DropdownModel> items, String hintText) {
+    return DropdownButtonFormField(
+      value: form.text == "" ? null : form.text,
+      validator: (value) => value == null ? "โปรดเลือก" : null,
+      decoration: selectDecoration(hintText: hintText),
+      icon: Icon(Icons.expand_more_rounded),
+      items: items.map<DropdownMenuItem<String>>((item) {
+        return DropdownMenuItem(
+          value: item.id,
+          child: Text(item.name == null ? "" : item.name!),
+        );
+      }).toList(),
+      onChanged: isDocument
+          ? null
+          : (value) {
+              form.text = value;
+            },
     );
   }
 
@@ -557,10 +582,12 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
       children: [
         IconButton(
             highlightColor: AppColors.COLOR_PRIMARY,
-            onPressed: () {
-              employee.isTrained = "1";
-              setState(() {});
-            },
+            onPressed: isDocument
+                ? null
+                : () {
+                    employee.isTrained = "1";
+                    setState(() {});
+                  },
             icon: Icon(employee.isTrained == "1"
                 ? Icons.radio_button_checked_outlined
                 : Icons.radio_button_unchecked_outlined)),
@@ -570,10 +597,12 @@ class _FillAppointmentPageState extends State<FillAppointmentPage> {
         ),
         IconButton(
             highlightColor: AppColors.COLOR_PRIMARY,
-            onPressed: () {
-              employee.isTrained = "0";
-              setState(() {});
-            },
+            onPressed: isDocument
+                ? null
+                : () {
+                    employee.isTrained = "0";
+                    setState(() {});
+                  },
             icon: Icon(employee.isTrained == "1"
                 ? Icons.radio_button_unchecked_outlined
                 : Icons.radio_button_checked_outlined)),

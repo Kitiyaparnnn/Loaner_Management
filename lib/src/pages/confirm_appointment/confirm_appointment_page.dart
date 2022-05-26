@@ -20,7 +20,7 @@ class _ConfirmAppointmentPageState extends State<ConfirmAppointmentPage> {
   List<AppointmentModel> appointments = [];
   @override
   void initState() {
-    context.read<AppointmentBloc>().add(AppointmentGetByStatus(status: "1"));
+    context.read<AppointmentBloc>().add(AppointmentGetByStatus(status: "1",limit:""));
     super.initState();
   }
 

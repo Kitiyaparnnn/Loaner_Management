@@ -112,11 +112,12 @@ class AppointmentGetConfirmStatus extends AppointmentEvent {}
 
 class AppointmentGetByStatus extends AppointmentEvent {
   final String status;
+  final String limit;
 
-  AppointmentGetByStatus({required this.status});
+  AppointmentGetByStatus({required this.status,required this.limit});
 
   @override
-  List<Object> get props => [status];
+  List<Object> get props => [status,limit];
 }
 
 class AppointmentGetToEdit extends AppointmentEvent {}
@@ -155,6 +156,6 @@ class AppointmentGetEachDetail extends AppointmentEvent {
 
   AppointmentGetEachDetail({required this.appId});
 
-    @override
+  @override
   List<Object> get props => [appId];
 }

@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
     final _appointmentService = AppointmentService();
 
     appointmentsList =
-        await _appointmentService.getAppointmentsByStatus(status: "2");
+        await _appointmentService.getAppointmentsByStatus(status: "2",limit:"2");
     await generateMenu();
     if (this.mounted) {
       setState(() {});
@@ -525,9 +525,15 @@ class _HomePageState extends State<HomePage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(appointmentsList[index].hospitalName!,
+                  Text(
+                      isSupplier == "2"
+                          ? appointmentsList[index].hospitalName!
+                          : appointmentsList[index].supName!,
                       style: TextStyle(fontSize: 14)),
-                  Text("${appointmentsList[index].hosDeptName}",
+                  Text(
+                      isSupplier == "2"
+                          ? "${appointmentsList[index].hosDeptName}"
+                          : "${appointmentsList[index].supEmpName}",
                       style: TextStyle(
                           fontSize: 14, color: AppColors.COLOR_LIGHT)),
                   Row(

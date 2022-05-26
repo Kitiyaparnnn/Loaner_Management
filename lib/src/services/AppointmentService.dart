@@ -13,7 +13,8 @@ import 'package:loaner/src/services/Urls.dart';
 class AppointmentService {
   final _prefService = SharedPreferencesService();
 
-  Future<List<AppointmentModel>> getAllAppointments({required String limit}) async {
+  Future<List<AppointmentModel>> getAllAppointments(
+      {required String limit}) async {
     List<AppointmentModel> _result = [];
 
     try {
@@ -22,7 +23,7 @@ class AppointmentService {
 
       Map<String, dynamic> _body = {
         'function': "GET_ALL_APPOINTMENTS",
-        'limit' : limit
+        'limit': limit
       };
 
       logger.i(_body);
@@ -48,7 +49,7 @@ class AppointmentService {
   }
 
   Future<List<AppointmentModel>> getAppointmentsByStatus(
-      {required String status}) async {
+      {required String status,required String limit}) async {
     List<AppointmentModel> _result = [];
 
     try {
@@ -57,7 +58,8 @@ class AppointmentService {
 
       Map<String, dynamic> _body = {
         'function': "GET_APPOINTMENT_BY_STATUS",
-        "status": status
+        "status": status,
+        "limit":limit
       };
 
       logger.i(_body);
@@ -117,8 +119,7 @@ class AppointmentService {
     }
   }
 
-  Future<EmployeeModel> getAppointmentEmpDetail(
-      {required String id}) async {
+  Future<EmployeeModel> getAppointmentEmpDetail({required String id}) async {
     EmployeeModel _result = EmployeeModel();
 
     try {
@@ -140,8 +141,7 @@ class AppointmentService {
       if (_response.statusCode == 200) {
         final _jsonResponse = json.decode(_response.body);
 
-        final EmployeeModel _resultData =
-            EmployeeModel.fromJson(_jsonResponse);
+        final EmployeeModel _resultData = EmployeeModel.fromJson(_jsonResponse);
         _result = _resultData;
       }
 
@@ -175,7 +175,7 @@ class AppointmentService {
         _url,
         body: jsonEncode(_body),
       );
-
+      logger.d(_response.body);
       if (_response.statusCode == 200) {
         final _jsonResponse = json.decode(_response.body);
 
@@ -183,7 +183,6 @@ class AppointmentService {
             AppointmentDataModel.fromJson(_jsonResponse);
         _result = _resultData;
       }
-      logger.d(_response.body);
 
       return _result;
     } catch (e) {
@@ -399,8 +398,8 @@ class AppointmentService {
     }
   }
 
-    Future<AppointmentDataModel> setAppointmentStatus(
-      {required String id,required String status}) async {
+  Future<AppointmentDataModel> setAppointmentStatus(
+      {required String id, required String status}) async {
     AppointmentDataModel _result = AppointmentDataModel();
 
     try {
@@ -409,8 +408,8 @@ class AppointmentService {
 
       Map<String, dynamic> _body = {
         'function': "SET_APPOINTMENT_STATUS",
-        'appId':id,
-        'status':status
+        'appId': id,
+        'status': status
       };
 
       logger.i(_body);
@@ -470,6 +469,4 @@ class AppointmentService {
       return _result;
     }
   }
-
-
 }
