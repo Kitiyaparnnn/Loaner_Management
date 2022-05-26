@@ -32,7 +32,7 @@ class LoanerCreatePage extends StatefulWidget {
 }
 
 class _LoanerCreatePageState extends State<LoanerCreatePage> {
-  LoanerDataModel loaner = LoanerDataModel(id: "", isActive: "1");
+  LoanerDataModel loaner = LoanerDataModel(id: "", isActive: "0");
   var _formKey = GlobalKey<FormState>();
   bool isDelete = false;
 
@@ -176,7 +176,8 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  buildTextFormField(_controllerSize, "ขนาด (w cm. x h cm. x l cm.)")
+                  buildTextFormField(
+                      _controllerSize, "ขนาด (w cm. x h cm. x l cm.)")
                 ],
               ),
               const SizedBox(height: 10),
@@ -399,10 +400,10 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
         IconButton(
             highlightColor: AppColors.COLOR_PRIMARY,
             onPressed: () {
-              loaner.isActive = "1";
+              loaner.isActive = "0";
               setState(() {});
             },
-            icon: Icon(loaner.isActive == "1"
+            icon: Icon(loaner.isActive == "0"
                 ? Icons.radio_button_checked_outlined
                 : Icons.radio_button_unchecked_outlined)),
         Text("active"),
@@ -412,10 +413,10 @@ class _LoanerCreatePageState extends State<LoanerCreatePage> {
         IconButton(
             highlightColor: AppColors.COLOR_PRIMARY,
             onPressed: () {
-              loaner.isActive = "0";
+              loaner.isActive = "1";
               setState(() {});
             },
-            icon: Icon(loaner.isActive == "1"
+            icon: Icon(loaner.isActive == "0"
                 ? Icons.radio_button_unchecked_outlined
                 : Icons.radio_button_checked_outlined)),
         Text("inactive"),

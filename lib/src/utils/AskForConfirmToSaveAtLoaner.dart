@@ -36,6 +36,9 @@ void askForConfirmToSaveAtLoaner(
             ),
             onPressed: () {
               Navigator.of(dialogContext).pop();
+              context
+                  .read<AppointmentBloc>()
+                  .add(AppointmentButtonOnSave(isEdit: isEdit));
               isSupplier
                   ? Navigator.push(
                       context,
@@ -43,9 +46,6 @@ void askForConfirmToSaveAtLoaner(
                           builder: (context) =>
                               AppointmentPage(isSupplier: true)))
                   : Navigator.pop(context);
-              context
-                  .read<AppointmentBloc>()
-                  .add(AppointmentButtonOnSave(isEdit: isEdit));
             },
           ),
         ],

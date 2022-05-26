@@ -82,7 +82,7 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
           // decoration: BoxDecoration(
           //   border: Border.all(color: AppColors.COLOR_BLACK),
           // ),
-          child: widget.loaner.image == null
+          child: widget.loaner.image == null || widget.loaner.image == ''
               ? SizedBox(
                   height: 200,
                   width: 200,
@@ -119,30 +119,6 @@ class _LoanerDetailPageState extends State<LoanerDetailPage> {
             controller: _controllernote,
             decoration: inputDecoration(hintText: "หมายเหตุ"),
           ),
-          Spacer(),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     InkWell(
-          //         onTap: () {
-          //           no = no - 1;
-          //           setState(() {});
-          //         },
-          //         child: Image.asset("${Constants.IMAGE_DIR}/minus.png")),
-          //     Padding(
-          //       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-          //       child: Text('$no',
-          //           style:
-          //               TextStyle(fontSize: 21, fontWeight: FontWeight.bold)),
-          //     ),
-          //     InkWell(
-          //         onTap: () {
-          //           no = no + 1;
-          //           setState(() {});
-          //         },
-          //         child: Image.asset("${Constants.IMAGE_DIR}/plus.png"))
-          //   ],
-          // ),
         ],
       ),
     );

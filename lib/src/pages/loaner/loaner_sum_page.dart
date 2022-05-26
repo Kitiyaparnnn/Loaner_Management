@@ -136,7 +136,10 @@ class _LoanerSumPageState extends State<LoanerSumPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                        child: Text(object[index].rent == null ? "1" : "",
+                        child: Text(
+                            object[index].rent == null
+                                ? "1"
+                                : "${object[index].rent}",
                             style: TextStyle(fontSize: 21)),
                       ),
                     ],

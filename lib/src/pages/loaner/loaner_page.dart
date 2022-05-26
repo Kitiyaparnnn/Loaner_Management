@@ -90,6 +90,9 @@ class _LoanerPageState extends State<LoanerPage> {
                   if (state is AppointmentStateCountLoaner) {
                     loanerCount = state.loanerCount;
                   }
+                  if (state is LoanerStateLoading) {
+                    return CircularProgressIndicator();
+                  }
                   return ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         shape: CircleBorder(),
@@ -191,7 +194,7 @@ class _LoanerPageState extends State<LoanerPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        color: object[index].isActive == "1"
+        color: object[index].isActive == "0"
             ? AppColors.COLOR_WHITE
             : AppColors.COLOR_GREY,
         elevation: 0.0,
