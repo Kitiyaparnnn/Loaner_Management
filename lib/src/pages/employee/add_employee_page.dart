@@ -223,10 +223,10 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
         IconButton(
             highlightColor: AppColors.COLOR_PRIMARY,
             onPressed: () {
-              employee.isTrained = "1";
+              employee.isTrained = "0";
               setState(() {});
             },
-            icon: Icon(employee.isTrained == "1"
+            icon: Icon(employee.isTrained == "0"
                 ? Icons.radio_button_checked_outlined
                 : Icons.radio_button_unchecked_outlined)),
         Text("เคยอบรม"),
@@ -236,10 +236,10 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
         IconButton(
             highlightColor: AppColors.COLOR_PRIMARY,
             onPressed: () {
-              employee.isTrained = "0";
+              employee.isTrained = "1";
               setState(() {});
             },
-            icon: Icon(employee.isTrained == "1"
+            icon: Icon(employee.isTrained == "0"
                 ? Icons.radio_button_unchecked_outlined
                 : Icons.radio_button_checked_outlined)),
         Text("ไม่เคยอบรม"),
