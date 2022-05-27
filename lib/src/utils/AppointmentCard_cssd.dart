@@ -86,7 +86,11 @@ Card appointmentCard_cssd(
                   builder: (context) => DetailAppointmentPage(
                     appId: object.id!,
                   ),
-                ));
+                )).then(
+              (value) => context
+                  .read<AppointmentBloc>()
+                  .add(AppointmentGetByStatus(status: "1", limit: "")),
+            );
           }
         }),
   );

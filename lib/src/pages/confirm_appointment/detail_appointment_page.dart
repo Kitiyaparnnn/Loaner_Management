@@ -114,7 +114,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
   }
 
   _showAllDetail(AppointmentModel appointment) {
-    List<Color> _color = appointment.isTrained == "1"
+    List<Color> _color = appointment.isTrained == "0"
         ? [AppColors.COLOR_GREEN2, AppColors.COLOR_GREEN]
         : [AppColors.COLOR_YELLOW2, AppColors.COLOR_YELLOW];
 
@@ -136,7 +136,7 @@ class _DetailAppointmentPageState extends State<DetailAppointmentPage> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: Text(
-                    appointment.isTrained == "1"
+                    appointment.isTrained == "0"
                         ? "ผ่านการอบรม"
                         : "ไม่ผ่านการอบรม",
                     style: TextStyle(fontSize: 14, color: _color[0])),

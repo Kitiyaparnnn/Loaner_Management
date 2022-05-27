@@ -85,8 +85,8 @@ class _HomePageState extends State<HomePage> {
   Future<void> getMachine() async {
     final _appointmentService = AppointmentService();
 
-    appointmentsList =
-        await _appointmentService.getAppointmentsByStatus(status: "2",limit:"2");
+    appointmentsList = await _appointmentService.getAppointmentsByStatus(
+        status: "2", limit: "2");
     await generateMenu();
     if (this.mounted) {
       setState(() {});
@@ -281,18 +281,15 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
-              child: image == ""
-                  ? Image.asset(
-                      '${Constants.IMAGE_DIR}/Group 120.png',
-                      fit: BoxFit.cover,
-                    )
-                  : FadeInImage.memoryNetwork(
-                      imageErrorBuilder: ((context, error, stackTrace) =>
-                          defaultImage()),
-                      placeholderErrorBuilder: (context, error, stackTrace) =>
-                          defaultImage(),
-                      placeholder: kTransparentImage,
-                      image: '${Urls.imageEmployeeUrl}/$image')),
+            backgroundImage: image == ""
+                ? Image.asset(
+                    '${Constants.IMAGE_DIR}/Group 120.png',
+                    fit: BoxFit.cover,
+                  ).image
+                : NetworkImage('${Urls.imageEmployeeUrl}/$image'),
+            radius: 25.0,
+            // child:
+          ),
           SizedBox(
             width: 5,
           ),
