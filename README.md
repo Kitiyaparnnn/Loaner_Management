@@ -1,6 +1,7 @@
-# loaner
+# loaner management 
 
-A new Flutter project.
+A intern project from POSE Intelligence co.
+28/03/2022 - 27/05/2022
 
 ## Getting Started
 
