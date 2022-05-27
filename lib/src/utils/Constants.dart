@@ -34,7 +34,6 @@ class Constants {
   //login
   static const String LOGO_IMAGE = "$IMAGE_DIR/logo_pose.png";
   static const String SPLASH_IMAGE = "$IMAGE_DIR/splash.png";
-  static const List<String> role = ["supplier", "cssd"];
 
   //fill appointment
   static const Map<String, String> status = {

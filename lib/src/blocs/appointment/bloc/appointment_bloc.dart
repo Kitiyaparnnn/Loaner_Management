@@ -31,8 +31,6 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     on<AppointmentAddLoaner>(_mapAppointmentAddLoanerToState);
     on<AppointmentCountLoaner>(_mapAppointmentCountLoanerToState);
     on<AppointmentGetLoaner>(_mapAppointmentGetLoanerToState);
-    on<AppointmentMinusLoaner>(_mapAppointmentMinusLoanerToState);
-    on<AppointmentPlusLoaner>(_mapAppointmentPlusLoanerToState);
     on<AppointmentGetAll>(_mapAppointmentGetAllToState);
     on<AppointmentGetBySearch>(_mapAppointmentGetBySearchToState);
     on<AppointmentGetByStatus>(_mapAppointmentGetByStatusToState);
@@ -97,7 +95,6 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
 
     employee = emp;
 
-    // logger.d(appointment.toJson());
 
     emit(AppointmentStateGetDetail(data: appointment, employee: employee));
   }
